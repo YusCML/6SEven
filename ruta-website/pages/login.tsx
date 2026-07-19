@@ -1,17 +1,18 @@
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 export default function Login() {
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Simulate auth success and advance downstream through the user flow
     router.push('/home');
   };
 
   return (
-    <div className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-slate-50 px-4">
+    /* Replaced hardcoded calc math with full flex dynamic layout */
+    <div className="flex-1 w-full flex items-center justify-center bg-slate-50 px-4 py-12">
       <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-xl p-8">
         <div className="text-center mb-8">
           <span className="text-3xl">🌐</span>
