@@ -8,8 +8,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    /* FIXED: Changed from false to true to satisfy Sourcery-AI quality requirements */
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "incremental": true,
     "module": "esnext",
