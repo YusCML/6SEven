@@ -1,0 +1,5 @@
+version: '1'
+
+ignore:
+  - "**/package-lock.json"
+  - "node_modules/"

@@ -20,7 +20,6 @@
     "jsx": "react-jsx",
     
     /* ADDED: Path mapping root definitions so Next.js handles absolute paths cleanly */
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
     }
