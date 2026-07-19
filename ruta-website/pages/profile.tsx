@@ -1,11 +1,19 @@
 import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function UserProfile() {
+  const router = useRouter();
   const [commuteSettings, setCommuteSettings] = useState({
     notifyTraffic: true,
     notifyDelays: true,
     preferredMode: 'Train (LRT/MRT)'
   });
+
+  const handleSignOut = (): void => {
+    // TODO: Implement actual sign-out logic (clear auth tokens, etc.)
+    router.push('/');
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
@@ -35,10 +43,39 @@ export default function UserProfile() {
           <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
             <h3 className="font-bold text-slate-800 mb-3 text-sm uppercase tracking-wider">Navigation</h3>
             <ul className="space-y-1 text-sm font-medium">
-              <li><a href="#" className="flex items-center gap-2 p-2 rounded bg-blue-50 text-blue-700">👤 Account Profile</a></li>
-              <li><a href="#" className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50">📍 Saved Routes</a></li>
-              <li><a href="#" className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50">🛡️ Security & Privacy</a></li>
-              <li><a href="#" className="flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-50 mt-4 border-t border-slate-100 pt-3">🚪 Sign Out</a></li>
+              <li>
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 p-2 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+                >
+                  👤 Account Profile
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/saved-routes"
+                  className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50 transition"
+                >
+                  📍 Saved Routes
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/settings/security"
+                  className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50 transition"
+                >
+                  🛡️ Security & Privacy
+                </Link>
+              </li>
+              <li className="mt-4 border-t border-slate-100 pt-3">
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="flex w-full items-center gap-2 p-2 rounded text-left text-red-600 hover:bg-red-50 transition"
+                >
+                  🚪 Sign Out
+                </button>
+              </li>
             </ul>
           </div>
         </div>
@@ -50,12 +87,22 @@ export default function UserProfile() {
             <h2 className="text-lg font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">Profile Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1">Full Name</label>
-                <input type="text" defaultValue="Juan Dela Cruz" className="w-full border border-slate-200 bg-slate-50 rounded p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                <label htmlFor="fullName" className="block text-xs font-semibold text-slate-400 mb-1">Full Name</label>
+                <input
+                  id="fullName"
+                  type="text"
+                  defaultValue="Juan Dela Cruz"
+                  className="w-full border border-slate-200 bg-slate-50 rounded p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1">Email</label>
-                <input type="email" defaultValue="juan.delacruz@email.ph" className="w-full border border-slate-200 bg-slate-50 rounded p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                <label htmlFor="email" className="block text-xs font-semibold text-slate-400 mb-1">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  defaultValue="juan.delacruz@email.ph"
+                  className="w-full border border-slate-200 bg-slate-50 rounded p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
               </div>
             </div>
           </div>
@@ -66,11 +113,12 @@ export default function UserProfile() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-2">Primary Mode of Transit</label>
+                <label htmlFor="transitMode" className="block text-xs font-semibold text-slate-400 mb-2">Primary Mode of Transit</label>
                 <select 
+                  id="transitMode"
                   value={commuteSettings.preferredMode}
                   onChange={(e) => setCommuteSettings({...commuteSettings, preferredMode: e.target.value})}
-                  className="border border-slate-200 bg-slate-50 rounded p-2 text-sm w-full sm:w-72"
+                  className="border border-slate-200 bg-slate-50 rounded p-2 text-sm w-full sm:w-72 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
                   <option>Train (LRT/MRT)</option>
                   <option>Bus (EDSA Carousel)</option>
@@ -82,8 +130,9 @@ export default function UserProfile() {
 
               <h3 className="text-sm font-semibold text-slate-700 mb-2">Notifications Setup</h3>
               <div className="space-y-3">
-                <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
+                <label htmlFor="notifyTraffic" className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
                   <input 
+                    id="notifyTraffic"
                     type="checkbox" 
                     checked={commuteSettings.notifyTraffic} 
                     onChange={(e) => setCommuteSettings({...commuteSettings, notifyTraffic: e.target.checked})}
@@ -91,8 +140,9 @@ export default function UserProfile() {
                   />
                   Alert me about critical rush-hour congestion delays
                 </label>
-                <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
+                <label htmlFor="notifyDelays" className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
                   <input 
+                    id="notifyDelays"
                     type="checkbox" 
                     checked={commuteSettings.notifyDelays} 
                     onChange={(e) => setCommuteSettings({...commuteSettings, notifyDelays: e.target.checked})}
@@ -104,7 +154,10 @@ export default function UserProfile() {
             </div>
 
             <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow-sm transition">
+              <button
+                type="button"
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow-sm transition"
+              >
                 Save Changes
               </button>
             </div>
