@@ -1,13 +1,40 @@
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 export default function Login() {
   const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate auth success and advance downstream through the user flow
-    router.push('/home');
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed.');
+      }
+
+      router.push('/home');
+    } catch (loginError) {
+      setError(loginError instanceof Error ? loginError.message : 'Login failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -22,27 +49,31 @@ export default function Login() {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Email Address</label>
-            <input required type="email" placeholder="name@domain.com" className="w-full border border-slate-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <input required type="email" placeholder="name@domain.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-slate-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Password</label>
-            <input required type="password" placeholder="••••••••" className="w-full border border-slate-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <input required type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-slate-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           <div className="flex items-center justify-between text-xs pt-1">
             <label className="flex items-center gap-2 text-slate-600 cursor-pointer">
               <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" /> Remember me
             </label>
-            <a href="#" className="text-blue-600 hover:underline">Forgot password?</a>
+            <Link href="/forgot-password" className="text-blue-600 hover:underline">Forgot password?</Link>
           </div>
 
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg shadow-sm transition mt-2">
-            Sign In
+          {error ? (
+            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+          ) : null}
+
+          <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300 text-white font-medium py-3 rounded-lg shadow-sm transition mt-2">
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
         <p className="text-center text-sm text-slate-600 mt-6">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/signup" className="text-blue-600 font-medium hover:underline">Create one</Link>
         </p>
       </div>

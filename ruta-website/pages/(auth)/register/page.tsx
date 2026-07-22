@@ -10,15 +10,41 @@ export default function SignUp() {
     password: '',
     confirmPassword: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
+
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      setError('Passwords do not match.');
       return;
     }
-    // Advance downstream into the internal desktop layout flow
-    router.push('/home');
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed.');
+      }
+
+      router.push('/login');
+    } catch (registerError) {
+      setError(registerError instanceof Error ? registerError.message : 'Registration failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -76,10 +102,14 @@ export default function SignUp() {
             />
           </div>
 
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg shadow-sm transition mt-4">
-            Register Account
+          <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300 text-white font-medium py-3 rounded-lg shadow-sm transition mt-4">
+            {loading ? 'Creating Account...' : 'Register Account'}
           </button>
         </form>
+
+        {error ? (
+          <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        ) : null}
 
         <p className="text-center text-sm text-slate-600 mt-6">
           Already have an account?{' '}
