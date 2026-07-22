@@ -1,11 +1,56 @@
-import Head from 'next/head'
-import Link from 'next/link'
-import { FormEvent } from 'react'
+import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { FormEvent, useState } from "react";
 
 export default function Register() {
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-    // placeholder submit handler
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = (await response.json()) as {
+        message?: string;
+        user?: { name: string; email: string };
+      };
+
+      if (!response.ok) {
+        setMessage(data.message ?? "Unable to create account.");
+        return;
+      }
+
+      if (data.user) {
+        window.localStorage.setItem(
+          "ruta-session",
+          JSON.stringify({
+            name: data.user.name,
+            email: data.user.email,
+          }),
+        );
+      }
+
+      router.push("/home");
+    } catch {
+      setMessage("Something went wrong while creating your account.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -34,25 +79,60 @@ export default function Register() {
           <p className="mb-6 text-sm text-[#e6eef8]/70">Plan your smarter commute in the Philippines.</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {message ? (
+              <p className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
+                {message}
+              </p>
+            ) : null}
+
             <div>
               <label className="block text-xs font-semibold text-[#e6eef8]/85 mb-2">Full Name</label>
-              <input required placeholder="Juan Dela Cruz" className="w-full px-3 py-2 rounded-lg bg-[#0a1526] border border-white/8 text-[#e6eef8] placeholder:text-[#e6eef8]/40 focus:outline-none focus:border-[#4f8cff]" />
+              <input
+                required
+                placeholder="Juan Dela Cruz"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-[#0a1526] border border-white/8 text-[#e6eef8] placeholder:text-[#e6eef8]/40 focus:outline-none focus:border-[#4f8cff]"
+              />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#e6eef8]/85 mb-2">Email Address</label>
-              <input type="email" required placeholder="name@gmail.com" className="w-full px-3 py-2 rounded-lg bg-[#0a1526] border border-white/8 text-[#e6eef8] placeholder:text-[#e6eef8]/40 focus:outline-none focus:border-[#4f8cff]" />
+              <input
+                type="email"
+                required
+                placeholder="name@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-[#0a1526] border border-white/8 text-[#e6eef8] placeholder:text-[#e6eef8]/40 focus:outline-none focus:border-[#4f8cff]"
+              />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#e6eef8]/85 mb-2">Password</label>
-              <input type="password" required placeholder="Min. 8 characters" className="w-full px-3 py-2 rounded-lg bg-[#0a1526] border border-white/8 text-[#e6eef8] placeholder:text-[#e6eef8]/40 focus:outline-none focus:border-[#4f8cff]" />
+              <input
+                type="password"
+                required
+                placeholder="Min. 8 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg bg-[#0a1526] border border-white/8 text-[#e6eef8] placeholder:text-[#e6eef8]/40 focus:outline-none focus:border-[#4f8cff]"
+              />
             </div>
 
-            <button type="submit" className="w-full mt-2 py-3 rounded-lg bg-[#4f8cff] font-bold text-white hover:bg-[#3d76e0]">Create Account</button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full mt-2 py-3 rounded-lg bg-[#4f8cff] font-bold text-white hover:bg-[#3d76e0] disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSubmitting ? "Creating account..." : "Create Account"}
+            </button>
 
             <div className="text-center text-sm text-[#e6eef8]/70 mt-2">
-              Already have an account? <Link href="/auth/login"><a className="text-[#4f8cff] font-semibold">Login</a></Link>
+              Already have an account?{" "}
+              <Link href="/auth/login" className="text-[#4f8cff] font-semibold hover:underline">
+                Login
+              </Link>
             </div>
           </form>
         </div>

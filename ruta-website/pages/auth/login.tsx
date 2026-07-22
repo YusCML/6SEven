@@ -1,19 +1,55 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 export default function Login() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setIsSubmitting(true);
+    setMessage("");
 
-    console.log("Email:", email);
-    console.log("Password:", password);
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    // TODO:
-    // Add your login/authentication logic here.
+      const data = (await response.json()) as {
+        message?: string;
+        user?: { name: string; email: string };
+      };
+
+      if (!response.ok) {
+        setMessage(data.message ?? "Unable to log in right now.");
+        return;
+      }
+
+      if (data.user) {
+        window.localStorage.setItem(
+          "ruta-session",
+          JSON.stringify({
+            name: data.user.name,
+            email: data.user.email,
+          }),
+        );
+      }
+
+      router.push("/home");
+    } catch {
+      setMessage("Something went wrong while logging in.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -52,6 +88,12 @@ export default function Login() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {message ? (
+              <p className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
+                {message}
+              </p>
+            ) : null}
+
             {/* Email */}
             <div>
               <label className="block text-xs font-semibold text-[#e6eef8]/85 mb-2">
@@ -87,9 +129,10 @@ export default function Login() {
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full mt-2 py-3 rounded-lg bg-[#4f8cff] font-bold text-white transition-colors hover:bg-[#3d76e0]"
+              disabled={isSubmitting}
+              className="w-full mt-2 py-3 rounded-lg bg-[#4f8cff] font-bold text-white transition-colors hover:bg-[#3d76e0] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Login
+              {isSubmitting ? "Logging in..." : "Login"}
             </button>
 
             {/* Register Link */}
