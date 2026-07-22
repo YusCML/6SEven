@@ -18,6 +18,8 @@ export default function RegisterForm() {
 
     if (!formData.name.trim()) return setError('Full name is required.');
     if (!formData.email.trim()) return setError('Email is required.');
+    if (!formData.password.trim()) return setError('Password is required.');
+    if (formData.password.trim().length < 8) return setError('Password must be at least 8 characters long.');
     if (formData.password !== formData.confirmPassword) return setError('Passwords do not match.');
 
     setLoading(true);
