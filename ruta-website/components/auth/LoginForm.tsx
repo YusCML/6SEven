@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { readJsonResponse } from '../../lib/http';
 
-export default function Login() {
+export default function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,13 +24,13 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = (await response.json()) as { error?: string };
+      const data = await readJsonResponse<{ error?: string }>(response);
 
       if (!response.ok) {
         throw new Error(data.error || 'Login failed.');
       }
 
-      router.push('/home');
+      router.push('/dashboard');
     } catch (loginError) {
       setError(loginError instanceof Error ? loginError.message : 'Login failed.');
     } finally {
@@ -60,7 +61,7 @@ export default function Login() {
             <label className="flex items-center gap-2 text-slate-600 cursor-pointer">
               <input type="checkbox" className="rounded text-blue-600 focus:ring-blue-500" /> Remember me
             </label>
-            <Link href="/forgot-password" className="text-blue-600 hover:underline">Forgot password?</Link>
+            <Link href="/auth/forgot-password" className="text-blue-600 hover:underline">Forgot password?</Link>
           </div>
 
           {error ? (
@@ -74,7 +75,7 @@ export default function Login() {
 
         <p className="text-center text-sm text-slate-600 mt-6">
           Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-blue-600 font-medium hover:underline">Create one</Link>
+          <Link href="/auth/register" className="text-blue-600 font-medium hover:underline">Create one</Link>
         </p>
       </div>
     </div>

@@ -12,26 +12,22 @@ export default function Settings() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-10 flex-1 w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        {/* Navigation Column matching Profile styling */}
         <div className="space-y-4">
           <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
             <h3 className="font-bold text-slate-800 mb-3 text-sm uppercase tracking-wider">Control Panel</h3>
             <ul className="space-y-1 text-sm font-medium">
-              <li><Link href="/profile" className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50">👤 Account Profile</Link></li>
-              <li><Link href="/settings" className="flex items-center gap-2 p-2 rounded bg-blue-50 text-blue-700">⚙️ Platform Settings</Link></li>
+              <li><Link href="/dashboard/profile" className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50">👤 Account Profile</Link></li>
+              <li><Link href="/dashboard/settings" className="flex items-center gap-2 p-2 rounded bg-blue-50 text-blue-700">⚙️ Platform Settings</Link></li>
               <li><a href="#" className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50">📍 Saved Routes</a></li>
             </ul>
           </div>
         </div>
 
-        {/* Configuration Columns */}
         <div className="md:col-span-2 space-y-6">
           <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">System Parameters</h2>
-            
+
             <div className="space-y-6">
-              {/* Theme Selector */}
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-semibold text-slate-800">Interface Display Mode</h4>
@@ -50,7 +46,6 @@ export default function Settings() {
 
               <hr className="border-slate-100" />
 
-              {/* Data Optimization Toggle */}
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-semibold text-slate-800">Low-Data Map Strategy</h4>
@@ -66,7 +61,6 @@ export default function Settings() {
 
               <hr className="border-slate-100" />
 
-              {/* Privacy and Profile Visibility */}
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-semibold text-slate-800">Public Reliability Standing</h4>

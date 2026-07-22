@@ -9,7 +9,6 @@ export default function UserProfile() {
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
-      {/* Header Profile Summary Banner */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 md:p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-md mb-8">
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 bg-white/20 backdrop-blur border-2 border-white/40 rounded-full flex items-center justify-center text-3xl font-bold shadow-inner">
@@ -27,25 +26,20 @@ export default function UserProfile() {
         </div>
       </div>
 
-      {/* Two Column Layout Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        {/* Left Column: Account Controls */}
         <div className="space-y-4">
           <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
             <h3 className="font-bold text-slate-800 mb-3 text-sm uppercase tracking-wider">Navigation</h3>
             <ul className="space-y-1 text-sm font-medium">
-              <li><a href="#" className="flex items-center gap-2 p-2 rounded bg-blue-50 text-blue-700">👤 Account Profile</a></li>
-              <li><a href="#" className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50">📍 Saved Routes</a></li>
-              <li><a href="#" className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50">🛡️ Security & Privacy</a></li>
+              <li><a href="/dashboard/profile" className="flex items-center gap-2 p-2 rounded bg-blue-50 text-blue-700">👤 Account Profile</a></li>
+              <li><a href="/routes" className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50">📍 Saved Routes</a></li>
+              <li><a href="/dashboard/settings" className="flex items-center gap-2 p-2 rounded text-slate-600 hover:bg-slate-50">🛡️ Security & Privacy</a></li>
               <li><a href="#" className="flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-50 mt-4 border-t border-slate-100 pt-3">🚪 Sign Out</a></li>
             </ul>
           </div>
         </div>
 
-        {/* Right Columns: Main Content Panel */}
         <div className="md:col-span-2 space-y-6">
-          {/* User Information Form Details */}
           <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">Profile Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -60,10 +54,9 @@ export default function UserProfile() {
             </div>
           </div>
 
-          {/* Preferences Settings Block */}
           <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">Commute Preferences</h2>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-2">Primary Mode of Transit</label>

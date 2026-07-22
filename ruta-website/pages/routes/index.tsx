@@ -1,7 +1,6 @@
 export default function RouteExplorer() {
   return (
     <div className="h-[calc(100vh-73px)] flex flex-col md:flex-row overflow-hidden">
-      {/* Sidebar Control Panel */}
       <div className="w-full md:w-96 bg-white border-r border-slate-200 p-6 overflow-y-auto flex flex-col justify-between">
         <div>
           <h2 className="text-xl font-bold text-slate-900 mb-4">Route Finder</h2>
@@ -34,7 +33,6 @@ export default function RouteExplorer() {
         </div>
       </div>
 
-      {/* Main Full-height Map Container */}
       <div className="flex-grow bg-slate-100 relative flex items-center justify-center">
         <div className="absolute top-4 right-4 bg-white shadow px-3 py-2 rounded-md text-xs font-medium flex gap-2">
           <span className="flex items-center gap-1 text-green-600">● Light</span>

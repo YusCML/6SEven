@@ -20,7 +20,6 @@ export default function LandingPage() {
         </div>
       </div>
       <div className="bg-slate-200 rounded-2xl h-96 flex items-center justify-center text-slate-400 font-medium shadow-inner relative overflow-hidden">
-        {/* Mock Graphic/Map placeholder */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/10" />
         🗺️ [Interactive Map Preview]
       </div>

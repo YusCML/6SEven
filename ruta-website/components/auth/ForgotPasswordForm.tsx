@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { readJsonResponse } from '../../lib/http';
 
-export default function ForgotPassword() {
+export default function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [message, setMessage] = useState('');
@@ -21,7 +22,7 @@ export default function ForgotPassword() {
         body: JSON.stringify({ email }),
       });
 
-      const data = (await response.json()) as { error?: string; message?: string };
+      const data = await readJsonResponse<{ error?: string; message?: string }>(response);
 
       if (!response.ok) {
         throw new Error(data.error || 'Unable to send reset link.');
@@ -74,7 +75,7 @@ export default function ForgotPassword() {
         ) : null}
 
         <div className="text-center text-sm font-medium mt-6 pt-4 border-t border-slate-100">
-          <Link href="/login" className="text-blue-600 hover:underline">← Back to Log In</Link>
+          <Link href="/auth/login" className="text-blue-600 hover:underline">← Back to Log In</Link>
         </div>
       </div>
     </div>

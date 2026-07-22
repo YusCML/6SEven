@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { readJsonResponse } from '../../lib/http';
 
-export default function SignUp() {
+export default function RegisterForm() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
@@ -10,15 +11,52 @@ export default function SignUp() {
     password: '',
     confirmPassword: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+    setError('');
+
+    if (!formData.name.trim()) {
+      setError('Full name is required.');
       return;
     }
-    // Advance downstream into the internal desktop layout flow
-    router.push('/home');
+
+    if (!formData.email.trim()) {
+      setError('Email is required.');
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await readJsonResponse<{ error?: string }>(response);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed.');
+      }
+
+      console.info('[auth/register] user registered', data);
+      router.push('/auth/login');
+    } catch (registerError) {
+      setError(registerError instanceof Error ? registerError.message : 'Registration failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -76,14 +114,18 @@ export default function SignUp() {
             />
           </div>
 
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg shadow-sm transition mt-4">
-            Register Account
+          <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300 text-white font-medium py-3 rounded-lg shadow-sm transition mt-4">
+            {loading ? 'Creating Account...' : 'Register Account'}
           </button>
         </form>
 
+        {error ? (
+          <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        ) : null}
+
         <p className="text-center text-sm text-slate-600 mt-6">
           Already have an account?{' '}
-          <Link href="/login" className="text-blue-600 font-medium hover:underline">Log in</Link>
+          <Link href="/auth/login" className="text-blue-600 font-medium hover:underline">Log in</Link>
         </p>
       </div>
     </div>

@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <Link href="/dashboard" className="hover:text-blue-600">Dashboard</Link>
           <Link href="/routes" className="hover:text-blue-600">Routes</Link>
           <Link href="/about" className="hover:text-blue-600">About</Link>
-          <Link href="/profile" className="hover:text-blue-600 font-semibold text-blue-600 border border-blue-600 px-3 py-1 rounded-md hover:bg-blue-50">Profile</Link>
+          <Link href="/dashboard/profile" className="hover:text-blue-600 font-semibold text-blue-600 border border-blue-600 px-3 py-1 rounded-md hover:bg-blue-50">Profile</Link>
         </nav>
       </header>
 

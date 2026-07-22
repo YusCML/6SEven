@@ -21,6 +21,14 @@ declare global {
   var __rutaAuthStore: AuthStore | undefined;
 }
 
+export function normalizeEmail(email: string) {
+  return email.trim().toLowerCase();
+}
+
+export function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
 function getStore(): AuthStore {
   if (!globalThis.__rutaAuthStore) {
     globalThis.__rutaAuthStore = {
@@ -33,12 +41,12 @@ function getStore(): AuthStore {
 }
 
 export function findUserByEmail(email: string) {
-  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedEmail = normalizeEmail(email);
   return getStore().users.find((user) => user.email === normalizedEmail);
 }
 
 export function createUser(input: { name: string; email: string; password: string }) {
-  const normalizedEmail = input.email.trim().toLowerCase();
+  const normalizedEmail = normalizeEmail(input.email);
   const store = getStore();
 
   if (store.users.some((user) => user.email === normalizedEmail)) {
@@ -68,7 +76,7 @@ export function validateCredentials(email: string, password: string) {
 }
 
 export function createResetRequest(email: string) {
-  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedEmail = normalizeEmail(email);
   const request = {
     email: normalizedEmail,
     token: crypto.randomUUID(),

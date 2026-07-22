@@ -9,7 +9,6 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* Left 2 Columns: Analytics & Feeds */}
       <div className="lg:col-span-2 space-y-6">
         <div className="bg-white p-6 rounded-xl border border-slate-200">
           <h2 className="text-xl font-bold mb-4">Incident Reporting Overview</h2>
@@ -20,7 +19,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Live feed list */}
         <div className="bg-white p-6 rounded-xl border border-slate-200">
           <h3 className="font-bold text-lg mb-4">Commuter Live Feed</h3>
           <div className="divide-y divide-slate-100">
@@ -37,7 +35,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Right Column: Mini Interactive Map & Quick Actions */}
       <div className="space-y-6">
         <div className="bg-slate-900 text-white p-6 rounded-xl relative overflow-hidden h-72 flex flex-col justify-between">
           <div>
