@@ -34,16 +34,6 @@ export default function Login() {
         return;
       }
 
-      if (data.user) {
-        window.localStorage.setItem(
-          "ruta-session",
-          JSON.stringify({
-            name: data.user.name,
-            email: data.user.email,
-          }),
-        );
-      }
-
       router.push("/home");
     } catch {
       setMessage("Something went wrong while logging in.");

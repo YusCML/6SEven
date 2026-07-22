@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 type SessionUser = {
   name: string;
   email: string;
+  issuedAt: number;
 };
 
 export default function HomePage() {
@@ -13,23 +14,38 @@ export default function HomePage() {
   const [user, setUser] = useState<SessionUser | null>(null);
 
   useEffect(() => {
-    const storedSession = window.localStorage.getItem("ruta-session");
+    async function loadSession() {
+      const response = await fetch("/api/auth/session", {
+        method: "GET",
+        credentials: "same-origin",
+      });
 
-    if (!storedSession) {
-      router.replace("/auth/login");
-      return;
+      if (!response.ok) {
+        router.replace("/auth/login");
+        return;
+      }
+
+      const data = (await response.json()) as {
+        user?: SessionUser;
+      };
+
+      if (!data.user) {
+        router.replace("/auth/login");
+        return;
+      }
+
+      setUser(data.user);
     }
 
-    try {
-      setUser(JSON.parse(storedSession) as SessionUser);
-    } catch {
-      window.localStorage.removeItem("ruta-session");
-      router.replace("/auth/login");
-    }
+    void loadSession();
   }, [router]);
 
-  function handleLogout() {
-    window.localStorage.removeItem("ruta-session");
+  async function handleLogout() {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "same-origin",
+    });
+
     router.push("/auth/login");
   }
 

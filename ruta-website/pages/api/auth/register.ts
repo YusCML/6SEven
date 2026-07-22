@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { hasUser, storeUser } from "@/lib/auth-store";
+import { hashPassword } from "@/lib/auth/password";
+import { createSessionCookie } from "@/lib/auth/session";
 
 type RegisterPayload = {
   name: string;
@@ -37,12 +39,17 @@ export default function handler(
     });
   }
 
+  const { passwordHash, passwordSalt } = hashPassword(password);
+
   storeUser({
     name,
     email: email.toLowerCase(),
-    password,
+    passwordHash,
+    passwordSalt,
     createdAt: new Date().toISOString(),
   });
+
+  res.setHeader("Set-Cookie", createSessionCookie({ name, email: email.toLowerCase() }));
 
   return res.status(201).json({
     message: "Account created successfully.",

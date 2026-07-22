@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { findUserByEmail } from "@/lib/auth-store";
+import { verifyPassword } from "@/lib/auth/password";
+import { createSessionCookie } from "@/lib/auth/session";
 
 type LoginPayload = {
   email: string;
@@ -26,11 +28,13 @@ export default function handler(
 
   const user = findUserByEmail(email);
 
-  if (!user || user.password !== password) {
+  if (!user || !verifyPassword(password, user.passwordHash, user.passwordSalt)) {
     return res.status(401).json({
       message: "Invalid email or password.",
     });
   }
+
+  res.setHeader("Set-Cookie", createSessionCookie({ name: user.name, email: user.email }));
 
   return res.status(200).json({
     message: "Login successful.",

@@ -35,16 +35,6 @@ export default function Register() {
         return;
       }
 
-      if (data.user) {
-        window.localStorage.setItem(
-          "ruta-session",
-          JSON.stringify({
-            name: data.user.name,
-            email: data.user.email,
-          }),
-        );
-      }
-
       router.push("/home");
     } catch {
       setMessage("Something went wrong while creating your account.");
@@ -74,7 +64,7 @@ export default function Register() {
       </header>
 
       <main className="min-h-screen bg-[#0a1220] text-[#e6eef8] pt-20">
-        <div className="max-w-md mx-auto mt-6 p-8 bg-[#101e33] border border-white/6 rounded-xl shadow-lg">
+        <div className="max-w-md mx-auto mt-6 p-8 bg-[#101e33] border border-white/10 rounded-xl shadow-lg">
           <header className="mb-2 text-2xl font-semibold text-white">Join RUTA Today</header>
           <p className="mb-6 text-sm text-[#e6eef8]/70">Plan your smarter commute in the Philippines.</p>
 
