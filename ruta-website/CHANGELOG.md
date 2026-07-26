@@ -10,7 +10,61 @@ stable: breaking changes bump the **minor** number rather than the major one.
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- **Service layer** — `src/server/services/authService.ts` holds the auth
+  business logic as plain async functions over domain types, with no `req`/`res`
+  anywhere. The API routes are now thin adapters: method guard, rate limit,
+  parse, call the service, map the error. Handlers dropped from 415 to 291
+  lines and the logic became unit-testable without mocking HTTP.
+- `src/server/errors.ts` — typed domain errors (`ValidationError`,
+  `DuplicateEmailError`, `InvalidCredentialsError`, `NotFoundError`) and a
+  single `handleError` in `respond.ts` that maps them to status codes, instead
+  of each handler repeating the mapping.
+- **Rate limiting** on `login`, `register`, `forgot-password`, `reset-password`
+  and `change-password` (`src/server/http/rateLimit.ts`). Login is capped at 10
+  attempts per 15 minutes, scoped by IP **and** email, and answers `429` with a
+  `Retry-After` header. Counters are in-process; a multi-instance deployment
+  needs a shared store, and only that one file changes.
+- `PageMeta` — every page now sets a `<title>`, description and Open Graph tags.
+  The app previously rendered no `<title>` at all.
+- `features/auth/api.ts` and `features/account/api.ts` — all browser API calls
+  for a feature in one module.
+- `lib/http.ts` gained `getJson`/`postJson`/`patchJson` and an `ApiError`
+  carrying the HTTP status.
+
+### Changed
+
+- **Folder structure.** `services/` and `utils/` are gone. Route handlers moved
+  into `pages/api/auth/*` (the handler *is* the route), shared helpers into
+  `lib/`, and everything server-only lives under `server/`.
+- `/` now redirects to `/home` instead of rendering a second copy of the
+  landing page.
+- Renamed `aboutUs.tsx` → `AboutUs.tsx` and `commute_guide.tsx` →
+  `CommuterGuide.tsx` to match the PascalCase convention.
+- **Routes are kebab-case**: `/about_us` → `/about-us`, `/commuter_guide` →
+  `/commuter-guide`. Permanent redirects keep old links working.
+- Flattened nine `pages/<name>/index.tsx` files to `pages/<name>.tsx`. Only
+  `dashboard/` stays a folder, because it actually has child routes.
+
+### Fixed
+
+- **Inter was never applied.** `next/font` defined `--font-inter`, but nothing
+  mapped it to Tailwind's `--font-sans`, so every screen rendered in the system
+  font stack while the webfont was downloaded and ignored. `globals.css` now
+  wires it through an `@theme` block.
+- Added base styles: a single `:focus-visible` ring, font smoothing, and a
+  `prefers-reduced-motion` guard for the transitions used throughout the UI.
+
+### Removed
+
+- `components/ui/Button.tsx` and `components/ui/Panel.tsx` — both only spread
+  props onto a `<button>`/`<div>`, so call sites use the elements directly.
+- `components/ui/FormField.tsx` — superseded by `TextField`, which the profile
+  and route screens now share with the auth forms.
+- `pages/index.tsx` — replaced by the redirect above.
+- Six hand-rolled `fetch` blocks in components, now handled by the feature API
+  modules.
 
 ## [0.2.0] — 2026-07-27
 

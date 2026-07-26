@@ -14,9 +14,9 @@ type AuthLayoutProps = {
 };
 
 const defaultFooterLinks: FooterLink[] = [
-  { label: 'Privacy Policy', href: '/about_us' },
-  { label: 'Terms', href: '/about_us' },
-  { label: 'Support', href: '/about_us' },
+  { label: 'Privacy Policy', href: '/about-us' },
+  { label: 'Terms', href: '/about-us' },
+  { label: 'Support', href: '/about-us' },
 ];
 
 /**

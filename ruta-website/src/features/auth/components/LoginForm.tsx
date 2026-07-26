@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MapPinIcon, SearchIcon } from '@/components/icons';
 import useSession from '@/hooks/useSession';
-import { readJsonResponse } from '@/services/http/client';
-import type { SessionPayload } from '@/types/session';
+import { errorMessage } from '@/lib/http';
+import * as authApi from '../api';
 import Alert from '@/components/ui/Alert';
 import Checkbox from '@/components/ui/Checkbox';
 import PrimaryButton from '@/components/ui/PrimaryButton';
@@ -34,21 +34,11 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await readJsonResponse<SessionPayload & { error?: string }>(response);
-
-      if (!response.ok) throw new Error(data.error || 'Login failed.');
-
       // Adopt the session from the response — no extra round trip on redirect.
-      applySession(data);
+      applySession(await authApi.login({ email, password }));
       router.push('/dashboard');
     } catch (loginError) {
-      setError(loginError instanceof Error ? loginError.message : 'Login failed.');
+      setError(errorMessage(loginError, 'Login failed.'));
     } finally {
       setLoading(false);
     }

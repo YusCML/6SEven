@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Button from '@/components/ui/Button';
+import PageMeta from '@/components/PageMeta';
 import AccountNavigation from '@/features/account/components/AccountNavigation';
 import AccountSection from '@/features/account/components/AccountSection';
 import ProfileDetailsForm from '@/features/account/components/ProfileDetailsForm';
@@ -16,6 +16,7 @@ export default function UserProfile() {
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
+      <PageMeta title="Profile" description="Manage your RUTA account details and commute preferences." />
       <ProfileHeader displayName={displayName} isGuest={!isAuthenticated} memberSince={user?.createdAt} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="space-y-4">
@@ -65,9 +66,9 @@ export default function UserProfile() {
             </div>
             {/* Preferences are still local-only — no endpoint for them yet. */}
             <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow-sm transition">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow-sm transition">
                 Save Changes
-              </Button>
+              </button>
             </div>
           </AccountSection>
         </div>

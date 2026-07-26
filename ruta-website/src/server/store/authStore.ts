@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { normalizeEmail } from '@/utils/validation';
+import { normalizeEmail } from '@/lib/validation';
+import { DuplicateEmailError, NotFoundError } from '@/server/errors';
 
 /**
  * In-process storage for users, sessions and reset tokens.
@@ -56,22 +57,6 @@ export function toPublicUser(user: UserRecord): PublicUser {
     email: user.email,
     createdAt: user.createdAt,
   };
-}
-
-/** Thrown when an email is already taken. */
-export class DuplicateEmailError extends Error {
-  constructor(message = 'An account with that email already exists.') {
-    super(message);
-    this.name = 'DuplicateEmailError';
-  }
-}
-
-/** Thrown when an update targets a user that no longer exists. */
-export class UserNotFoundError extends Error {
-  constructor(message = 'User not found.') {
-    super(message);
-    this.name = 'UserNotFoundError';
-  }
 }
 
 type Tables = {
@@ -151,7 +136,7 @@ export async function updateUser(
 ): Promise<UserRecord> {
   const existing = tables().users.get(id);
 
-  if (!existing) throw new UserNotFoundError();
+  if (!existing) throw new NotFoundError('User not found.');
 
   if (patch.email !== undefined) {
     const email = normalizeEmail(patch.email);

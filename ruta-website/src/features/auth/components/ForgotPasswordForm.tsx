@@ -4,7 +4,8 @@ import { SearchIcon } from '@/components/icons';
 import Alert from '@/components/ui/Alert';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 import TextField from '@/components/ui/TextField';
-import { readJsonResponse } from '@/services/http/client';
+import { errorMessage } from '@/lib/http';
+import * as authApi from '../api';
 import AuthCard from './AuthCard';
 import AuthStatusStrip from './AuthStatusStrip';
 
@@ -22,20 +23,12 @@ export default function ForgotPasswordForm() {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ email }),
-      });
-      const data = await readJsonResponse<{ error?: string; message?: string }>(response);
-
-      if (!response.ok) throw new Error(data.error || 'Unable to send reset link.');
+      const data = await authApi.requestPasswordReset(email);
 
       setMessage(data.message || `Reset instructions were sent to ${email}.`);
       setSubmitted(true);
     } catch (resetError) {
-      setError(resetError instanceof Error ? resetError.message : 'Unable to send reset link.');
+      setError(errorMessage(resetError, 'Unable to send reset link.'));
     } finally {
       setLoading(false);
     }

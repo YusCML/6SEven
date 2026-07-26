@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { DuplicateEmailError, InvalidCredentialsError, NotFoundError, ValidationError } from '@/server/errors';
 
 /**
  * Small helpers so every auth handler answers with the same shape:
@@ -39,6 +40,20 @@ export function conflict(res: NextApiResponse, message: string) {
 export function serverError(res: NextApiResponse, error: unknown, context: string) {
   console.error(`[${context}]`, error);
   return res.status(500).json({ error: 'Something went wrong. Please try again.' } satisfies ApiError);
+}
+
+/**
+ * Translates a thrown value into a response. Domain errors carry their own
+ * meaning, so each one has a status; anything else is an unexpected 500 and is
+ * logged rather than shown to the user.
+ */
+export function handleError(res: NextApiResponse, error: unknown, context: string) {
+  if (error instanceof ValidationError) return badRequest(res, error.message);
+  if (error instanceof DuplicateEmailError) return conflict(res, error.message);
+  if (error instanceof InvalidCredentialsError) return unauthorized(res, error.message);
+  if (error instanceof NotFoundError) return unauthorized(res, error.message);
+
+  return serverError(res, error, context);
 }
 
 /** `req.body` is `any` — narrow it to a plain object before reading fields. */

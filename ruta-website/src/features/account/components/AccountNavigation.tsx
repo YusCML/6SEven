@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Panel from '@/components/ui/Panel';
 import useSession from '@/hooks/useSession';
 
 type AccountNavigationProps = {
@@ -23,7 +22,7 @@ export default function AccountNavigation({ active, title, showSignOut = false }
   };
 
   return (
-    <Panel className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
       <h3 className="font-bold text-slate-800 mb-3 text-sm uppercase tracking-wider">{title}</h3>
       <ul className="space-y-1 text-sm font-medium">
         <li>
@@ -61,6 +60,6 @@ export default function AccountNavigation({ active, title, showSignOut = false }
           </li>
         ) : null}
       </ul>
-    </Panel>
+    </div>
   );
 }

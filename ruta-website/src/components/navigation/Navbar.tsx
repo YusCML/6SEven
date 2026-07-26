@@ -6,8 +6,8 @@ const navigationItems = [
   { href: '/home', label: 'Home' },
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/routes', label: 'Routes' },
-  { href: '/commuter_guide', label: 'Commuter Guide' },
-  { href: '/about_us', label: 'About' },
+  { href: '/commuter-guide', label: 'Commuter Guide' },
+  { href: '/about-us', label: 'About' },
 ];
 
 export default function Navbar() {

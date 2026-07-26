@@ -1,1 +1,54 @@
 @import "tailwindcss";
+
+/*
+ * Design tokens.
+ *
+ * `@theme` values become both CSS variables and Tailwind utilities, so the
+ * font is defined once here rather than per component.
+ */
+@theme {
+  /*
+   * `--font-inter` is set by next/font in _app.tsx. Without this line Tailwind's
+   * `font-sans` falls back to the system stack and the webfont is downloaded but
+   * never applied.
+   */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /*
+   * One focus ring for the whole app. Keyboard users get a visible outline;
+   * mouse users do not, because `:focus-visible` excludes pointer focus.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-blue-600);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-blue-600);
+    color: white;
+  }
+
+  /* Respect users who ask their OS to reduce motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

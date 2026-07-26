@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { readJsonResponse } from '@/services/http/client';
+import * as authApi from '@/features/auth/api';
 import type { SessionPayload, SessionUser } from '@/types/session';
 
 /**
@@ -14,7 +14,7 @@ export type SessionStatus = 'loading' | 'authenticated' | 'guest';
 export type SessionContextValue = {
   status: SessionStatus;
   user: SessionUser | null;
-  /** Full name when signed in, otherwise the generated `User…` guest name. */
+  /** Username when signed in, otherwise the generated `User…` guest name. */
   displayName: string;
   isAuthenticated: boolean;
   /** True until the first `/api/auth/session` response lands. */
@@ -33,17 +33,12 @@ function displayNameOf(payload: SessionPayload | null): string {
 }
 
 /**
- * Fetches the session without touching React state, so both the mount effect
- * and `refresh()` can share it. Resolves to null when the API is unreachable —
- * the caller then treats the visitor as an anonymous guest rather than leaving
- * the UI stuck on "loading" forever.
+ * Resolves to null when the API is unreachable — the caller then treats the
+ * visitor as an anonymous guest rather than leaving the UI stuck on "loading".
  */
-async function fetchSession(): Promise<SessionPayload | null> {
+async function loadSession(): Promise<SessionPayload | null> {
   try {
-    const response = await fetch('/api/auth/session', { credentials: 'same-origin' });
-    const data = await readJsonResponse<SessionPayload>(response);
-
-    return response.ok ? data : null;
+    return await authApi.fetchSession();
   } catch {
     return null;
   }
@@ -58,41 +53,32 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
     setStatus(next.status);
   }, []);
 
-  const refresh = useCallback(async () => {
-    const next = await fetchSession();
-
+  /** Same as `applySession`, but tolerates the null we use for "API unreachable". */
+  const adopt = useCallback((next: SessionPayload | null) => {
     setPayload(next);
     setStatus(next?.status ?? 'guest');
   }, []);
+
+  const refresh = useCallback(async () => {
+    adopt(await loadSession());
+  }, [adopt]);
 
   useEffect(() => {
     let cancelled = false;
 
     void (async () => {
-      const next = await fetchSession();
-
-      if (cancelled) return;
-
-      setPayload(next);
-      setStatus(next?.status ?? 'guest');
+      const next = await loadSession();
+      if (!cancelled) adopt(next);
     })();
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [adopt]);
 
   const signOut = useCallback(async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'same-origin',
-      });
-      const data = await readJsonResponse<SessionPayload>(response);
-
-      if (!response.ok) throw new Error('Sign out failed.');
-
-      applySession(data);
+      applySession(await authApi.logout());
     } catch {
       // The cookie may still have been cleared; re-read rather than guess.
       await refresh();

@@ -2,8 +2,9 @@ import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ArrowsUpDownIcon, MapPinIcon, SearchIcon } from '@/components/icons';
-import { readJsonResponse } from '@/services/http/client';
-import { firstError, validateEmail, validatePassword, validateUsername } from '@/utils/validation';
+import { errorMessage } from '@/lib/http';
+import { firstError, validateEmail, validatePassword, validateUsername } from '@/lib/validation';
+import * as authApi from '../api';
 import Alert from '@/components/ui/Alert';
 import Checkbox from '@/components/ui/Checkbox';
 import PrimaryButton from '@/components/ui/PrimaryButton';
@@ -37,22 +38,12 @@ export default function RegisterForm() {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        // The design has a single password field; the API still checks the pair,
-        // so the confirmation mirrors what was typed.
-        body: JSON.stringify({ ...formData, confirmPassword: formData.password }),
-      });
-      const data = await readJsonResponse<{ error?: string }>(response);
-
-      if (!response.ok) throw new Error(data.error || 'Registration failed.');
+      await authApi.register(formData);
 
       // Registration does not sign you in — confirm the credentials by logging in.
       router.push('/auth/login?registered=1');
     } catch (registerError) {
-      setError(registerError instanceof Error ? registerError.message : 'Registration failed.');
+      setError(errorMessage(registerError, 'Registration failed.'));
     } finally {
       setLoading(false);
     }
@@ -103,11 +94,11 @@ export default function RegisterForm() {
 
         <Checkbox checked={acceptedTerms} onChange={setAcceptedTerms} name="acceptedTerms">
           I agree to the{' '}
-          <Link href="/about_us" className="font-bold text-blue-600 hover:underline">
+          <Link href="/about-us" className="font-bold text-blue-600 hover:underline">
             Terms of Service
           </Link>{' '}
           and{' '}
-          <Link href="/about_us" className="font-bold text-blue-600 hover:underline">
+          <Link href="/about-us" className="font-bold text-blue-600 hover:underline">
             Privacy Policy
           </Link>
           .

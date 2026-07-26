@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Button from '@/components/ui/Button';
+import PageMeta from '@/components/PageMeta';
 import AccountNavigation from '@/features/account/components/AccountNavigation';
 import AccountSection from '@/features/account/components/AccountSection';
 import ToggleSetting from '@/features/account/components/ToggleSetting';
@@ -9,6 +9,7 @@ export default function Settings() {
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10 flex-1 w-full">
+      <PageMeta title="Settings" description="Control your RUTA display, data and privacy preferences." />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="space-y-4"><AccountNavigation active="settings" title="Control Panel" /></div>
         <div className="md:col-span-2 space-y-6">
@@ -26,7 +27,7 @@ export default function Settings() {
               <ToggleSetting title="Public Reliability Standing" description="Allows other metro commuters to view your submitted incident validation metrics." checked={settings.publicProfile} onChange={(publicProfile) => setSettings({ ...settings, publicProfile })} />
             </div>
             <div className="mt-8 pt-4 border-t border-slate-100 flex justify-end">
-              <Button onClick={() => alert('Settings saved!')} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded shadow-sm transition">Apply Changes</Button>
+              <button onClick={() => alert('Settings saved!')} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded shadow-sm transition">Apply Changes</button>
             </div>
           </AccountSection>
         </div>

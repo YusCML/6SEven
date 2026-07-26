@@ -9,8 +9,8 @@ browses the site without one.
 
 **Nothing was installed. `package.json` is byte-for-byte unchanged.**
 
-`npm install` was run, no dependency was added, and no lockfile entry changed.
-Everything below is built from what the project already had:
+No `npm install` was run, no dependency was added, and no lockfile entry
+changed. Everything below is built from what the project already had:
 
 | Need | What it uses | Where it comes from |
 | --- | --- | --- |
@@ -120,6 +120,23 @@ Success responses that resolve a session return the **session payload**:
 | `POST` | `/reset-password` | any | Consumes the token, sets a new password. |
 | `GET` | `/users` | dev only | Debug listing. `404` in production. |
 
+### Rate limits
+
+Exceeding a limit returns `429` with a `Retry-After` header and an
+`X-RateLimit-Remaining` count.
+
+| Endpoint | Limit | Window | Scope |
+| --- | --- | --- | --- |
+| `/login` | 10 | 15 min | IP **and** email |
+| `/register` | 5 | 1 hour | IP |
+| `/forgot-password` | 5 | 1 hour | IP |
+| `/reset-password` | 10 | 1 hour | IP |
+| `/change-password` | 10 | 1 hour | IP |
+
+Counters live in process memory, so they reset on restart and are per-instance.
+Behind more than one instance this needs a shared store — swap the map in
+`src/server/http/rateLimit.ts` and nothing else changes.
+
 ---
 
 ## 4. How it works
@@ -182,37 +199,63 @@ Neon/Prisma lands, only this one file changes and no call site has to be touched
 ```
 src/
   server/                        server-only, never bundled to the browser
+    services/
+      authService.ts             business logic — no req/res, plain async fns
+    errors.ts                    typed domain errors the services throw
     auth/
       password.ts                scrypt hash / verify / needsRehash
       session.ts                 tokens, cookie lifecycle, guest fallback
       cookies.ts                 Set-Cookie serializer
       guest.ts                   guest name generator
     http/
-      respond.ts                 method guard + JSON error helpers
+      respond.ts                 method guard, JSON helpers, error → status map
+      rateLimit.ts               fixed-window limits, 429 + Retry-After
     store/
       authStore.ts               in-memory users / sessions / resets
-  services/api/auth/handlers/    one file per endpoint (the real logic)
-  pages/api/auth/                thin re-exports that expose the routes
-  providers/SessionProvider.tsx  client session context
-  hooks/useSession.ts            the hook components call
-  types/session.ts               payload types shared client + server
-  types/page.ts                  NextPageWithLayout, for per-page layouts
-  utils/validation.ts            rules shared by forms and handlers
+
+  pages/api/auth/                HTTP adapters — guard, parse, call service
+  pages/<route>.tsx              page metadata + layout choice + feature component
+
+  lib/                           shared by browser and server
+    http.ts                      fetch wrapper, ApiError
+    validation.ts                username / email / password rules
+
+  features/<feature>/
+    api.ts                       every browser call that feature makes
+    components/                  feature-specific UI
 
   components/                    reusable across features
     ui/                          TextField, Checkbox, Alert, PrimaryButton,
-                                 LabeledDivider, Button, FormField, Panel
-    icons/                       inline SVG icon components
+                                 LabeledDivider
+    icons/                       inline SVG icons exported from Figma
     brand/RutaLogo.tsx           wordmark used in nav and footer
+    navigation/Navbar.tsx        site navigation
+    PageMeta.tsx                 per-page <title> and social tags
+
   layouts/
     AppShell.tsx                 default site chrome (full navigation)
     AuthLayout.tsx               slim chrome for the auth screens
-  features/auth/components/      auth-specific composition
-    AuthCard.tsx                 the 480px panel
-    AuthStatusStrip.tsx          status line under the card
-    SocialAuthButtons.tsx        Google / Apple row
-    LoginForm.tsx  RegisterForm.tsx  ForgotPasswordForm.tsx
+
+  providers/SessionProvider.tsx  client session context
+  hooks/useSession.ts            the hook components call
+  types/                         session.ts · page.ts
 ```
+
+The rules behind that layout:
+
+- Server-only code lives under `server/` so it can never be pulled into a client
+  bundle by accident.
+- **The route file is an adapter, not the logic.** In the Pages Router a handler
+  *must* sit at `pages/api/...` — that path is the URL. So the route handles HTTP
+  (method, rate limit, body, status codes) and delegates the actual work to
+  `server/services/`. Services take domain types and throw domain errors; they
+  never see `req` or `res`, which is what makes them testable and reusable.
+- Anything reusable is in `components/`; anything that only makes sense for one
+  feature is in `features/<feature>/`.
+- Browser API calls go through `features/<feature>/api.ts`, never raw `fetch`
+  in a component.
+- Auth screens opt out of the site navigation with `getLayout` — see
+  `types/page.ts`.
 
 Anything reusable lives under `components/`; anything that only makes sense for
 one feature lives under `features/<feature>/components/`. Auth screens opt out of
