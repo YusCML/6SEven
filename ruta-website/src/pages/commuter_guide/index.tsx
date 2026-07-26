@@ -1,0 +1,1 @@
+export { default } from '@/features/commuterGuide/components/commute_guide';
