@@ -11,12 +11,12 @@ const inputClassName =
   'w-full border border-slate-200 bg-slate-50 rounded p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:text-slate-400';
 
 /**
- * Profile details. Signed-in visitors edit and save their name and email;
+ * Profile details. Signed-in visitors edit and save their username and email;
  * guests see the same layout filled with their generated identity, read-only.
  */
 export default function ProfileDetailsForm() {
   const { user, isAuthenticated, isLoading, displayName, applySession } = useSession();
-  const [form, setForm] = useState({ fullName: '', email: '' });
+  const [form, setForm] = useState({ username: '', email: '' });
   const [status, setStatus] = useState<{ kind: 'error' | 'success'; message: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [seededFor, setSeededFor] = useState<string | null>(null);
@@ -28,7 +28,7 @@ export default function ProfileDetailsForm() {
 
   if (seededFor !== currentUserId) {
     setSeededFor(currentUserId);
-    setForm({ fullName: user?.fullName ?? '', email: user?.email ?? '' });
+    setForm({ username: user?.username ?? '', email: user?.email ?? '' });
     setStatus(null);
   }
 
@@ -49,8 +49,8 @@ export default function ProfileDetailsForm() {
       if (!response.ok) throw new Error(data.error || 'Could not save your profile.');
 
       applySession(data);
-      // Show the server's normalized values (trimmed name, lower-cased email).
-      if (data.user) setForm({ fullName: data.user.fullName, email: data.user.email });
+      // Show the server's normalized values (trimmed username, lower-cased email).
+      if (data.user) setForm({ username: data.user.username, email: data.user.email });
       setStatus({ kind: 'success', message: 'Profile saved.' });
     } catch (error) {
       setStatus({ kind: 'error', message: error instanceof Error ? error.message : 'Could not save your profile.' });
@@ -69,7 +69,7 @@ export default function ProfileDetailsForm() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             disabled
-            label="Full Name"
+            label="Username"
             type="text"
             value={displayName}
             readOnly
@@ -107,10 +107,10 @@ export default function ProfileDetailsForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField
           required
-          label="Full Name"
+          label="Username"
           type="text"
-          value={form.fullName}
-          onChange={(event) => setForm({ ...form, fullName: event.target.value })}
+          value={form.username}
+          onChange={(event) => setForm({ ...form, username: event.target.value })}
           labelClassName={labelClassName}
           inputClassName={inputClassName}
         />

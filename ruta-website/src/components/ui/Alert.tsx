@@ -1,0 +1,28 @@
+import type { ReactNode } from 'react';
+
+type AlertProps = {
+  tone: 'error' | 'success' | 'info';
+  children: ReactNode;
+  className?: string;
+};
+
+const tones = {
+  error: 'border-red-200 bg-red-50 text-red-700',
+  success: 'border-green-200 bg-green-50 text-green-700',
+  info: 'border-blue-200 bg-blue-50 text-blue-700',
+} as const;
+
+/**
+ * Inline feedback banner. Errors use `role="alert"` so assistive tech announces
+ * them immediately; softer tones use `role="status"` to avoid interrupting.
+ */
+export default function Alert({ tone, children, className = '' }: AlertProps) {
+  return (
+    <p
+      role={tone === 'error' ? 'alert' : 'status'}
+      className={`rounded-xl border px-4 py-3 text-sm ${tones[tone]} ${className}`}
+    >
+      {children}
+    </p>
+  );
+}

@@ -1,25 +1,31 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
-import Button from '@/components/ui/Button';
-import FormField from '@/components/ui/FormField';
+import { SearchIcon } from '@/components/icons';
+import Alert from '@/components/ui/Alert';
+import PrimaryButton from '@/components/ui/PrimaryButton';
+import TextField from '@/components/ui/TextField';
 import { readJsonResponse } from '@/services/http/client';
-import AuthPageLayout from './AuthPageLayout';
+import AuthCard from './AuthCard';
+import AuthStatusStrip from './AuthStatusStrip';
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleReset = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     setMessage('');
+    setError('');
 
     try {
       const response = await fetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({ email }),
       });
       const data = await readJsonResponse<{ error?: string; message?: string }>(response);
@@ -29,30 +35,47 @@ export default function ForgotPasswordForm() {
       setMessage(data.message || `Reset instructions were sent to ${email}.`);
       setSubmitted(true);
     } catch (resetError) {
-      setMessage(resetError instanceof Error ? resetError.message : 'Unable to send reset link.');
+      setError(resetError instanceof Error ? resetError.message : 'Unable to send reset link.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AuthPageLayout icon="🔑" title="Reset Password" description="We will email you steps to restore access." containerClassName="flex-1 w-full flex items-center justify-center bg-slate-50 px-4 py-12" headerClassName="text-center mb-6">
-      {!submitted ? (
-        <form onSubmit={handleReset} className="space-y-4">
-          <FormField required label="Email Address" type="email" placeholder="name@domain.com" value={email} onChange={(event) => setEmail(event.target.value)} />
-          <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300 text-white font-medium py-3 rounded-lg shadow-sm transition">
-            {loading ? 'Sending...' : 'Send Reset Link'}
-          </Button>
-        </form>
+    <AuthCard
+      title="Reset Password"
+      description="We will email you the steps to restore access."
+      footer={<AuthStatusStrip status="System Status: Online" />}
+    >
+      {submitted ? (
+        <Alert tone="success">{message}</Alert>
       ) : (
-        <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg text-sm text-center">
-          📬 {message || `Reset verification path dispatched to ${email} if an account matches.`}
-        </div>
+        <form onSubmit={handleReset} className="space-y-5">
+          <TextField
+            required
+            label="Email Address"
+            type="email"
+            name="email"
+            autoComplete="email"
+            placeholder="name@example.com"
+            icon={<SearchIcon className="h-4 w-4" />}
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+
+          {error ? <Alert tone="error">{error}</Alert> : null}
+
+          <PrimaryButton withChevron type="submit" loading={loading} loadingLabel="Sending…">
+            Send Reset Link
+          </PrimaryButton>
+        </form>
       )}
-      {message && !submitted ? <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 text-center text-sm text-blue-800">{message}</div> : null}
-      <div className="text-center text-sm font-medium mt-6 pt-4 border-t border-slate-100">
-        <Link href="/auth/login" className="text-blue-600 hover:underline">← Back to Log In</Link>
-      </div>
-    </AuthPageLayout>
+
+      <p className="mt-8 text-center text-sm font-medium text-slate-500">
+        <Link href="/auth/login" className="font-bold text-blue-600 hover:underline">
+          ← Back to Log In
+        </Link>
+      </p>
+    </AuthCard>
   );
 }

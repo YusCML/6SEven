@@ -5,17 +5,19 @@
 
 export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_MAX_LENGTH = 128;
-export const FULL_NAME_MIN_LENGTH = 2;
-export const FULL_NAME_MAX_LENGTH = 80;
+export const USERNAME_MIN_LENGTH = 3;
+export const USERNAME_MAX_LENGTH = 24;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** Letters, digits, underscore and period — no spaces, so it stays URL- and mention-safe. */
+const USERNAME_PATTERN = /^[a-zA-Z0-9](?:[a-zA-Z0-9_.]*[a-zA-Z0-9])?$/;
 
 export function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
-export function normalizeFullName(fullName: string) {
-  return fullName.trim().replace(/\s+/g, ' ');
+export function normalizeUsername(username: string) {
+  return username.trim();
 }
 
 export function validateEmail(email: string): string | null {
@@ -28,12 +30,15 @@ export function validateEmail(email: string): string | null {
   return null;
 }
 
-export function validateFullName(fullName: string): string | null {
-  const normalized = normalizeFullName(fullName);
+export function validateUsername(username: string): string | null {
+  const normalized = normalizeUsername(username);
 
-  if (!normalized) return 'Full name is required.';
-  if (normalized.length < FULL_NAME_MIN_LENGTH) return 'Full name is too short.';
-  if (normalized.length > FULL_NAME_MAX_LENGTH) return 'Full name is too long.';
+  if (!normalized) return 'Username is required.';
+  if (normalized.length < USERNAME_MIN_LENGTH) return `Username must be at least ${USERNAME_MIN_LENGTH} characters long.`;
+  if (normalized.length > USERNAME_MAX_LENGTH) return `Username must be at most ${USERNAME_MAX_LENGTH} characters long.`;
+  if (!USERNAME_PATTERN.test(normalized)) {
+    return 'Username can only use letters, numbers, underscores and periods, and must start and end with a letter or number.';
+  }
 
   return null;
 }

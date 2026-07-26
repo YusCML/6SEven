@@ -10,7 +10,7 @@ export default function LandingPage() {
         <h1 className="text-5xl font-extrabold tracking-tight text-slate-900 mb-6">
           {isAuthenticated ? (
             <>
-              Welcome back, <span className="text-blue-600">{user?.fullName}</span>
+              Welcome back, <span className="text-blue-600">{user?.username}</span>
             </>
           ) : (
             <>

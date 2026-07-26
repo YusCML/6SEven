@@ -13,7 +13,7 @@ import { normalizeEmail } from '@/utils/validation';
 
 export type UserRecord = {
   id: string;
-  fullName: string;
+  username: string;
   email: string;
   passwordHash: string;
   createdAt: string;
@@ -44,7 +44,7 @@ export type PasswordResetRecord = {
 /** The user shape that is safe to send to the browser. */
 export type PublicUser = {
   id: string;
-  fullName: string;
+  username: string;
   email: string;
   createdAt: string;
 };
@@ -52,7 +52,7 @@ export type PublicUser = {
 export function toPublicUser(user: UserRecord): PublicUser {
   return {
     id: user.id,
-    fullName: user.fullName,
+    username: user.username,
     email: user.email,
     createdAt: user.createdAt,
   };
@@ -121,7 +121,7 @@ export async function findUserByEmail(email: string): Promise<UserRecord | null>
 }
 
 export async function createUser(input: {
-  fullName: string;
+  username: string;
   email: string;
   passwordHash: string;
 }): Promise<UserRecord> {
@@ -134,7 +134,7 @@ export async function createUser(input: {
   const now = new Date().toISOString();
   const user: UserRecord = {
     id: randomUUID(),
-    fullName: input.fullName,
+    username: input.username,
     email,
     passwordHash: input.passwordHash,
     createdAt: now,
@@ -147,7 +147,7 @@ export async function createUser(input: {
 
 export async function updateUser(
   id: string,
-  patch: Partial<Pick<UserRecord, 'fullName' | 'email' | 'passwordHash'>>,
+  patch: Partial<Pick<UserRecord, 'username' | 'email' | 'passwordHash'>>,
 ): Promise<UserRecord> {
   const existing = tables().users.get(id);
 

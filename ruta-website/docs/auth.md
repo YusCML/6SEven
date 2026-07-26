@@ -82,7 +82,7 @@ curl -s -c jar.txt -b jar.txt http://localhost:3000/api/auth/session
 Register (this creates the account but does **not** sign you in — call `/login` next):
 
 ```bash
-curl -s -c jar.txt -b jar.txt -X POST -H "Content-Type: application/json" -d "{\"fullName\":\"Juan Dela Cruz\",\"email\":\"juan@ruta.ph\",\"password\":\"Commuter123\",\"confirmPassword\":\"Commuter123\"}" http://localhost:3000/api/auth/register
+curl -s -c jar.txt -b jar.txt -X POST -H "Content-Type: application/json" -d "{\"username\":\"juandelacruz\",\"email\":\"juan@ruta.ph\",\"password\":\"Commuter123\",\"confirmPassword\":\"Commuter123\"}" http://localhost:3000/api/auth/register
 ```
 
 Inspect what is stored (development only):
@@ -101,7 +101,7 @@ Success responses that resolve a session return the **session payload**:
 ```json
 {
   "status": "authenticated" | "guest",
-  "user": { "id": "...", "fullName": "...", "email": "...", "createdAt": "..." } | null,
+  "user": { "id": "...", "username": "...", "email": "...", "createdAt": "..." } | null,
   "guest": { "name": "User4f9c2a" } | null,
   "expiresAt": "2026-08-25T12:00:00.000Z"
 }
@@ -114,7 +114,7 @@ Success responses that resolve a session return the **session payload**:
 | `POST` | `/login` | any | Sign in. `401` on bad credentials. |
 | `POST` | `/logout` | any | Destroy the session, hand back a **new guest** session. |
 | `GET` | `/profile` | any | Same payload as `/session`. |
-| `PATCH` | `/profile` | signed in | Save `fullName` / `email`. `401` for guests. |
+| `PATCH` | `/profile` | signed in | Save `username` / `email`. `401` for guests. |
 | `POST` | `/change-password` | signed in | Needs `currentPassword`. Revokes all other sessions. |
 | `POST` | `/forgot-password` | any | Creates a reset token. Always the same generic reply. |
 | `POST` | `/reset-password` | any | Consumes the token, sets a new password. |
@@ -196,12 +196,48 @@ src/
   providers/SessionProvider.tsx  client session context
   hooks/useSession.ts            the hook components call
   types/session.ts               payload types shared client + server
+  types/page.ts                  NextPageWithLayout, for per-page layouts
   utils/validation.ts            rules shared by forms and handlers
+
+  components/                    reusable across features
+    ui/                          TextField, Checkbox, Alert, PrimaryButton,
+                                 LabeledDivider, Button, FormField, Panel
+    icons/                       inline SVG icon components
+    brand/RutaLogo.tsx           wordmark used in nav and footer
+  layouts/
+    AppShell.tsx                 default site chrome (full navigation)
+    AuthLayout.tsx               slim chrome for the auth screens
+  features/auth/components/      auth-specific composition
+    AuthCard.tsx                 the 480px panel
+    AuthStatusStrip.tsx          status line under the card
+    SocialAuthButtons.tsx        Google / Apple row
+    LoginForm.tsx  RegisterForm.tsx  ForgotPasswordForm.tsx
 ```
+
+Anything reusable lives under `components/`; anything that only makes sense for
+one feature lives under `features/<feature>/components/`. Auth screens opt out of
+the site navigation by exporting `getLayout` — see `types/page.ts`.
 
 ---
 
-## 6. Next sprint — Neon
+## 6. Identity fields
+
+Accounts are keyed on **email**, which is the unique field. `username` is a
+display name shown in the navbar, profile and greeting.
+
+| Field | Rule |
+| --- | --- |
+| `username` | 3–24 chars, letters/digits/`_`/`.`, must start and end alphanumeric. No spaces. |
+| `email` | Standard shape, lower-cased on save, **unique** — `409` on collision. |
+| `password` | 8–128 chars, at least one letter and one digit. |
+
+> `username` is **not** unique. Two accounts may share one; they are still
+> distinct logins because email is the key. Add a uniqueness check in
+> `createUser`/`updateUser` if that changes.
+
+---
+
+## 7. Next sprint — Neon
 
 `authStore.ts` is the only file that needs to change. The intended path is
 Prisma (`prisma` + `@prisma/client`), which **would** be the first dependency

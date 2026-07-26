@@ -2,7 +2,7 @@
 
 export type SessionUser = {
   id: string;
-  fullName: string;
+  username: string;
   email: string;
   createdAt: string;
 };
@@ -22,5 +22,5 @@ export type SessionPayload = {
 
 /** Name to show in the UI for either kind of session. */
 export function sessionDisplayName(payload: SessionPayload): string {
-  return payload.user?.fullName ?? payload.guest?.name ?? 'Guest';
+  return payload.user?.username ?? payload.guest?.name ?? 'Guest';
 }

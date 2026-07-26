@@ -11,16 +11,16 @@ import {
   serverError,
   unauthorized,
 } from '@/server/http/respond';
-import { firstError, normalizeEmail, normalizeFullName, validateEmail, validateFullName } from '@/utils/validation';
+import { firstError, normalizeEmail, normalizeUsername, validateEmail, validateUsername } from '@/utils/validation';
 
 type ProfileBody = {
-  fullName: string;
+  username: string;
   email: string;
 };
 
 /**
  * GET   — the profile behind the current session (guest identity included).
- * PATCH — persist full name / email. Signed-in visitors only.
+ * PATCH — persist username / email. Signed-in visitors only.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!allowMethods(req, res, ['GET', 'PATCH'])) return;
@@ -39,24 +39,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const body = readBody<ProfileBody>(req);
-    const hasFullName = body.fullName !== undefined;
+    const hasUsername = body.username !== undefined;
     const hasEmail = body.email !== undefined;
 
-    if (!hasFullName && !hasEmail) {
+    if (!hasUsername && !hasEmail) {
       return badRequest(res, 'Nothing to update.');
     }
 
-    const fullName = normalizeFullName(readString(body.fullName));
+    const username = normalizeUsername(readString(body.username));
     const email = normalizeEmail(readString(body.email));
 
     const validationError = firstError(
-      hasFullName ? validateFullName(fullName) : null,
+      hasUsername ? validateUsername(username) : null,
       hasEmail ? validateEmail(email) : null,
     );
     if (validationError) return badRequest(res, validationError);
 
     const user = await updateUser(resolved.user.id, {
-      ...(hasFullName ? { fullName } : {}),
+      ...(hasUsername ? { username } : {}),
       ...(hasEmail ? { email } : {}),
     });
 

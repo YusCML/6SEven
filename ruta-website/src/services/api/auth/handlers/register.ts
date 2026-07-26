@@ -2,12 +2,10 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { hashPassword } from '@/server/auth/password';
 import { createUser, DuplicateEmailError, toPublicUser } from '@/server/store/authStore';
 import { allowMethods, badRequest, conflict, noStore, readBody, readString, serverError } from '@/server/http/respond';
-import { firstError, normalizeEmail, normalizeFullName, validateEmail, validateFullName, validatePassword } from '@/utils/validation';
+import { firstError, normalizeEmail, normalizeUsername, validateEmail, validateUsername, validatePassword } from '@/utils/validation';
 
 type RegisterBody = {
-  fullName: string;
-  /** Accepted for backwards compatibility with the previous field name. */
-  name: string;
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -18,19 +16,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   noStore(res);
 
   const body = readBody<RegisterBody>(req);
-  const fullName = normalizeFullName(readString(body.fullName) || readString(body.name));
+  const username = normalizeUsername(readString(body.username));
   const email = normalizeEmail(readString(body.email));
   const password = readString(body.password);
   const confirmPassword = readString(body.confirmPassword);
 
-  const validationError = firstError(validateFullName(fullName), validateEmail(email), validatePassword(password));
+  const validationError = firstError(validateUsername(username), validateEmail(email), validatePassword(password));
   if (validationError) return badRequest(res, validationError);
 
   if (password !== confirmPassword) return badRequest(res, 'Passwords do not match.');
 
   try {
     const user = await createUser({
-      fullName,
+      username,
       email,
       passwordHash: await hashPassword(password),
     });

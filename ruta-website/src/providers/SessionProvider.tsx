@@ -29,7 +29,7 @@ export const SessionContext = createContext<SessionContextValue | null>(null);
 
 function displayNameOf(payload: SessionPayload | null): string {
   if (!payload) return 'Guest';
-  return payload.user?.fullName ?? payload.guest?.name ?? 'Guest';
+  return payload.user?.username ?? payload.guest?.name ?? 'Guest';
 }
 
 /**
