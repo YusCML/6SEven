@@ -19,7 +19,7 @@ export default function ProfileHeader({ displayName, isGuest, memberSince }: Pro
   const joinedYear = memberSince ? new Date(memberSince).getFullYear() : null;
 
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 md:p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-md mb-8">
+    <div className="bg-linear-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 md:p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-md mb-8">
       <div className="flex items-center gap-4">
         <div className="w-20 h-20 bg-white/20 backdrop-blur border-2 border-white/40 rounded-full flex items-center justify-center text-2xl font-bold shadow-inner">
           {isGuest ? '🧭' : initialsOf(displayName)}

@@ -20,11 +20,11 @@ export default function Navbar() {
   };
 
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-      <div className="flex items-center gap-2 font-bold text-xl text-blue-600">
+    <header className="sticky top-0 z-50 flex flex-col items-center gap-4 border-b border-slate-200 bg-white px-4 py-4 md:flex-row md:justify-between md:px-6">
+      <div className="flex items-center gap-2 text-center text-xl font-bold text-blue-600">
         <span>🌐 RUTA / SakayMetrics</span>
       </div>
-      <nav className="flex items-center gap-6 text-sm font-medium text-slate-600">
+      <nav className="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-medium text-slate-600 md:w-auto md:justify-end md:gap-6">
         {navigationItems.map((item) => (
           <Link key={item.href} href={item.href} className="hover:text-blue-600">
             {item.label}

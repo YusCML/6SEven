@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import TransitMap from '@/features/routes/components/TransitMap';
 import useSession from '@/hooks/useSession';
 
 export default function LandingPage() {
@@ -65,9 +66,8 @@ export default function LandingPage() {
           )}
         </div>
       </div>
-      <div className="bg-slate-200 rounded-2xl h-96 flex items-center justify-center text-slate-400 font-medium shadow-inner relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/10" />
-        🗺️ [Interactive Map Preview]
+      <div className="h-96 overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 shadow-inner">
+        <TransitMap variant="preview" />
       </div>
     </div>
   );
