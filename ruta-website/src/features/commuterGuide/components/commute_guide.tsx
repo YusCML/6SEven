@@ -1,6 +1,3 @@
-import Link from "next/link";
-import { useState } from "react";
-
 export default function CommuterGuide() {
   const transportOptions = [
     {
@@ -14,9 +11,9 @@ export default function CommuterGuide() {
         "Suitable for longer trips. Some buses accept cashless payment while others accept cash.",
     },
     {
-      title: "🚆 Train (LRT/MRT)",
+      title: "🚗 Grab",
       description:
-        "Fastest option during heavy traffic. Avoid rush hours if possible.",
+        "Provides safe and reliable passenger transport with upfront pricing.",
     },
     {
       title: "🚖 Taxi",
@@ -116,12 +113,12 @@ export default function CommuterGuide() {
 
               <tr className="border-b">
                 <td className="p-3">Bus</td>
-                <td className="p-3">₱15 – ₱60</td>
+                <td className="p-3">₱15 – ₱40</td>
               </tr>
 
               <tr className="border-b">
-                <td className="p-3">Train</td>
-                <td className="p-3">₱15 – ₱35</td>
+                <td className="p-3">Grab</td>
+                <td className="p-3">Metered Fare</td>
               </tr>
 
               <tr>
