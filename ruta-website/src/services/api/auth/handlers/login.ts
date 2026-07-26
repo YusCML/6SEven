@@ -1,36 +1,58 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { validateCredentials } from '@/services/api/auth/store';
+import { hashPassword, needsRehash, verifyPassword } from '@/server/auth/password';
+import { startUserSession, toSessionPayload } from '@/server/auth/session';
+import { findUserByEmail, updateUser } from '@/server/store/authStore';
+import { allowMethods, badRequest, noStore, readBody, readString, serverError } from '@/server/http/respond';
+import { normalizeEmail } from '@/utils/validation';
 
 type LoginBody = {
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', ['POST']);
-    return res.status(405).json({ error: 'Method not allowed.' });
+const INVALID_CREDENTIALS = 'Invalid email or password.';
+
+/**
+ * A real hash to verify against when the email is unknown, so a miss costs the
+ * same time as a wrong password and cannot be used to enumerate accounts.
+ */
+let decoyHashPromise: Promise<string> | null = null;
+
+function getDecoyHash() {
+  decoyHashPromise ??= hashPassword('ruta-decoy-password');
+  return decoyHashPromise;
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (!allowMethods(req, res, ['POST'])) return;
+  noStore(res);
+
+  const body = readBody<LoginBody>(req);
+  const email = normalizeEmail(readString(body.email));
+  const password = readString(body.password);
+
+  if (!email || !password) return badRequest(res, 'Email and password are required.');
+
+  try {
+    const user = await findUserByEmail(email);
+    const passwordMatches = await verifyPassword(password, user?.passwordHash ?? (await getDecoyHash()));
+
+    if (!user || !passwordMatches) {
+      return res.status(401).json({ error: INVALID_CREDENTIALS });
+    }
+
+    // Opportunistically upgrade hashes stored with older scrypt parameters.
+    if (needsRehash(user.passwordHash)) {
+      await updateUser(user.id, { passwordHash: await hashPassword(password) });
+    }
+
+    const session = await startUserSession(req, res, user.id);
+
+    return res.status(200).json({
+      message: 'Signed in successfully.',
+      ...toSessionPayload({ session, user }),
+    });
+  } catch (error) {
+    return serverError(res, error, 'auth/login');
   }
-
-  const body = (req.body ?? {}) as LoginBody;
-
-  if (!body.email || !body.password) {
-    return res.status(400).json({ error: 'Email and password are required.' });
-  }
-
-  const user = validateCredentials(body.email, body.password);
-
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid email or password.' });
-  }
-
-  return res.status(200).json({
-    message: 'Login successful.',
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt,
-    },
-  });
 }

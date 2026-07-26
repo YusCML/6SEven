@@ -3,12 +3,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Button from '@/components/ui/Button';
 import FormField from '@/components/ui/FormField';
+import useSession from '@/hooks/useSession';
 import { readJsonResponse } from '@/services/http/client';
+import type { SessionPayload } from '@/types/session';
+import { firstError, validateEmail, validateFullName, validatePassword } from '@/utils/validation';
 import AuthPageLayout from './AuthPageLayout';
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const { applySession } = useSession();
+  const [formData, setFormData] = useState({ fullName: '', email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -16,10 +20,14 @@ export default function RegisterForm() {
     event.preventDefault();
     setError('');
 
-    if (!formData.name.trim()) return setError('Full name is required.');
-    if (!formData.email.trim()) return setError('Email is required.');
-    if (!formData.password.trim()) return setError('Password is required.');
-    if (formData.password.trim().length < 8) return setError('Password must be at least 8 characters long.');
+    // Same rules the API enforces, so the user sees them without a round trip.
+    const validationError = firstError(
+      validateFullName(formData.fullName),
+      validateEmail(formData.email),
+      validatePassword(formData.password),
+    );
+
+    if (validationError) return setError(validationError);
     if (formData.password !== formData.confirmPassword) return setError('Passwords do not match.');
 
     setLoading(true);
@@ -27,14 +35,16 @@ export default function RegisterForm() {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify(formData),
       });
-      const data = await readJsonResponse<{ error?: string }>(response);
+      const data = await readJsonResponse<SessionPayload & { error?: string }>(response);
 
       if (!response.ok) throw new Error(data.error || 'Registration failed.');
 
-      console.info('[auth/register] user registered', data);
-      router.push('/auth/login');
+      // Registering signs you in, so go straight to the dashboard.
+      applySession(data);
+      router.push('/dashboard');
     } catch (registerError) {
       setError(registerError instanceof Error ? registerError.message : 'Registration failed.');
     } finally {
@@ -43,9 +53,14 @@ export default function RegisterForm() {
   };
 
   return (
-    <AuthPageLayout icon="🌐" title="Create Account" description="Join Ruta to plan efficient transit routes" containerClassName="flex-1 w-full flex items-center justify-center bg-slate-50 px-4 py-12">
+    <AuthPageLayout
+      icon="🌐"
+      title="Create Account"
+      description="Join Ruta to plan efficient transit routes"
+      containerClassName="flex-1 w-full flex items-center justify-center bg-slate-50 px-4 py-12"
+    >
       <form onSubmit={handleSignUp} className="space-y-4">
-        <FormField required label="Full Name" type="text" placeholder="Juan Dela Cruz" value={formData.name} onChange={(event) => setFormData({ ...formData, name: event.target.value })} />
+        <FormField required label="Full Name" type="text" placeholder="Juan Dela Cruz" value={formData.fullName} onChange={(event) => setFormData({ ...formData, fullName: event.target.value })} />
         <FormField required label="Email Address" type="email" placeholder="name@domain.com" value={formData.email} onChange={(event) => setFormData({ ...formData, email: event.target.value })} />
         <FormField required label="Password" type="password" placeholder="••••••••" value={formData.password} onChange={(event) => setFormData({ ...formData, password: event.target.value })} />
         <FormField required label="Confirm Password" type="password" placeholder="••••••••" value={formData.confirmPassword} onChange={(event) => setFormData({ ...formData, confirmPassword: event.target.value })} />

@@ -1,11 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { listSafeUsers } from '@/services/api/auth/store';
+import { listUsers, toPublicUser } from '@/server/store/authStore';
+import { allowMethods, noStore, serverError } from '@/server/http/respond';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).json({ error: 'Method not allowed.' });
+/**
+ * Debug helper for inspecting the in-memory store while building.
+ *
+ * Disabled outside development: an open endpoint listing every account is an
+ * account-enumeration leak, and there is no admin role to gate it with yet.
+ */
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (!allowMethods(req, res, ['GET'])) return;
+  noStore(res);
+
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(404).json({ error: 'Not found.' });
   }
 
-  return res.status(200).json({ users: listSafeUsers() });
+  try {
+    const users = await listUsers();
+    return res.status(200).json({ users: users.map(toPublicUser) });
+  } catch (error) {
+    return serverError(res, error, 'auth/users');
+  }
 }
