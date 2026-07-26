@@ -15,6 +15,7 @@ export type TransitRoute = {
   stops: TransitStop[];
 };
 
+<<<<<<< Updated upstream
 export type TransitIncident = {
   id: number;
   routeId: string;
@@ -26,6 +27,8 @@ export type TransitIncident = {
   severity: 'Moderate' | 'Heavy';
 };
 
+=======
+>>>>>>> Stashed changes
 export const transitRoutes: TransitRoute[] = [
   {
     id: 'mrt-3-alternative',
@@ -65,6 +68,7 @@ export const transitRoutes: TransitRoute[] = [
     ],
   },
 ];
+<<<<<<< Updated upstream
 
 export const liveIncidents: TransitIncident[] = [
   {
@@ -98,3 +102,5 @@ export const liveIncidents: TransitIncident[] = [
     severity: 'Moderate',
   },
 ];
+=======
+>>>>>>> Stashed changes
