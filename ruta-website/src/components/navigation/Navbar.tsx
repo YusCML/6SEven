@@ -4,7 +4,9 @@ const navigationItems = [
   { href: '/home', label: 'Home' },
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/routes', label: 'Routes' },
-  { href: '/about', label: 'About' },
+  { href: '/commuter_guide', label: 'Commuter Guide' },
+  { href: '/about_us', label: 'About' },
+  // { href: '/about', label: 'About' },
 ];
 
 export default function Navbar() {
