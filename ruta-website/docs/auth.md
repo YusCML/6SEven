@@ -79,7 +79,7 @@ cookie survives between calls, exactly like a browser:
 curl -s -c jar.txt -b jar.txt http://localhost:3000/api/auth/session
 ```
 
-Register and stay signed in:
+Register (this creates the account but does **not** sign you in — call `/login` next):
 
 ```bash
 curl -s -c jar.txt -b jar.txt -X POST -H "Content-Type: application/json" -d "{\"fullName\":\"Juan Dela Cruz\",\"email\":\"juan@ruta.ph\",\"password\":\"Commuter123\",\"confirmPassword\":\"Commuter123\"}" http://localhost:3000/api/auth/register
@@ -110,7 +110,7 @@ Success responses that resolve a session return the **session payload**:
 | Method | Route | Auth | Purpose |
 | --- | --- | --- | --- |
 | `GET` | `/session` | any | Who am I? Issues a guest session if there is no cookie. |
-| `POST` | `/register` | any | Create account, then sign in. `409` if the email is taken. |
+| `POST` | `/register` | any | Create account. Does **not** sign in — the user logs in afterwards. `409` if the email is taken. |
 | `POST` | `/login` | any | Sign in. `401` on bad credentials. |
 | `POST` | `/logout` | any | Destroy the session, hand back a **new guest** session. |
 | `GET` | `/profile` | any | Same payload as `/session`. |

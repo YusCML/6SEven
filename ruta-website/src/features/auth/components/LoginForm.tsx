@@ -16,6 +16,9 @@ export default function LoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Set by the register form after a successful sign-up.
+  const justRegistered = router.query.registered === '1';
+
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
     setError('');
@@ -49,6 +52,11 @@ export default function LoginForm() {
       description="Log in to check your local transit routes"
       containerClassName="min-h-[calc(100vh-73px)] flex items-center justify-center bg-slate-50 px-4"
     >
+      {justRegistered ? (
+        <p className="mb-4 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
+          Account created. Sign in with your new email and password to continue.
+        </p>
+      ) : null}
       <form onSubmit={handleLogin} className="space-y-4">
         <FormField required label="Email Address" type="email" placeholder="name@domain.com" value={email} onChange={(event) => setEmail(event.target.value)} />
         <FormField required label="Password" type="password" placeholder="••••••••" value={password} onChange={(event) => setPassword(event.target.value)} />

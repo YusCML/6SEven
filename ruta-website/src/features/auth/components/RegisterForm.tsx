@@ -3,15 +3,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Button from '@/components/ui/Button';
 import FormField from '@/components/ui/FormField';
-import useSession from '@/hooks/useSession';
 import { readJsonResponse } from '@/services/http/client';
-import type { SessionPayload } from '@/types/session';
 import { firstError, validateEmail, validateFullName, validatePassword } from '@/utils/validation';
 import AuthPageLayout from './AuthPageLayout';
 
 export default function RegisterForm() {
   const router = useRouter();
-  const { applySession } = useSession();
   const [formData, setFormData] = useState({ fullName: '', email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,13 +35,12 @@ export default function RegisterForm() {
         credentials: 'same-origin',
         body: JSON.stringify(formData),
       });
-      const data = await readJsonResponse<SessionPayload & { error?: string }>(response);
+      const data = await readJsonResponse<{ error?: string }>(response);
 
       if (!response.ok) throw new Error(data.error || 'Registration failed.');
 
-      // Registering signs you in, so go straight to the dashboard.
-      applySession(data);
-      router.push('/dashboard');
+      // Registration does not sign you in — confirm the credentials by logging in.
+      router.push('/auth/login?registered=1');
     } catch (registerError) {
       setError(registerError instanceof Error ? registerError.message : 'Registration failed.');
     } finally {

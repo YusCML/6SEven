@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { hashPassword } from '@/server/auth/password';
-import { startUserSession, toSessionPayload } from '@/server/auth/session';
-import { createUser, DuplicateEmailError } from '@/server/store/authStore';
+import { createUser, DuplicateEmailError, toPublicUser } from '@/server/store/authStore';
 import { allowMethods, badRequest, conflict, noStore, readBody, readString, serverError } from '@/server/http/respond';
 import { firstError, normalizeEmail, normalizeFullName, validateEmail, validateFullName, validatePassword } from '@/utils/validation';
 
@@ -36,12 +35,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       passwordHash: await hashPassword(password),
     });
 
-    // Registering signs the visitor in, replacing their guest session.
-    const session = await startUserSession(req, res, user.id);
-
+    // Registering deliberately does NOT sign the visitor in — they confirm the
+    // credentials by logging in. Their guest session is left untouched.
     return res.status(201).json({
-      message: 'Account created successfully.',
-      ...toSessionPayload({ session, user }),
+      message: 'Account created successfully. Please sign in.',
+      user: toPublicUser(user),
     });
   } catch (error) {
     if (error instanceof DuplicateEmailError) return conflict(res, error.message);
