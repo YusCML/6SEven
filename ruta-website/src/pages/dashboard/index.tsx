@@ -27,9 +27,9 @@ export default function Dashboard() {
             <h3 className="text-lg font-bold">Routes and Live Incident Map</h3>
             <p className="text-sm text-slate-500">Metro Manila routes with active commuter reports.</p>
           </div>
-          <div className="h-30rem">
+          <div className="h-120">
             <TransitMap
-              variant="dashboard"
+              variant="planner"
               selectedRouteId={activeIncidents[0]?.routeId}
               incidents={liveIncidents}
               showIncidents
