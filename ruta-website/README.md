@@ -15,8 +15,8 @@ Current version: **0.2.0** — see [CHANGELOG.md](./CHANGELOG.md)
 4. [Folder guide](#folder-guide)
 5. [Where do I put a new file?](#where-do-i-put-a-new-file)
 6. [Routes](#routes)
-7. [API endpoints](#api-endpoints)
-8. [Conventions](#conventions)
+7. [API](#api)
+8. [Testing](#testing)
 9. [Further reading](#further-reading)
 
 ---
@@ -86,6 +86,8 @@ the only variable the app reads.
 | `npm run build` | Production build |
 | `npm start` | Serve the production build (run `build` first) |
 | `npm run lint` | ESLint |
+| `npm test` | Run the Vitest suite once |
+| `npm run test:watch` | Re-run tests as files change |
 | `npx tsc --noEmit` | Type-check without emitting files |
 
 Check exit codes separately rather than chaining with `&&` into a pipe — a
@@ -218,24 +220,13 @@ LoginPage.getLayout = (page) => <AuthLayout>{page}</AuthLayout>;
 
 ---
 
-## API endpoints
+## API
 
-All under `/api/auth/`. Errors are always `{ "error": "message" }`.
+Ten endpoints under `/api/auth/` cover sessions, registration, sign-in,
+profile and password reset. Errors are always `{ "error": "message" }`.
 
-| Method | Route | Auth | Purpose |
-| --- | --- | --- | --- |
-| `GET` | `/api/auth/session` | any | Who am I? Issues a guest session if there is no cookie |
-| `POST` | `/api/auth/register` | any | Create an account. Does **not** sign in |
-| `POST` | `/api/auth/login` | any | Sign in |
-| `POST` | `/api/auth/logout` | any | Sign out, and hand back a fresh guest session |
-| `GET` | `/api/auth/profile` | any | Same payload as `/session` |
-| `PATCH` | `/api/auth/profile` | signed in | Save username / email |
-| `POST` | `/api/auth/change-password` | signed in | Requires the current password |
-| `POST` | `/api/auth/forgot-password` | any | Create a reset token |
-| `POST` | `/api/auth/reset-password` | any | Consume the token, set a new password |
-| `GET` | `/api/auth/users` | dev only | Debug listing — 404 in production |
-
-Rate limits and the session-payload shape are in [docs/auth.md](./docs/auth.md).
+**The full reference — every route, rate limit, payload shape and the security
+reasoning — is [docs/auth.md](./docs/auth.md).**
 
 ### How a request flows
 
@@ -250,30 +241,30 @@ browser
 
 ---
 
-## Conventions
+## Testing
 
-- **Components** are PascalCase (`TextField.tsx`), one default export each.
-- **Everything else** is camelCase (`authService.ts`, `useSession.ts`).
-- **URLs** are kebab-case (`/about-us`, never `/about_us`).
-- **Pages** are `pages/name.tsx`, not `pages/name/index.tsx` — use a folder only
-  when the route genuinely has children, as `dashboard/` does.
-- **Imports** use the `@/` alias, never `../../..`.
-- **Commits** follow [Conventional Commits](https://www.conventionalcommits.org/) —
-  see [docs/versioning.md](./docs/versioning.md).
+[Vitest](https://vitest.dev) covers the security-critical server logic —
+validation rules, password hashing, rate limiting and the auth service.
 
-### Testing
+```bash
+npm test
+```
 
-There is **no test suite yet**, and this is the largest known gap.
-`server/services/` is written to be testable — plain functions over domain
-types, with no `req`/`res` to mock — so that is where to start.
+Coverage and how to write new tests are in
+[CONTRIBUTING § Testing](./CONTRIBUTING.md#testing). React components are not
+yet covered.
 
 ---
 
 ## Further reading
 
+Naming rules, commit format, versioning and the release process live in
+[CONTRIBUTING.md](./CONTRIBUTING.md) — read it before your first pull request.
+
 | Document | Covers |
 | --- | --- |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Setup, conventions, testing, commits, versioning, releases |
 | [docs/auth.md](./docs/auth.md) | Hashing, sessions, cookies, guest identities, rate limits, full API reference |
-| [docs/versioning.md](./docs/versioning.md) | SemVer rules, release process, commit format |
+| [docs/attribution.md](./docs/attribution.md) | Image credits — required by the CC BY-SA licence |
 | [CHANGELOG.md](./CHANGELOG.md) | What changed in each version |
 | [AGENTS.md](./AGENTS.md) | Note for AI coding assistants |

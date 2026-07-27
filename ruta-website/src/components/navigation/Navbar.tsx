@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import useSession from '@/hooks/useSession';
+import RutaLogo from '@/components/brand/RutaLogo';
+import AccountMenu from './AccountMenu';
 
 const navigationItems = [
   { href: '/home', label: 'Home' },
@@ -11,48 +12,44 @@ const navigationItems = [
 ];
 
 export default function Navbar() {
-  const router = useRouter();
-  const { isAuthenticated, isLoading, signOut } = useSession();
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.push('/home');
-  };
+  const { pathname } = useRouter();
 
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-      <div className="flex items-center gap-2 font-bold text-xl text-blue-600">
-        <span>🌐 RUTA / SakayMetrics</span>
-      </div>
-      <nav className="flex items-center gap-6 text-sm font-medium text-slate-600">
-        {navigationItems.map((item) => (
-          <Link key={item.href} href={item.href} className="hover:text-blue-600">
-            {item.label}
-          </Link>
-        ))}
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
+      <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center gap-10 px-6 sm:px-11">
+        <RutaLogo />
 
-        <Link
-          href="/dashboard/profile"
-          className="hover:text-blue-600 font-semibold text-blue-600 border border-blue-600 px-3 py-1 rounded-md hover:bg-blue-50"
-        >
-          Profile
-        </Link>
+        {/* Primary navigation sits beside the wordmark, per the design. */}
+        <nav className="hidden flex-1 items-center gap-8 lg:flex">
+          {navigationItems.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
-        {/* Rendered only once the session resolves, so the controls never flip after paint. */}
-        {isLoading ? null : isAuthenticated ? (
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="text-slate-500 hover:text-red-600 font-medium cursor-pointer"
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={isActive ? 'page' : undefined}
+                className={`text-sm font-semibold transition hover:text-blue-600 ${
+                  isActive ? 'text-blue-600' : 'text-slate-600'
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Wide gap keeps Help Center from crowding the account block. */}
+        <div className="ml-auto flex items-center gap-8 lg:ml-0 lg:gap-12">
+          <Link
+            href="/commuter-guide"
+            className="hidden text-sm font-medium text-slate-400 transition hover:text-slate-600 sm:block"
           >
-            Sign Out
-          </button>
-        ) : (
-          <Link href="/auth/login" className="hover:text-blue-600">
-            Log In
+            Help Center
           </Link>
-        )}
-      </nav>
+          <AccountMenu />
+        </div>
+      </div>
     </header>
   );
 }

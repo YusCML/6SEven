@@ -12,6 +12,51 @@ stable: breaking changes bump the **minor** number rather than the major one.
 
 ### Added
 
+- **Test suite** — Vitest, 80 tests over the security-critical server logic:
+  validation rules, scrypt hashing, rate-limit windows, and the auth service
+  (registration, sign-in, profile, password change, reset). Verified by
+  mutation: breaking password verification fails 8 tests, disabling the rate
+  limiter fails 3, allowing spaces in usernames fails 6. Run with `npm test`.
+  `vitest` is the project's first devDependency addition; runtime dependencies
+  are still only `next`, `react` and `react-dom`.
+
+- **Landing page rebuilt** from the Figma "Landing Page" frame: photo hero with
+  a route planner, a four-metric status strip, "Your Frequent Rides", and the
+  live-traffic section. Split into `HeroSearch`, `RoutePlannerCard`,
+  `StatStrip`, `FrequentRides`/`RideCard` and `LiveTraffic`, all driven by
+  `features/home/content.ts` so each section is one loop rather than repeated
+  markup.
+- `AccountMenu` — the navigation's account control and the only entry point to
+  the auth screens. Signed out it reads **Sign In** over the guest identity;
+  signed in it shows the **username**.
+- `components/ui/Badge.tsx` and `components/ui/Avatar.tsx` — the design repeats
+  the pill shape eight times and the avatar in three places.
+- Photography of the actual locations each card names — BGC skyline, UP
+  Diliman, SM Mall of Asia, Makati — from Wikimedia Commons, plus a generated
+  map graphic and default avatar. Credited in [docs/attribution.md](./docs/attribution.md),
+  which the CC BY-SA licence requires.
+
+### Changed
+
+- Navigation items moved to the **left**, beside the wordmark, with Help Center
+  and the account control on the right — matching the design. Item labels and
+  routes are unchanged. The active route is now highlighted.
+- The route planner submits to `/routes?from=…&to=…` instead of doing nothing.
+- Landing typography scaled down roughly 20% across the page so the hero no
+  longer dwarfs the sections beneath it.
+
+### Fixed
+
+- Stat cards were being clipped by the hero they overlap — the strip now sets
+  `relative z-10` and the hero reserves bottom padding for it.
+- **Blurry hero.** The photo was 1600px wide being upscaled to the full
+  viewport. Re-fetched at 2560px, and every `fill` image now declares `sizes`
+  so Next serves a source matched to its rendered box instead of guessing.
+- **`quality` was silently ignored.** Next 16 changed `images.qualities` to
+  default to `[75]` and coerce anything else to the nearest allowed value, so
+  the hero's `quality={85}` was being downgraded without any warning.
+  `next.config.ts` now declares `qualities: [75, 85]`.
+
 - **Service layer** — `src/server/services/authService.ts` holds the auth
   business logic as plain async functions over domain types, with no `req`/`res`
   anywhere. The API routes are now thin adapters: method guard, rate limit,
@@ -42,6 +87,11 @@ stable: breaking changes bump the **minor** number rather than the major one.
   landing page.
 - Renamed `aboutUs.tsx` → `AboutUs.tsx` and `commute_guide.tsx` →
   `CommuterGuide.tsx` to match the PascalCase convention.
+- **Documentation restructured** to the conventional layout: `docs/versioning.md`
+  became `CONTRIBUTING.md` at the repository root, and the README's duplicated
+  API table and conventions list now live solely in `docs/auth.md` and
+  `CONTRIBUTING.md`. `README.md` replaced the untouched `create-next-app`
+  boilerplate, which still referenced a deleted `pages/index.tsx`.
 - **Routes are kebab-case**: `/about_us` → `/about-us`, `/commuter_guide` →
   `/commuter-guide`. Permanent redirects keep old links working.
 - Flattened nine `pages/<name>/index.tsx` files to `pages/<name>.tsx`. Only
