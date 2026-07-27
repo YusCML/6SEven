@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import TransitMap from '@/features/routes/components/TransitMap';
+import  TransitMap  from '@/features/routes/components/TransitMap';
 import useSession from '@/hooks/useSession';
 
 export default function LandingPage() {
@@ -32,7 +32,7 @@ export default function LandingPage() {
         </div>
 
         {/* Sign-up prompts disappear once the visitor is signed in. */}
-        <div className="flex gap-4 min-h-[52px]">
+        <div className="flex gap-4 min-h-52px">
           {isLoading ? null : isAuthenticated ? (
             <>
               <Link

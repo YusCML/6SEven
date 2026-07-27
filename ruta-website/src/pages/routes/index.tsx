@@ -8,13 +8,8 @@ export default function RouteExplorer() {
   const [selectedRouteId, setSelectedRouteId] = useState(transitRoutes[0].id);
 
   return (
-<<<<<<< Updated upstream
     <div className="flex min-h-[calc(100vh-73px)] flex-col md:h-[calc(100vh-73px)] md:flex-row md:overflow-hidden">
       <div className="flex w-full flex-col justify-between border-r border-slate-200 bg-white p-6 md:w-96 md:overflow-y-auto">
-=======
-    <div className="h-[calc(100vh-73px)] flex flex-col md:flex-row overflow-hidden">
-      <div className="w-full md:w-96 bg-white border-r border-slate-200 p-6 overflow-y-auto flex flex-col justify-between">
->>>>>>> Stashed changes
         <div>
           <h2 className="mb-4 text-xl font-bold text-slate-900">Route Finder</h2>
           <div className="mb-6 space-y-3">
@@ -51,11 +46,7 @@ export default function RouteExplorer() {
         </div>
         <div className="pt-4 border-t border-slate-100 text-xs text-slate-400 text-center">SakayMetrics Router Engine v2.1</div>
       </div>
-<<<<<<< Updated upstream
-      <div className="relative h-112 flex-none bg-slate-100 md:h-auto md:min-h-0 md:grow">
-=======
       <div className="relative min-h-[28rem] flex-grow bg-slate-100 md:min-h-0">
->>>>>>> Stashed changes
         <TransitMap variant="planner" selectedRouteId={selectedRouteId} />
       </div>
     </div>

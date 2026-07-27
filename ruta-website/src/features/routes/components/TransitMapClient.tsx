@@ -31,7 +31,6 @@ function getSelectedRoute(selectedRouteId?: string) {
   return transitRoutes.find((route) => route.id === selectedRouteId) ?? transitRoutes[0];
 }
 
-<<<<<<< Updated upstream
 export default function TransitMapClient({
   variant,
   selectedRouteId,
@@ -39,9 +38,6 @@ export default function TransitMapClient({
   showIncidents = false,
   className = '',
 }: TransitMapProps) {
-=======
-export default function TransitMapClient({ variant, selectedRouteId, className = '' }: TransitMapProps) {
->>>>>>> Stashed changes
   const selectedRoute = getSelectedRoute(selectedRouteId);
   const orderedRoutes = useMemo(
     () => [...transitRoutes.filter((route) => route.id !== selectedRoute.id), selectedRoute],
@@ -55,13 +51,8 @@ export default function TransitMapClient({ variant, selectedRouteId, className =
         zoom={11}
         minZoom={10}
         maxZoom={16}
-<<<<<<< Updated upstream
-        zoomControl={variant !== 'preview'}
-        scrollWheelZoom={variant !== 'preview'}
-=======
         zoomControl={variant === 'planner'}
         scrollWheelZoom={variant === 'planner'}
->>>>>>> Stashed changes
         className="h-full w-full"
       >
         <TileLayer
@@ -78,11 +69,7 @@ export default function TransitMapClient({ variant, selectedRouteId, className =
               <Polyline
                 pathOptions={{
                   color: route.color,
-<<<<<<< Updated upstream
-                  opacity: isSelected || variant === 'dashboard' ? 0.95 : 0.3,
-=======
                   opacity: isSelected ? 0.95 : 0.3,
->>>>>>> Stashed changes
                   weight: isSelected ? 6 : 4,
                 }}
                 positions={positions}
@@ -94,13 +81,8 @@ export default function TransitMapClient({ variant, selectedRouteId, className =
                   pathOptions={{
                     color: route.color,
                     fillColor: '#ffffff',
-<<<<<<< Updated upstream
-                    fillOpacity: isSelected || variant === 'dashboard' ? 1 : 0.75,
-                    opacity: isSelected || variant === 'dashboard' ? 1 : 0.45,
-=======
                     fillOpacity: isSelected ? 1 : 0.75,
                     opacity: isSelected ? 1 : 0.45,
->>>>>>> Stashed changes
                     weight: isSelected ? 3 : 2,
                   }}
                   radius={isSelected ? 5 : 3}
@@ -113,7 +95,6 @@ export default function TransitMapClient({ variant, selectedRouteId, className =
             </Fragment>
           );
         })}
-<<<<<<< Updated upstream
         {showIncidents
           ? incidents.map((incident) => (
               <CircleMarker
@@ -138,11 +119,7 @@ export default function TransitMapClient({ variant, selectedRouteId, className =
           : null}
       </MapContainer>
       <MapLegend showIncidents={showIncidents} />
-=======
-      </MapContainer>
-      <MapLegend />
->>>>>>> Stashed changes
-      <div className="absolute bottom-4 left-4 z-[500] max-w-[calc(100%-2rem)] rounded-md bg-white/95 px-4 py-3 text-sm shadow-lg ring-1 ring-slate-200 sm:max-w-72">
+      <div className="absolute bottom-4 left-4 z-500 max-w-[calc(100%-2rem)] rounded-md bg-white/95 px-4 py-3 text-sm shadow-lg ring-1 ring-slate-200 sm:max-w-72">
         <div className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: selectedRoute.color }} />
           <p className="font-semibold text-slate-900">{selectedRoute.title}</p>
