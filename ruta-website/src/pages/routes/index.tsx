@@ -46,7 +46,7 @@ export default function RouteExplorer() {
         </div>
         <div className="pt-4 border-t border-slate-100 text-xs text-slate-400 text-center">SakayMetrics Router Engine v2.1</div>
       </div>
-      <div className="relative min-h-[28rem] flex-grow bg-slate-100 md:min-h-0">
+      <div className="relative min-h-28rem grow bg-slate-100 md:min-h-0">
         <TransitMap variant="planner" selectedRouteId={selectedRouteId} />
       </div>
     </div>
