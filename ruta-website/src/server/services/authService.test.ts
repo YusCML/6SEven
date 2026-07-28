@@ -1,6 +1,8 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { UserModel } from '@/generated/prisma/models';
 import { DuplicateEmailError, InvalidCredentialsError, ValidationError } from '@/server/errors';
-import { findUserByEmail, findSession, createSessionRecord } from '@/server/store/authStore';
+import { createSessionRecord, findSession } from '@/server/store/sessionStore';
+import { findUserByEmail } from '@/server/store/userStore';
 import {
   authenticate,
   changePassword,
@@ -10,11 +12,27 @@ import {
   updateProfile,
 } from './authService';
 
+/**
+ * Accounts now live in Postgres, but these are unit tests — `prisma.user` is
+ * backed by an in-memory double rather than a live database. See
+ * CONTRIBUTING § Testing.
+ *
+ * `vi.hoisted` is required because `vi.mock` is lifted above the imports, so
+ * the row map has to exist before any module is evaluated.
+ */
+const { userRows } = vi.hoisted(() => ({ userRows: new Map<string, UserModel>() }));
+
+vi.mock('@/server/db/prisma', async () => {
+  const { createUserDouble } = await import('@/server/testing/prismaDouble');
+  return { prisma: { user: createUserDouble(userRows) } };
+});
+
 const VALID = { username: 'juandelacruz', email: 'juan@ruta.ph', password: 'Commuter123', confirmPassword: 'Commuter123' };
 
 beforeEach(() => {
-  // The store lives on globalThis; reset it so each test starts empty.
-  globalThis.__rutaAuthTables = { users: new Map(), sessions: new Map(), passwordResets: new Map() };
+  // Both stores are process-local; clear them so tests cannot leak into each other.
+  userRows.clear();
+  globalThis.__rutaSessionTables = { sessions: new Map(), passwordResets: new Map() };
 });
 
 describe('registerAccount', () => {
@@ -57,7 +75,7 @@ describe('registerAccount', () => {
   it('does not create a session — registering must not sign anyone in', async () => {
     await registerAccount(VALID);
 
-    expect(globalThis.__rutaAuthTables?.sessions.size).toBe(0);
+    expect(globalThis.__rutaSessionTables?.sessions.size).toBe(0);
   });
 });
 

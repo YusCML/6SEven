@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { enforceRateLimit, RATE_LIMITS } from '@/server/http/rateLimit';
 import { allowMethods, handleError, noStore, readBody, readString } from '@/server/http/respond';
 import { registerAccount } from '@/server/services/authService';
-import { toPublicUser } from '@/server/store/authStore';
+import { toPublicUser } from '@/server/store/userStore';
 
 type RegisterBody = {
   username: string;

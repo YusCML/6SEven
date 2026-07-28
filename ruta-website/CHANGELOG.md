@@ -12,6 +12,25 @@ stable: breaking changes bump the **minor** number rather than the major one.
 
 ### Added
 
+- **Postgres persistence.** Accounts are now stored in Neon via Prisma 7, so a
+  registered user survives a server restart. Verified end to end: registered an
+  account, killed the server, restarted, and signed in with the same id.
+  - `prisma/schema.prisma` — `User` model. `email` carries a unique index, so a
+    duplicate is rejected by the database rather than by a check that could race.
+  - `src/server/db/prisma.ts` — client singleton pinned to `globalThis`, so hot
+    reload cannot open a new connection pool on every edit.
+  - `src/server/store/userStore.ts` — the only module that touches `prisma.user`.
+    It maps rows to a plain `UserRecord`, so nothing above it imports a Prisma type.
+  - `docs/database.md`, `.env.example`.
+- `postinstall` script running `prisma generate`. The client is generated code
+  and gitignored, so without this a fresh clone fails with
+  `Cannot find module '@/generated/prisma/client'`.
+- Team onboarding and troubleshooting sections in `docs/database.md` — shared
+  database vs a Neon branch per developer, when migrations are needed, and the
+  five errors people actually hit.
+- `src/server/testing/prismaDouble.ts` — an in-memory stand-in for `prisma.user`
+  so unit tests stay fast and offline. It reproduces `P2002` (duplicate email)
+  and `P2025` (missing row), the two codes the store actually branches on.
 - **Test suite** — Vitest, 80 tests over the security-critical server logic:
   validation rules, scrypt hashing, rate-limit windows, and the auth service
   (registration, sign-in, profile, password change, reset). Verified by
@@ -38,12 +57,43 @@ stable: breaking changes bump the **minor** number rather than the major one.
 
 ### Changed
 
+- `authStore.ts` split along its real seam: `userStore.ts` (Postgres) and
+  `sessionStore.ts` (memory). Only import lines changed in `authService`, the
+  API routes and the session module — every signature stayed the same, which is
+  why all 80 tests still pass untouched.
+- `.gitignore` keeps `.env` ignored but now tracks `.env.example`.
 - Navigation items moved to the **left**, beside the wordmark, with Help Center
   and the account control on the right — matching the design. Item labels and
   routes are unchanged. The active route is now highlighted.
 - The route planner submits to `/routes?from=…&to=…` instead of doing nothing.
 - Landing typography scaled down roughly 20% across the page so the hero no
   longer dwarfs the sections beneath it.
+- **Folder structure.** `services/` and `utils/` are gone. Route handlers moved
+  into `pages/api/auth/*` (the handler *is* the route), shared helpers into
+  `lib/`, and everything server-only lives under `server/`.
+- `/` now redirects to `/home` instead of rendering a second copy of the
+  landing page.
+- Renamed `aboutUs.tsx` → `AboutUs.tsx` and `commute_guide.tsx` →
+  `CommuterGuide.tsx` to match the PascalCase convention.
+- **Documentation restructured** to the conventional layout: `docs/versioning.md`
+  became `CONTRIBUTING.md` at the repository root, and the README's duplicated
+  API table and conventions list now live solely in `docs/auth.md` and
+  `CONTRIBUTING.md`. `README.md` replaced the untouched `create-next-app`
+  boilerplate, which still referenced a deleted `pages/index.tsx`.
+- **Routes are kebab-case**: `/about_us` → `/about-us`, `/commuter_guide` →
+  `/commuter-guide`. Permanent redirects keep old links working.
+- Flattened nine `pages/<name>/index.tsx` files to `pages/<name>.tsx`. Only
+  `dashboard/` stays a folder, because it actually has child routes.
+
+### Removed
+
+- `components/ui/Button.tsx` and `components/ui/Panel.tsx` — both only spread
+  props onto a `<button>`/`<div>`, so call sites use the elements directly.
+- `components/ui/FormField.tsx` — superseded by `TextField`, which the profile
+  and route screens now share with the auth forms.
+- `pages/index.tsx` — replaced by the redirect above.
+- Six hand-rolled `fetch` blocks in components, now handled by the feature API
+  modules.
 
 ### Fixed
 
@@ -77,28 +127,6 @@ stable: breaking changes bump the **minor** number rather than the major one.
   for a feature in one module.
 - `lib/http.ts` gained `getJson`/`postJson`/`patchJson` and an `ApiError`
   carrying the HTTP status.
-
-### Changed
-
-- **Folder structure.** `services/` and `utils/` are gone. Route handlers moved
-  into `pages/api/auth/*` (the handler *is* the route), shared helpers into
-  `lib/`, and everything server-only lives under `server/`.
-- `/` now redirects to `/home` instead of rendering a second copy of the
-  landing page.
-- Renamed `aboutUs.tsx` → `AboutUs.tsx` and `commute_guide.tsx` →
-  `CommuterGuide.tsx` to match the PascalCase convention.
-- **Documentation restructured** to the conventional layout: `docs/versioning.md`
-  became `CONTRIBUTING.md` at the repository root, and the README's duplicated
-  API table and conventions list now live solely in `docs/auth.md` and
-  `CONTRIBUTING.md`. `README.md` replaced the untouched `create-next-app`
-  boilerplate, which still referenced a deleted `pages/index.tsx`.
-- **Routes are kebab-case**: `/about_us` → `/about-us`, `/commuter_guide` →
-  `/commuter-guide`. Permanent redirects keep old links working.
-- Flattened nine `pages/<name>/index.tsx` files to `pages/<name>.tsx`. Only
-  `dashboard/` stays a folder, because it actually has child routes.
-
-### Fixed
-
 - **Inter was never applied.** `next/font` defined `--font-inter`, but nothing
   mapped it to Tailwind's `--font-sans`, so every screen rendered in the system
   font stack while the webfont was downloaded and ignored. `globals.css` now
@@ -106,15 +134,14 @@ stable: breaking changes bump the **minor** number rather than the major one.
 - Added base styles: a single `:focus-visible` ring, font smoothing, and a
   `prefers-reduced-motion` guard for the transitions used throughout the UI.
 
-### Removed
+### Notes
 
-- `components/ui/Button.tsx` and `components/ui/Panel.tsx` — both only spread
-  props onto a `<button>`/`<div>`, so call sites use the elements directly.
-- `components/ui/FormField.tsx` — superseded by `TextField`, which the profile
-  and route screens now share with the auth forms.
-- `pages/index.tsx` — replaced by the redirect above.
-- Six hand-rolled `fetch` blocks in components, now handled by the feature API
-  modules.
+- **Sessions are still in memory.** Accounts persist; sessions do not, so a
+  restart signs everyone out. Moving them to Postgres is a follow-up and would
+  not touch any call site.
+- Prisma 7 differs from most tutorials: the connection URL lives in
+  `prisma.config.ts` rather than the schema, a driver adapter is required, and
+  the generated model type is `UserModel`.
 
 ## [0.2.0] — 2026-07-27
 

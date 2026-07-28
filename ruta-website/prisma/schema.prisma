@@ -1,0 +1,37 @@
+// Prisma schema — the single source of truth for the database shape.
+//
+// Apply changes with:  npx prisma migrate dev --name <what-changed>
+// Regenerate the client with:  npx prisma generate
+//
+// The connection URL lives in prisma.config.ts (Prisma 7 moved it out of this
+// file), which reads DATABASE_URL / DIRECT_URL from .env.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// A registered account. Sessions are still held in memory, so this table holds
+/// only what the user typed at sign-up.
+model User {
+  id String @id @default(uuid()) @db.Uuid
+
+  /// Unique and lower-cased before saving — the key used to sign in.
+  email String @unique
+
+  /// Display name. Deliberately NOT unique: two people may share a username,
+  /// because email is what identifies the account.
+  username String
+
+  /// scrypt digest, never the password itself. See src/server/auth/password.ts.
+  passwordHash String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}

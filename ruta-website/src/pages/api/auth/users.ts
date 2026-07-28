@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { listUsers, toPublicUser } from '@/server/store/authStore';
+import { listUsers, toPublicUser } from '@/server/store/userStore';
 import { allowMethods, noStore, serverError } from '@/server/http/respond';
 
 /**

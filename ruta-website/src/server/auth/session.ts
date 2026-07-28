@@ -5,11 +5,9 @@ import {
   deleteSession,
   deleteSessionsForUser,
   findSession,
-  findUserById,
-  toPublicUser,
   type SessionRecord,
-  type UserRecord,
-} from '@/server/store/authStore';
+} from '@/server/store/sessionStore';
+import { findUserById, toPublicUser, type UserRecord } from '@/server/store/userStore';
 import type { SessionPayload } from '@/types/session';
 import { appendCookie, serializeCookie } from './cookies';
 import { generateGuestName } from './guest';

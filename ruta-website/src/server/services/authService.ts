@@ -5,15 +5,11 @@ import { DuplicateEmailError, InvalidCredentialsError, NotFoundError, Validation
 import {
   consumePasswordReset,
   createPasswordReset,
-  createUser,
   deletePasswordResetsForEmail,
   deleteSessionsForUser,
   findPasswordResetByTokenHash,
-  findUserByEmail,
-  findUserById,
-  updateUser,
-  type UserRecord,
-} from '@/server/store/authStore';
+} from '@/server/store/sessionStore';
+import { createUser, findUserByEmail, findUserById, updateUser, type UserRecord } from '@/server/store/userStore';
 
 /**
  * Authentication business logic.

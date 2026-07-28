@@ -1,25 +1,16 @@
 import { randomUUID } from 'node:crypto';
 import { normalizeEmail } from '@/lib/validation';
-import { DuplicateEmailError, NotFoundError } from '@/server/errors';
 
 /**
- * In-process storage for users, sessions and reset tokens.
+ * Sessions and password-reset tokens, held in process memory.
  *
- * There is no database yet. Rows live in module state pinned to `globalThis` so
- * they survive Next.js hot reloads, and are lost when the server restarts.
+ * Accounts live in Postgres (see `userStore.ts`), but sessions do not yet — so
+ * a server restart signs everyone out while their account survives. Moving
+ * these to the database is a follow-up; every function here is already async,
+ * so that change would not reach any call site.
  *
- * Every function is async even though nothing here awaits: when persistence
- * lands, only this file changes and no call site has to be touched.
+ * Rows are pinned to `globalThis` to survive Next.js hot reloads in development.
  */
-
-export type UserRecord = {
-  id: string;
-  username: string;
-  email: string;
-  passwordHash: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 export type SessionRecord = {
   /** SHA-256 of the token held by the browser — the raw token is never stored. */
@@ -42,125 +33,27 @@ export type PasswordResetRecord = {
   consumedAt: string | null;
 };
 
-/** The user shape that is safe to send to the browser. */
-export type PublicUser = {
-  id: string;
-  username: string;
-  email: string;
-  createdAt: string;
-};
-
-export function toPublicUser(user: UserRecord): PublicUser {
-  return {
-    id: user.id,
-    username: user.username,
-    email: user.email,
-    createdAt: user.createdAt,
-  };
-}
-
 type Tables = {
-  users: Map<string, UserRecord>;
   sessions: Map<string, SessionRecord>;
   passwordResets: Map<string, PasswordResetRecord>;
 };
 
 declare global {
-  var __rutaAuthTables: Tables | undefined;
+  var __rutaSessionTables: Tables | undefined;
 }
 
 function tables(): Tables {
-  if (!globalThis.__rutaAuthTables) {
-    globalThis.__rutaAuthTables = {
-      users: new Map(),
-      sessions: new Map(),
-      passwordResets: new Map(),
-    };
-  }
+  globalThis.__rutaSessionTables ??= {
+    sessions: new Map(),
+    passwordResets: new Map(),
+  };
 
-  return globalThis.__rutaAuthTables;
+  return globalThis.__rutaSessionTables;
 }
 
 /** Hand back copies so callers cannot mutate stored rows by reference. */
 function clone<T>(record: T): T {
   return { ...record };
-}
-
-/* -------------------------------------------------------------------------- */
-/* Users                                                                      */
-/* -------------------------------------------------------------------------- */
-
-export async function findUserById(id: string): Promise<UserRecord | null> {
-  const user = tables().users.get(id);
-  return user ? clone(user) : null;
-}
-
-export async function findUserByEmail(email: string): Promise<UserRecord | null> {
-  const target = normalizeEmail(email);
-
-  for (const user of tables().users.values()) {
-    if (user.email === target) return clone(user);
-  }
-
-  return null;
-}
-
-export async function createUser(input: {
-  username: string;
-  email: string;
-  passwordHash: string;
-}): Promise<UserRecord> {
-  const email = normalizeEmail(input.email);
-
-  for (const existing of tables().users.values()) {
-    if (existing.email === email) throw new DuplicateEmailError();
-  }
-
-  const now = new Date().toISOString();
-  const user: UserRecord = {
-    id: randomUUID(),
-    username: input.username,
-    email,
-    passwordHash: input.passwordHash,
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  tables().users.set(user.id, user);
-  return clone(user);
-}
-
-export async function updateUser(
-  id: string,
-  patch: Partial<Pick<UserRecord, 'username' | 'email' | 'passwordHash'>>,
-): Promise<UserRecord> {
-  const existing = tables().users.get(id);
-
-  if (!existing) throw new NotFoundError('User not found.');
-
-  if (patch.email !== undefined) {
-    const email = normalizeEmail(patch.email);
-
-    for (const other of tables().users.values()) {
-      if (other.id !== id && other.email === email) throw new DuplicateEmailError();
-    }
-  }
-
-  const updated: UserRecord = {
-    ...existing,
-    ...patch,
-    email: patch.email !== undefined ? normalizeEmail(patch.email) : existing.email,
-    updatedAt: new Date().toISOString(),
-  };
-
-  tables().users.set(id, updated);
-  return clone(updated);
-}
-
-export async function listUsers(): Promise<UserRecord[]> {
-  return [...tables().users.values()]
-    .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
-    .map(clone);
 }
 
 /* -------------------------------------------------------------------------- */
