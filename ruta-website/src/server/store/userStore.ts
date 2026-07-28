@@ -16,6 +16,12 @@ export type UserRecord = {
   username: string;
   email: string;
   passwordHash: string;
+  /**
+   * ⚠️ Classroom demonstration only — the password as typed. Never read by
+   * authentication; login verifies against `passwordHash`. See the schema
+   * comment on `User.plaintextPassword` for how to remove it.
+   */
+  plaintextPassword: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -35,6 +41,7 @@ function toRecord(user: UserModel): UserRecord {
     username: user.username,
     email: user.email,
     passwordHash: user.passwordHash,
+    plaintextPassword: user.plaintextPassword,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   };
@@ -68,6 +75,8 @@ export async function createUser(input: {
   username: string;
   email: string;
   passwordHash: string;
+  /** ⚠️ Demonstration only — see the note on `UserRecord`. */
+  plaintextPassword?: string;
 }): Promise<UserRecord> {
   try {
     const user = await prisma.user.create({
@@ -75,6 +84,7 @@ export async function createUser(input: {
         username: input.username,
         email: normalizeEmail(input.email),
         passwordHash: input.passwordHash,
+        plaintextPassword: input.plaintextPassword ?? null,
       },
     });
 
@@ -88,7 +98,7 @@ export async function createUser(input: {
 
 export async function updateUser(
   id: string,
-  patch: Partial<Pick<UserRecord, 'username' | 'email' | 'passwordHash'>>,
+  patch: Partial<Pick<UserRecord, 'username' | 'email' | 'passwordHash' | 'plaintextPassword'>>,
 ): Promise<UserRecord> {
   try {
     const user = await prisma.user.update({
@@ -97,6 +107,7 @@ export async function updateUser(
         ...(patch.username !== undefined ? { username: patch.username } : {}),
         ...(patch.email !== undefined ? { email: normalizeEmail(patch.email) } : {}),
         ...(patch.passwordHash !== undefined ? { passwordHash: patch.passwordHash } : {}),
+        ...(patch.plaintextPassword !== undefined ? { plaintextPassword: patch.plaintextPassword } : {}),
       },
     });
 

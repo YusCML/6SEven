@@ -65,7 +65,13 @@ export async function registerAccount(input: RegisterInput): Promise<UserRecord>
   // The store also enforces this; catching it here keeps the error typed.
   if (await findUserByEmail(email)) throw new DuplicateEmailError();
 
-  return createUser({ username, email, passwordHash: await hashPassword(input.password) });
+  return createUser({
+    username,
+    email,
+    passwordHash: await hashPassword(input.password),
+    // ⚠️ Demonstration only — see the schema note on `User.plaintextPassword`.
+    plaintextPassword: input.password,
+  });
 }
 
 /**
@@ -144,7 +150,10 @@ export async function changePassword(
     throw new ValidationError('Your current password is incorrect.');
   }
 
-  await updateUser(userId, { passwordHash: await hashPassword(input.newPassword) });
+  await updateUser(userId, {
+    passwordHash: await hashPassword(input.newPassword),
+    plaintextPassword: input.newPassword,
+  });
   await deleteSessionsForUser(userId);
 }
 
@@ -199,7 +208,10 @@ export async function resetPasswordWithToken(input: {
   const user = await findUserByEmail(record.email);
   if (!user) throw new ValidationError(INVALID_RESET);
 
-  await updateUser(user.id, { passwordHash: await hashPassword(input.password) });
+  await updateUser(user.id, {
+    passwordHash: await hashPassword(input.password),
+    plaintextPassword: input.password,
+  });
   await consumePasswordReset(record.id);
   await deleteSessionsForUser(user.id);
 }

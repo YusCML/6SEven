@@ -28,10 +28,10 @@ class PrismaErrorDouble extends Error {
 export type UserDouble = {
   findUnique(args: { where: { id?: string; email?: string } }): Promise<UserModel | null>;
   findMany(args?: { orderBy?: unknown }): Promise<UserModel[]>;
-  create(args: { data: { username: string; email: string; passwordHash: string } }): Promise<UserModel>;
+  create(args: { data: { username: string; email: string; passwordHash: string; plaintextPassword?: string | null } }): Promise<UserModel>;
   update(args: {
     where: { id: string };
-    data: Partial<{ username: string; email: string; passwordHash: string }>;
+    data: Partial<{ username: string; email: string; passwordHash: string; plaintextPassword: string | null }>;
   }): Promise<UserModel>;
 };
 
@@ -55,7 +55,7 @@ export function createUserDouble(rows: Map<string, UserModel>): UserDouble {
       }
 
       const now = new Date();
-      const row: UserModel = { id: randomUUID(), ...data, createdAt: now, updatedAt: now };
+      const row: UserModel = { id: randomUUID(), plaintextPassword: null, ...data, createdAt: now, updatedAt: now };
 
       rows.set(row.id, row);
       return row;

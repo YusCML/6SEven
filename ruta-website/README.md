@@ -74,21 +74,11 @@ Open <http://localhost:3000> — it redirects to `/home`.
 
 The app will not start without one.
 
-Create a file called `.env` in `ruta-website/` with one line:
+`.env` **is committed** in this repository, so a fresh clone connects to the
+shared development database with no setup. `npm install` regenerates the Prisma
+Client automatically, so `npm run dev` is all that is needed.
 
-```
-DATABASE_URL="<the Neon connection string>"
-```
-
-**Ask a teammate for the string privately** — it contains the database password,
-which is why `.env` is gitignored and cannot ship with the repo.
-
-`cp .env.example .env` is a shortcut that starts you off with the variable name
-and comments already in place; typing the line yourself works just as well.
-
-`npm install` regenerates the Prisma Client automatically, so there is no extra
-step. Full details, including per-developer branches and troubleshooting, are in
-[docs/database.md](./docs/database.md).
+Full details in [docs/database.md](./docs/database.md).
 
 > **"Another next dev server is already running"** means a previous server still
 > holds the port. Stop it using the PID printed in that message:

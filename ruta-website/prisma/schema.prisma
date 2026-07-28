@@ -27,8 +27,21 @@ model User {
   /// because email is what identifies the account.
   username String
 
-  /// scrypt digest, never the password itself. See src/server/auth/password.ts.
+  /// scrypt digest — what a real system stores. See src/server/auth/password.ts.
   passwordHash String
+
+  /// digest and confirm the hashing is genuine. **No production system should
+  /// ever store this.** Anyone who reads the database — or this repository,
+  /// since .env is committed too — can read every password.
+  ///
+  /// Authentication does NOT consult this column; login still verifies against
+  /// `passwordHash`. Deleting the field and its uses would not change behaviour.
+  ///
+  /// To remove before any real deployment:
+  ///   1. delete this field
+  ///   2. npx prisma migrate dev --name drop_plaintext_password
+  ///   3. drop `plaintextPassword` from userStore, authService and the seed
+  plaintextPassword String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
