@@ -30,6 +30,9 @@ model User {
   /// scrypt digest — what a real system stores. See src/server/auth/password.ts.
   passwordHash String
 
+  /// CLASSROOM DEMONSTRATION ONLY — the password as typed, in the clear.
+  ///
+  /// This exists so the instructor can see the original password beside the
   /// digest and confirm the hashing is genuine. **No production system should
   /// ever store this.** Anyone who reads the database — or this repository,
   /// since .env is committed too — can read every password.
