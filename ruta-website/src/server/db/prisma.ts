@@ -1,5 +1,5 @@
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@/generated/prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 /**
  * The application's database client.
@@ -25,14 +25,11 @@ function createClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL;
 
   if (!connectionString) {
-    throw new Error(
-      'DATABASE_URL is not set. Copy the pooled connection string from the Neon dashboard into ruta-website/.env — see README § Database.',
-    );
+    throw new Error('DATABASE_URL is not configured.');
   }
 
   return new PrismaClient({
     adapter: new PrismaPg({ connectionString }),
-    // Surface slow or failing queries in development without noise in production.
     log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
   });
 }
