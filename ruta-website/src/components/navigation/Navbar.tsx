@@ -4,9 +4,8 @@ import RutaLogo from '@/components/brand/RutaLogo';
 import AccountMenu from './AccountMenu';
 
 const navigationItems = [
-  { href: '/home', label: 'Home' },
-  { href: '/dashboard', label: 'Dashboard' },
   { href: '/routes', label: 'Routes' },
+  { href: '/dashboard', label: 'Incidents' },
   { href: '/commuter-guide', label: 'Commuter Guide' },
   { href: '/about-us', label: 'About' },
 ];
@@ -41,6 +40,12 @@ export default function Navbar() {
 
         {/* Wide gap keeps Help Center from crowding the account block. */}
         <div className="ml-auto flex items-center gap-8 lg:ml-0 lg:gap-12">
+          <Link
+            href="/auth/register"
+            className="hidden rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-50 sm:inline-block"
+          >
+            Jump Start Card
+          </Link>
           <Link
             href="/commuter-guide"
             className="hidden text-sm font-medium text-slate-400 transition hover:text-slate-600 sm:block"
