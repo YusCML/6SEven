@@ -7,7 +7,6 @@ import type { NextPageWithLayout } from '@/types/page';
 const registerFooterLinks = [
   { label: 'Community Guidelines', href: '/about-us' },
   { label: 'Accessibility', href: '/about-us' },
-  { label: 'Help Center', href: '/about-us' },
 ];
 
 const RegisterPage: NextPageWithLayout = () => (
