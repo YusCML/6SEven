@@ -19,8 +19,16 @@ function sanitizeUsername(value: string): string {
   return stripped.replace(/^[^a-zA-Z0-9]+/, '').replace(/[^a-zA-Z0-9]+$/, '');
 }
 
+function firstWordOf(value: string): string {
+  return value.trim().split(/\s+/)[0] ?? '';
+}
+
 function deriveUsername(profile: GoogleProfile): string {
-  const candidates = [profile.name, profile.email.split('@')[0] ?? ''];
+  const candidates = [
+    firstWordOf(profile.givenName),
+    firstWordOf(profile.name),
+    profile.email.split('@')[0] ?? '',
+  ];
 
   for (const candidate of candidates) {
     const cleaned = sanitizeUsername(candidate);

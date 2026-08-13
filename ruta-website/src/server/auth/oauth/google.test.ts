@@ -37,6 +37,7 @@ function validClaims(overrides: Record<string, unknown> = {}) {
     email: 'juan@ruta.ph',
     email_verified: true,
     name: 'Juan Dela Cruz',
+    given_name: 'Juan',
     picture: 'https://lh3.googleusercontent.com/a/photo',
     ...overrides,
   };
@@ -174,6 +175,7 @@ describe('exchangeCodeForProfile', () => {
       email: 'juan@ruta.ph',
       emailVerified: true,
       name: 'Juan Dela Cruz',
+      givenName: 'Juan',
       picture: 'https://lh3.googleusercontent.com/a/photo',
     });
   });

@@ -88,6 +88,7 @@ export type GoogleProfile = {
   email: string;
   emailVerified: boolean;
   name: string;
+  givenName: string;
   picture: string | null;
 };
 
@@ -155,6 +156,7 @@ function toProfile(claims: IdTokenClaims): GoogleProfile {
     email: claims.email ?? '',
     emailVerified: isVerified(claims.email_verified),
     name: claims.name ?? claims.given_name ?? '',
+    givenName: claims.given_name ?? '',
     picture: claims.picture ?? null,
   };
 }

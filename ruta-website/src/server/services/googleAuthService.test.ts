@@ -19,6 +19,7 @@ function profile(overrides: Partial<GoogleProfile> = {}): GoogleProfile {
     email: 'juan@ruta.ph',
     emailVerified: true,
     name: 'Juan Dela Cruz',
+    givenName: 'Juan',
     picture: 'https://lh3.googleusercontent.com/a/photo',
     ...overrides,
   };
@@ -51,27 +52,41 @@ describe('signInWithGoogle — new account', () => {
     expect(user.emailVerified).toBe(false);
   });
 
-  it('derives a username from the display name, stripping spaces', async () => {
+  it('uses only the first name, never the full name', async () => {
     const user = await signInWithGoogle(profile());
 
-    expect(user.username).toBe('JuanDelaCruz');
+    expect(user.username).toBe('Juan');
     expect(validateUsername(user.username)).toBeNull();
   });
 
-  it('falls back to the email local part when the name is unusable', async () => {
-    const user = await signInWithGoogle(profile({ name: '', email: 'juan.delacruz@ruta.ph' }));
+  it('takes the first word when Google puts several names in given_name', async () => {
+    const user = await signInWithGoogle(
+      profile({ givenName: 'DenverNeil R.', name: 'DenverNeil R. ALEJANDRO' }),
+    );
+
+    expect(user.username).toBe('DenverNeil');
+  });
+
+  it('falls back to the first word of the full name when given_name is absent', async () => {
+    const user = await signInWithGoogle(profile({ givenName: '', name: 'Maria Clara Santos' }));
+
+    expect(user.username).toBe('Maria');
+  });
+
+  it('falls back to the email local part when no name is usable', async () => {
+    const user = await signInWithGoogle(profile({ givenName: '', name: '', email: 'juan.delacruz@ruta.ph' }));
 
     expect(user.username).toBe('juan.delacruz');
   });
 
   it('falls back to a generated name when neither name nor email survives sanitising', async () => {
-    const user = await signInWithGoogle(profile({ name: '!!!', email: '!!!@ruta.ph' }));
+    const user = await signInWithGoogle(profile({ givenName: '!!!', name: '!!!', email: '!!!@ruta.ph' }));
 
     expect(validateUsername(user.username)).toBeNull();
   });
 
   it('never produces a username that would fail the project rules', async () => {
-    const user = await signInWithGoogle(profile({ name: 'A'.repeat(120) }));
+    const user = await signInWithGoogle(profile({ givenName: 'A'.repeat(120), name: 'A'.repeat(120) }));
 
     expect(validateUsername(user.username)).toBeNull();
   });
