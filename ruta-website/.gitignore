@@ -51,4 +51,4 @@ next-env.d.ts
 # prisma init drops AI-assistant skill files here; not app code
 /.agents
 /.windsurf
-/skills-lock.json
+/skills-lock.jso
