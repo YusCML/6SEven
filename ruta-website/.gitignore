@@ -31,13 +31,10 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files
-# .env IS committed for this school project so the whole team and the
-# instructor can run it without extra setup. It holds a throwaway Neon
-# development database. Do not follow this pattern for anything real.
+# Never commit real credentials.
+.env
 .env.local
 .env*.local
-!.env
-!.env.example
 
 # vercel
 .vercel
