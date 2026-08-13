@@ -27,7 +27,6 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
           : 'border-slate-200 hover:border-slate-300 bg-white'
       }`}
     >
-      {/* Header with badge, title, and duration */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
           {route.category && (
@@ -44,7 +43,6 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
         </div>
       </div>
 
-      {/* Journey modes chips */}
       <div className="flex flex-wrap gap-1.5 mb-3">
         {route.segments.map((segment, idx) => (
           <span
@@ -56,7 +54,6 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
         ))}
       </div>
 
-      {/* Fare and Distance */}
       <div className="flex items-center justify-between mb-3 py-2 border-t border-b border-slate-100">
         <div>
           <div className="text-xs text-slate-400 uppercase tracking-wide">Total Fare</div>
@@ -68,7 +65,6 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
         </div>
       </div>
 
-      {/* Journey Segments */}
       <div className="space-y-2 mb-3">
         {route.segments.map((segment, idx) => (
           <div key={idx} className="flex gap-2 text-xs">
@@ -86,7 +82,6 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
         ))}
       </div>
 
-      {/* Start Navigation Button */}
       {selected && (
         <button
           onClick={(e) => {

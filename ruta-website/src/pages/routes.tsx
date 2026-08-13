@@ -88,7 +88,6 @@ export default function RouteExplorer() {
     <div className="h-[calc(100vh-73px)] flex flex-col md:flex-row overflow-hidden">
       <PageMeta title="Routes" description="Compare transit routes across Iloilo City and pick the fastest way to your destination." />
       <div className="w-full md:w-96 bg-white border-r border-slate-200 overflow-hidden flex flex-col">
-        {/* Search Section */}
         <div className="p-6 border-b border-slate-200">
           <div className="space-y-3">
             <TextField label="Origin" type="text" defaultValue="Plaza Jaro" />
@@ -96,7 +95,6 @@ export default function RouteExplorer() {
           </div>
         </div>
 
-        {/* Filter Tabs */}
         <div className="px-6 pt-4 pb-2">
           <h3 className="font-bold text-sm text-slate-900 mb-3">Suggested Routes</h3>
           <div className="flex gap-2 mb-4">
@@ -118,7 +116,6 @@ export default function RouteExplorer() {
           </div>
         </div>
 
-        {/* Routes List */}
         <div className="flex-1 overflow-y-auto px-6">
           <div className="space-y-3 pb-4">
             {filteredRoutes.map((route) => (
@@ -132,7 +129,6 @@ export default function RouteExplorer() {
           </div>
         </div>
 
-        {/* Passenger Info Section */}
         {selectedRoute && (
           <div className="border-t border-slate-200 p-4 bg-slate-50">
             <div className="flex items-center justify-between mb-3">
