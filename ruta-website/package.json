@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "prisma generate && next dev --webpack",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && next build && cp package.json .next/",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
