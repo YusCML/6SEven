@@ -2,17 +2,10 @@ import { useId, type InputHTMLAttributes, type ReactNode } from 'react';
 
 type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'className'> & {
   label: string;
-  /** Optional leading glyph rendered inside the field. */
   icon?: ReactNode;
-  /** Optional control aligned to the right of the label, e.g. a "Forgot password?" link. */
   labelAction?: ReactNode;
 };
 
-/**
- * Labelled text input: 56px tall, 12px radius, slate-50 fill with a slate-200
- * hairline. The label is bound to the input via a generated id so clicking it
- * focuses the field and screen readers announce the pair.
- */
 export default function TextField({ label, icon, labelAction, ...inputProps }: TextFieldProps) {
   const id = useId();
 

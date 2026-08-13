@@ -12,15 +12,6 @@ import type { SessionPayload } from '@/types/session';
 import { appendCookie, serializeCookie } from './cookies';
 import { generateGuestName } from './guest';
 
-/**
- * Opaque cookie sessions.
- *
- * The browser holds a random 32-byte token; the store only ever sees its
- * SHA-256. A leaked store therefore cannot be replayed as a login. The cookie
- * is HttpOnly (no JS access), SameSite=Lax (not sent on cross-site POSTs), and
- * Secure outside development.
- */
-
 export const SESSION_COOKIE_NAME = 'ruta_session';
 
 const TOKEN_BYTES = 32;
@@ -78,7 +69,6 @@ function readToken(req: NextApiRequest): string | null {
   return token && token.trim() ? token : null;
 }
 
-/** Loads the session behind the request cookie, dropping it if it has expired. */
 async function loadSession(req: NextApiRequest): Promise<SessionRecord | null> {
   const token = readToken(req);
   if (!token) return null;
@@ -112,10 +102,6 @@ async function issueSession(
   return session;
 }
 
-/**
- * Returns the current session, creating a guest one when the visitor has none.
- * Nobody browses without a session — guests just have `userId: null`.
- */
 export async function resolveSession(req: NextApiRequest, res: NextApiResponse): Promise<ResolvedSession> {
   const existing = await loadSession(req);
 
@@ -124,7 +110,6 @@ export async function resolveSession(req: NextApiRequest, res: NextApiResponse):
 
     const user = await findUserById(existing.userId);
 
-    // The user row is gone — fall through and hand back a fresh guest session.
     if (user) return { session: existing, user };
 
     await deleteSession(existing.id);
@@ -139,7 +124,6 @@ export async function resolveSession(req: NextApiRequest, res: NextApiResponse):
   return { session, user: null };
 }
 
-/** Reads the session without creating one. Use for guards that must not mutate state. */
 export async function getSession(req: NextApiRequest): Promise<ResolvedSession | null> {
   const session = await loadSession(req);
   if (!session) return null;
@@ -150,16 +134,11 @@ export async function getSession(req: NextApiRequest): Promise<ResolvedSession |
   return user ? { session, user } : null;
 }
 
-/** Returns the signed-in user, or null for guests and anonymous requests. */
 export async function getAuthenticatedUser(req: NextApiRequest): Promise<UserRecord | null> {
   const resolved = await getSession(req);
   return resolved?.user ?? null;
 }
 
-/**
- * Signs a user in. The previous (guest) session id is discarded and a brand new
- * token is issued, so a fixated cookie cannot survive the privilege change.
- */
 export async function startUserSession(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -171,10 +150,6 @@ export async function startUserSession(
   return issueSession(res, { userId, guestName: null, days: AUTH_SESSION_DAYS });
 }
 
-/**
- * Signs out. The authenticated session is destroyed server-side and replaced by
- * a fresh guest session, so the visitor keeps browsing without being logged in.
- */
 export async function endUserSession(req: NextApiRequest, res: NextApiResponse): Promise<SessionRecord> {
   const previous = await loadSession(req);
   if (previous) await deleteSession(previous.id);
@@ -182,7 +157,6 @@ export async function endUserSession(req: NextApiRequest, res: NextApiResponse):
   return issueSession(res, { userId: null, guestName: generateGuestName(), days: GUEST_SESSION_DAYS });
 }
 
-/** Invalidates every session of a user — used after a password change. */
 export async function revokeAllUserSessions(userId: string) {
   await deleteSessionsForUser(userId);
 }

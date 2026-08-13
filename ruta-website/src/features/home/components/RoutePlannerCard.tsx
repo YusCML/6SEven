@@ -5,11 +5,6 @@ import { ArrowsUpDownIcon, ChevronRightIcon, MapPinIcon, SearchIcon } from '@/co
 const inputClassName =
   'h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-base text-slate-900 transition placeholder:text-gray-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20';
 
-/**
- * The hero's route planner. There is no search endpoint yet, so submitting
- * hands the origin and destination to the existing `/routes` page as query
- * parameters rather than doing nothing.
- */
 export default function RoutePlannerCard() {
   const router = useRouter();
   const [origin, setOrigin] = useState('Manila City Hall');

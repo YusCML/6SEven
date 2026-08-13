@@ -3,14 +3,6 @@ import makatiPhoto from '@/assets/landing/ride-makati.jpg';
 import moaPhoto from '@/assets/landing/ride-moa.jpg';
 import upPhoto from '@/assets/landing/ride-up.jpg';
 
-/**
- * Placeholder content for the landing page.
- *
- * Kept out of the components so the markup stays a single loop per section
- * rather than three near-identical copies, and so swapping to real API data
- * later means replacing this file, not rewriting JSX.
- */
-
 export type StatTone = 'brand' | 'success' | 'warning' | 'accent';
 
 export type LandingStat = {

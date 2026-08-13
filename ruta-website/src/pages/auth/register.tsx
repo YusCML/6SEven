@@ -3,7 +3,6 @@ import RegisterForm from '@/features/auth/components/RegisterForm';
 import AuthLayout from '@/layouts/AuthLayout';
 import type { NextPageWithLayout } from '@/types/page';
 
-/** The design gives the sign-up screen its own footer links. */
 const registerFooterLinks = [
   { label: 'Community Guidelines', href: '/about-us' },
   { label: 'Accessibility', href: '/about-us' },

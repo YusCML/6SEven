@@ -1,15 +1,6 @@
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
 
-/**
- * Password hashing with scrypt from Node's standard library — no native
- * dependency to install, and memory-hard by design.
- *
- * Stored format:  scrypt$N$r$p$<salt base64>$<derived key base64>
- * Parameters live inside the string so they can be raised later without
- * invalidating existing hashes (see `needsRehash`).
- */
-
 const scrypt = promisify(scryptCallback) as (
   password: string | Buffer,
   salt: string | Buffer,
@@ -21,10 +12,8 @@ const ALGORITHM = 'scrypt';
 const SALT_BYTES = 16;
 const KEY_BYTES = 64;
 const PARAMS = { N: 16_384, r: 8, p: 1 };
-// scrypt needs roughly 128 * N * r bytes; give it headroom.
 const MAX_MEM = 64 * 1024 * 1024;
 
-/** Unicode-normalize so the same typed password always derives the same key. */
 function prepare(password: string) {
   return Buffer.from(password.normalize('NFKC'), 'utf8');
 }
@@ -61,7 +50,6 @@ export async function verifyPassword(password: string, storedHash: string): Prom
   }
 }
 
-/** True when a stored hash was produced with weaker parameters than the current ones. */
 export function needsRehash(storedHash: string): boolean {
   const parts = storedHash.split('$');
 

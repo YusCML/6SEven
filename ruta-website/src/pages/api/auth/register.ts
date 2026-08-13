@@ -27,8 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       confirmPassword: readString(body.confirmPassword),
     });
 
-    // Registering deliberately does NOT sign the visitor in — they confirm the
-    // credentials by logging in. Their guest session is left untouched.
     return res.status(201).json({
       message: 'Account created successfully. Please sign in.',
       user: toPublicUser(user),

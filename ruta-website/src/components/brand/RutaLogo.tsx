@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { RutaMarkIcon } from '@/components/icons';
 
 type RutaLogoProps = {
-  /** `md` is the 40px nav mark, `sm` the 32px footer mark. */
   size?: 'sm' | 'md';
   href?: string;
 };
@@ -12,7 +11,6 @@ const sizes = {
   md: { box: 'h-10 w-10 rounded-xl', icon: 'h-5 w-5', text: 'text-2xl' },
 } as const;
 
-/** The RUTA wordmark: rounded blue tile with a bus glyph, followed by the name. */
 export default function RutaLogo({ size = 'md', href = '/home' }: RutaLogoProps) {
   const style = sizes[size];
 

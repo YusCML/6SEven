@@ -12,14 +12,6 @@ import {
   updateProfile,
 } from './authService';
 
-/**
- * Accounts now live in Postgres, but these are unit tests — `prisma.user` is
- * backed by an in-memory double rather than a live database. See
- * CONTRIBUTING § Testing.
- *
- * `vi.hoisted` is required because `vi.mock` is lifted above the imports, so
- * the row map has to exist before any module is evaluated.
- */
 const { userRows } = vi.hoisted(() => ({ userRows: new Map<string, UserModel>() }));
 
 vi.mock('@/server/db/prisma', async () => {
@@ -30,7 +22,6 @@ vi.mock('@/server/db/prisma', async () => {
 const VALID = { username: 'juandelacruz', email: 'juan@ruta.ph', password: 'Commuter123', confirmPassword: 'Commuter123' };
 
 beforeEach(() => {
-  // Both stores are process-local; clear them so tests cannot leak into each other.
   userRows.clear();
   globalThis.__rutaSessionTables = { sessions: new Map(), passwordResets: new Map() };
 });

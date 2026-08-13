@@ -4,14 +4,9 @@ type AuthCardProps = {
   title: string;
   description: string;
   children: ReactNode;
-  /** Status strip rendered under the card, e.g. "System Status: Online". */
   footer?: ReactNode;
 };
 
-/**
- * The 480×704 white panel from the design: 32px radius, hairline border and
- * Tailwind's `shadow-xl`, which matches the two drop shadows in Figma exactly.
- */
 export default function AuthCard({ title, description, children, footer }: AuthCardProps) {
   return (
     <div className="w-full max-w-[480px]">

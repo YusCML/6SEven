@@ -2,25 +2,15 @@ import { createContext, useCallback, useEffect, useMemo, useState, type ReactNod
 import * as authApi from '@/features/auth/api';
 import type { SessionPayload, SessionUser } from '@/types/session';
 
-/**
- * App-wide session state, hydrated from `/api/auth/session` on mount.
- *
- * The cookie itself is HttpOnly, so the browser cannot read it — this context
- * is the single place that knows whether someone is signed in.
- */
-
 export type SessionStatus = 'loading' | 'authenticated' | 'guest';
 
 export type SessionContextValue = {
   status: SessionStatus;
   user: SessionUser | null;
-  /** Username when signed in, otherwise the generated `User…` guest name. */
   displayName: string;
   isAuthenticated: boolean;
-  /** True until the first `/api/auth/session` response lands. */
   isLoading: boolean;
   refresh: () => Promise<void>;
-  /** Adopts a payload returned by login/register/profile without a second round trip. */
   applySession: (payload: SessionPayload) => void;
   signOut: () => Promise<void>;
 };
@@ -32,10 +22,6 @@ function displayNameOf(payload: SessionPayload | null): string {
   return payload.user?.username ?? payload.guest?.name ?? 'Guest';
 }
 
-/**
- * Resolves to null when the API is unreachable — the caller then treats the
- * visitor as an anonymous guest rather than leaving the UI stuck on "loading".
- */
 async function loadSession(): Promise<SessionPayload | null> {
   try {
     return await authApi.fetchSession();
@@ -53,7 +39,6 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
     setStatus(next.status);
   }, []);
 
-  /** Same as `applySession`, but tolerates the null we use for "API unreachable". */
   const adopt = useCallback((next: SessionPayload | null) => {
     setPayload(next);
     setStatus(next?.status ?? 'guest');
@@ -80,7 +65,6 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
     try {
       applySession(await authApi.logout());
     } catch {
-      // The cookie may still have been cleared; re-read rather than guess.
       await refresh();
     }
   }, [applySession, refresh]);

@@ -1,12 +1,10 @@
 type AuthStatusStripProps = {
   status: string;
-  /** When true the status and copyright stack vertically, as on the sign-up screen. */
   stacked?: boolean;
 };
 
 const COPYRIGHT = '© 2024 RUTA. Ingat sa biyahe!';
 
-/** The small reassurance line under the auth card, with its green status dot. */
 export default function AuthStatusStrip({ status, stacked = false }: AuthStatusStripProps) {
   const statusLine = (
     <span className="flex items-center gap-2">

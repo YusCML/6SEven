@@ -1,11 +1,9 @@
 type ProfileHeaderProps = {
   displayName: string;
   isGuest: boolean;
-  /** Account creation date for signed-in users. Undefined for guests. */
   memberSince?: string;
 };
 
-/** First letters of the name — falls back to the leading character for guest names. */
 function initialsOf(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
 

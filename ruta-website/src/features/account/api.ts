@@ -1,8 +1,6 @@
 import { patchJson, postJson } from '@/lib/http';
 import type { SessionPayload } from '@/types/session';
 
-/** Account requests made from the browser. */
-
 export type ProfileInput = {
   username?: string;
   email?: string;

@@ -4,7 +4,6 @@ import { checkRateLimit, type RateLimitRule } from './rateLimit';
 const rule: RateLimitRule = { name: 'test', limit: 3, windowMs: 60_000 };
 
 beforeEach(() => {
-  // Counters live on globalThis; clear them so tests cannot leak into each other.
   globalThis.__rutaRateLimits = new Map();
   vi.useFakeTimers();
 });

@@ -13,7 +13,6 @@ describe('hashPassword', () => {
     const [a, b] = await Promise.all([hashPassword('Commuter123'), hashPassword('Commuter123')]);
 
     expect(a).not.toBe(b);
-    // Both must still verify — different salt, same password.
     expect(await verifyPassword('Commuter123', a)).toBe(true);
     expect(await verifyPassword('Commuter123', b)).toBe(true);
   });

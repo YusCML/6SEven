@@ -9,7 +9,6 @@ type FooterLink = {
 
 type AuthLayoutProps = {
   children: ReactNode;
-  /** Links shown in the page footer — they differ per auth screen in the design. */
   footerLinks?: FooterLink[];
 };
 
@@ -19,11 +18,6 @@ const defaultFooterLinks: FooterLink[] = [
   { label: 'Support', href: '/about-us' },
 ];
 
-/**
- * Chrome for the authentication screens: a slim nav with only a way back to the
- * marketing site, and a footer. Deliberately replaces the app-wide `AppShell`
- * navigation — someone signing in should not be offered the full menu.
- */
 export default function AuthLayout({ children, footerLinks = defaultFooterLinks }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">

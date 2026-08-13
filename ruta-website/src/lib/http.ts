@@ -1,13 +1,4 @@
-/**
- * Browser-side HTTP client.
- *
- * Every call to our own API goes through here so that credentials, JSON
- * headers and error unwrapping are defined once instead of in each component.
- * Failures always surface as an `ApiError` carrying the server's message.
- */
-
 export class ApiError extends Error {
-  /** HTTP status, or 0 when the request never reached the server. */
   readonly status: number;
 
   constructor(message: string, status: number) {
@@ -17,7 +8,6 @@ export class ApiError extends Error {
   }
 }
 
-/** Returns the parsed body, or null when the response is not JSON. */
 async function parseJson<T>(response: Response): Promise<T | null> {
   if (!(response.headers.get('content-type') ?? '').includes('application/json')) return null;
 
@@ -70,7 +60,6 @@ export function patchJson<T>(path: string, body?: unknown): Promise<T> {
   return request<T>(path, jsonBody('PATCH', body));
 }
 
-/** Message to show a user for any thrown value, without leaking internals. */
 export function errorMessage(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
 }

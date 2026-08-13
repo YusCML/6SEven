@@ -19,7 +19,6 @@ export default function Navbar() {
       <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center gap-10 px-6 sm:px-11">
         <RutaLogo />
 
-        {/* Primary navigation sits beside the wordmark, per the design. */}
         <nav className="hidden flex-1 items-center gap-8 lg:flex">
           {navigationItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -39,7 +38,6 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Wide gap keeps Help Center from crowding the account block. */}
         <div className="ml-auto flex items-center gap-8 lg:ml-0 lg:gap-12">
           <Link
             href="/commuter-guide"

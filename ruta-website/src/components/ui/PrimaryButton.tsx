@@ -4,13 +4,10 @@ import { ChevronRightIcon } from '@/components/icons';
 type PrimaryButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'children'> & {
   children: ReactNode;
   loading?: boolean;
-  /** Label swapped in while `loading` is true. */
   loadingLabel?: string;
-  /** Trailing chevron, as used on the auth call-to-action buttons. */
   withChevron?: boolean;
 };
 
-/** Full-width 56px primary action: 12px radius, blue-600 fill. */
 export default function PrimaryButton({
   children,
   loading = false,

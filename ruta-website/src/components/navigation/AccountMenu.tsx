@@ -3,19 +3,6 @@ import defaultAvatar from '@/assets/avatar/default-avatar.png';
 import Avatar from '@/components/ui/Avatar';
 import useSession from '@/hooks/useSession';
 
-/**
- * The account control at the right of the navigation, and the only entry point
- * to the auth screens.
- *
- * - Signed out — reads "Sign In" over "Guest Member", links to login.
- * - Signed in  — shows the username over their tier, links to the profile.
- *
- * Both states share one layout — a right-aligned two-line label followed by the
- * portrait — so only the wording and destination differ.
- *
- * Rendering is held back until the session resolves, so the label never flips
- * from "Sign In" to a username after paint.
- */
 export default function AccountMenu() {
   const { isAuthenticated, isLoading, displayName, user } = useSession();
 

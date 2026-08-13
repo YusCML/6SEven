@@ -26,7 +26,6 @@ export default function RegisterForm() {
     setError('');
     setNotice('');
 
-    // Same rules the API enforces, so the user sees them without a round trip.
     const validationError = firstError(
       validateUsername(formData.username),
       validateEmail(formData.email),
@@ -40,7 +39,6 @@ export default function RegisterForm() {
     try {
       await authApi.register(formData);
 
-      // Registration does not sign you in — confirm the credentials by logging in.
       router.push('/auth/login?registered=1');
     } catch (registerError) {
       setError(errorMessage(registerError, 'Registration failed.'));
@@ -117,6 +115,13 @@ export default function RegisterForm() {
           label="Or sign up with"
           onSelect={(provider) => {
             setError('');
+            setNotice('');
+
+            if (provider === 'Google') {
+              window.location.href = '/api/auth/google/start';
+              return;
+            }
+
             setNotice(`${provider} sign-up isn't available yet. Please register with your email.`);
           }}
         />

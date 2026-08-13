@@ -5,7 +5,6 @@ import { CheckIcon } from '@/components/icons';
 import Badge from '@/components/ui/Badge';
 import { trafficHighlights } from '../content';
 
-/** "Know before you go" — the incident-reporting pitch with a map preview. */
 export default function LiveTraffic() {
   return (
     <section className="mx-auto w-full max-w-[1440px] px-6 pb-20 sm:px-11">

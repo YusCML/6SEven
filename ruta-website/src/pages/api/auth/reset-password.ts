@@ -13,7 +13,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!allowMethods(req, res, ['POST'])) return;
   noStore(res);
 
-  // Caps guessing of the 32-byte reset token.
   if (!enforceRateLimit(req, res, RATE_LIMITS.resetPassword)) return;
 
   const body = readBody<ResetPasswordBody>(req);

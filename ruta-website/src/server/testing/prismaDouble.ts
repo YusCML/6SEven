@@ -1,20 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { UserModel } from '@/generated/prisma/models';
 
-/**
- * An in-memory stand-in for `prisma.user`, used by unit tests.
- *
- * Tests cover the service and store logic, not Postgres itself, so they should
- * not need a live database — that would make them slow, order-dependent and
- * unrunnable offline. This double implements only the four operations
- * `userStore` actually calls, and reproduces the two behaviours the code
- * depends on: `P2002` on a duplicate email and `P2025` on a missing row.
- *
- * Integration against real Postgres is a separate concern; see
- * CONTRIBUTING § Testing.
- */
-
-/** Mirrors the shape Prisma throws, which `userStore` inspects by `code`. */
 class PrismaErrorDouble extends Error {
   readonly code: string;
 
@@ -25,23 +11,32 @@ class PrismaErrorDouble extends Error {
   }
 }
 
+type UserWritableFields = {
+  username: string;
+  email: string;
+  passwordHash: string | null;
+  plaintextPassword: string | null;
+  googleId: string | null;
+  avatarUrl: string | null;
+  emailVerified: boolean;
+};
+
 export type UserDouble = {
-  findUnique(args: { where: { id?: string; email?: string } }): Promise<UserModel | null>;
+  findUnique(args: { where: { id?: string; email?: string; googleId?: string } }): Promise<UserModel | null>;
   findMany(args?: { orderBy?: unknown }): Promise<UserModel[]>;
-  create(args: { data: { username: string; email: string; passwordHash: string; plaintextPassword?: string | null } }): Promise<UserModel>;
-  update(args: {
-    where: { id: string };
-    data: Partial<{ username: string; email: string; passwordHash: string; plaintextPassword: string | null }>;
-  }): Promise<UserModel>;
+  create(args: { data: Pick<UserWritableFields, 'username' | 'email'> & Partial<UserWritableFields> }): Promise<UserModel>;
+  update(args: { where: { id: string }; data: Partial<UserWritableFields> }): Promise<UserModel>;
 };
 
 export function createUserDouble(rows: Map<string, UserModel>): UserDouble {
   const byEmail = (email: string) => [...rows.values()].find((row) => row.email === email) ?? null;
+  const byGoogleId = (googleId: string) => [...rows.values()].find((row) => row.googleId === googleId) ?? null;
 
   return {
     async findUnique({ where }) {
       if (where.id !== undefined) return rows.get(where.id) ?? null;
       if (where.email !== undefined) return byEmail(where.email);
+      if (where.googleId !== undefined) return byGoogleId(where.googleId);
       return null;
     },
 
@@ -54,8 +49,22 @@ export function createUserDouble(rows: Map<string, UserModel>): UserDouble {
         throw new PrismaErrorDouble('P2002', 'Unique constraint failed on the fields: (`email`)');
       }
 
+      if (data.googleId && byGoogleId(data.googleId)) {
+        throw new PrismaErrorDouble('P2002', 'Unique constraint failed on the fields: (`googleId`)');
+      }
+
       const now = new Date();
-      const row: UserModel = { id: randomUUID(), plaintextPassword: null, ...data, createdAt: now, updatedAt: now };
+      const row: UserModel = {
+        id: randomUUID(),
+        passwordHash: null,
+        plaintextPassword: null,
+        googleId: null,
+        avatarUrl: null,
+        emailVerified: false,
+        ...data,
+        createdAt: now,
+        updatedAt: now,
+      };
 
       rows.set(row.id, row);
       return row;
@@ -69,6 +78,13 @@ export function createUserDouble(rows: Map<string, UserModel>): UserDouble {
         const clash = byEmail(data.email);
         if (clash && clash.id !== where.id) {
           throw new PrismaErrorDouble('P2002', 'Unique constraint failed on the fields: (`email`)');
+        }
+      }
+
+      if (data.googleId) {
+        const clash = byGoogleId(data.googleId);
+        if (clash && clash.id !== where.id) {
+          throw new PrismaErrorDouble('P2002', 'Unique constraint failed on the fields: (`googleId`)');
         }
       }
 

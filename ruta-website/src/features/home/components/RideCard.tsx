@@ -2,7 +2,6 @@ import Image from 'next/image';
 import Badge from '@/components/ui/Badge';
 import type { FrequentRide } from '../content';
 
-/** One saved-route card: photo, endpoints, title, transit tags and duration. */
 export default function RideCard({ ride }: { ride: FrequentRide }) {
   return (
     <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
@@ -13,8 +12,6 @@ export default function RideCard({ ride }: { ride: FrequentRide }) {
           aria-hidden
           fill
           placeholder="blur"
-          // Three across on desktop, two on tablet, one on mobile — so Next
-          // serves a card-sized file rather than the full-width original.
           sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
           className="object-cover"
         />

@@ -2,11 +2,10 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import PageMeta from '@/components/PageMeta';
 import TextField from '@/components/ui/TextField';
-import MapLegend from '@/features/routes/components/Maplegend';
+import MapLegend from '@/features/routes/components/MapLegend';
 import RouteOptionCard from '@/features/routes/components/RouteOptionCard';
 import type { RouteData } from '@/types/route';
 
-// Leaflet touches `window`, so it must load client-side only
 const RouteMap = dynamic(() => import('@/features/routes/components/RouteMap'), {
   ssr: false,
   loading: () => <p className="text-slate-400 font-mono text-sm">Loading map…</p>,

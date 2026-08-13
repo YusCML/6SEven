@@ -1,7 +1,6 @@
 import Image, { type StaticImageData } from 'next/image';
 
 type AvatarProps = {
-  /** Used for the alt text and, when no image is given, to derive initials. */
   name: string;
   src?: StaticImageData | string;
   size?: 'sm' | 'md';
@@ -12,7 +11,6 @@ const sizes = {
   md: { box: 'h-10 w-10', text: 'text-sm', px: 40 },
 } as const;
 
-/** First letters of the name — falls back to the leading character for one-word names. */
 function initialsOf(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
 
@@ -22,11 +20,6 @@ function initialsOf(name: string) {
   return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
 }
 
-/**
- * Round profile image. Renders the supplied picture when there is one and
- * falls back to initials on a tinted circle, so a missing avatar never leaves
- * an empty hole in the navigation.
- */
 export default function Avatar({ name, src, size = 'md' }: AvatarProps) {
   const style = sizes[size];
 

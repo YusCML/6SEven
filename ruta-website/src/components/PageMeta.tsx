@@ -3,15 +3,10 @@ import Head from 'next/head';
 const SITE_NAME = 'RUTA · SakayMetrics';
 
 type PageMetaProps = {
-  /** Page title, without the site name — that is appended here. */
   title: string;
   description: string;
 };
 
-/**
- * Per-page document head. Every page renders one, so titles and social preview
- * tags are defined in a single place instead of being repeated or forgotten.
- */
 export default function PageMeta({ title, description }: PageMetaProps) {
   const fullTitle = `${title} · ${SITE_NAME}`;
 

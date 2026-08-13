@@ -7,13 +7,8 @@ const toneStyles: Record<StatTone, { tile: string; value: string }> = {
   accent: { tile: 'bg-purple-50', value: 'text-slate-900' },
 };
 
-/**
- * The four status cards that straddle the bottom edge of the hero. Driven by
- * `landingStats` so adding a fifth metric is a data change, not new markup.
- */
 export default function StatStrip() {
   return (
-    // `relative z-10` keeps the cards above the hero they overlap.
     <section className="relative z-10 mx-auto -mt-16 w-full max-w-[1440px] px-6 sm:px-11">
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {landingStats.map((stat) => {

@@ -1,21 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-/**
- * Fixed-window rate limiting for the auth endpoints.
- *
- * Without this, `/api/auth/login` accepts unlimited password guesses. scrypt
- * makes each attempt costly, which cuts both ways — a few hundred concurrent
- * requests would also exhaust the server's CPU. Capping attempts fixes both.
- *
- * Counters live in memory alongside the auth store, so they reset on restart
- * and are per-instance. That is fine for a single dev/preview server; a real
- * deployment behind several instances needs a shared store (Redis, Postgres),
- * and only this file changes.
- */
-
 type Counter = {
   count: number;
-  /** Epoch ms at which the current window ends. */
   resetAt: number;
 };
 
@@ -28,7 +14,6 @@ function counters(): Map<string, Counter> {
   return globalThis.__rutaRateLimits;
 }
 
-/** Drops expired counters so the map cannot grow without bound. */
 function sweep(now: number) {
   const all = counters();
 
@@ -39,11 +24,6 @@ function sweep(now: number) {
   }
 }
 
-/**
- * Best-effort client identifier. `x-forwarded-for` is only trustworthy behind a
- * proxy that sets it; it is used here because the alternative (no limit at all)
- * is worse, not because it cannot be spoofed.
- */
 export function clientIp(req: NextApiRequest): string {
   const forwarded = req.headers['x-forwarded-for'];
   const raw = Array.isArray(forwarded) ? forwarded[0] : forwarded;
@@ -53,7 +33,6 @@ export function clientIp(req: NextApiRequest): string {
 }
 
 export type RateLimitRule = {
-  /** Distinct name per endpoint, so limits do not share a bucket. */
   name: string;
   limit: number;
   windowMs: number;
@@ -89,15 +68,10 @@ export function checkRateLimit(identifier: string, rule: RateLimitRule): RateLim
   return { allowed: true, remaining: rule.limit - existing.count, retryAfterSeconds };
 }
 
-/**
- * Applies a rule and answers `429` when it is exceeded.
- * Usage: `if (!enforceRateLimit(req, res, RULES.login)) return;`
- */
 export function enforceRateLimit(
   req: NextApiRequest,
   res: NextApiResponse,
   rule: RateLimitRule,
-  /** Extra key part, e.g. the submitted email, to also cap per-account attempts. */
   scope?: string,
 ): boolean {
   const identifier = scope ? `${clientIp(req)}|${scope}` : clientIp(req);
@@ -119,7 +93,6 @@ export function enforceRateLimit(
 const MINUTE = 60 * 1000;
 const HOUR = 60 * MINUTE;
 
-/** One rule per endpoint, tuned to how costly and how guessable each is. */
 export const RATE_LIMITS = {
   login: { name: 'login', limit: 10, windowMs: 15 * MINUTE },
   register: { name: 'register', limit: 5, windowMs: HOUR },

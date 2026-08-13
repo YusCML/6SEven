@@ -1,15 +1,9 @@
-/**
- * Validation rules shared by the browser forms and the API handlers.
- * Keep this module free of Node-only imports so it stays bundleable on both sides.
- */
-
 export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_MAX_LENGTH = 128;
 export const USERNAME_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 24;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-/** Letters, digits, underscore and period — no spaces, so it stays URL- and mention-safe. */
 const USERNAME_PATTERN = /^[a-zA-Z0-9](?:[a-zA-Z0-9_.]*[a-zA-Z0-9])?$/;
 
 export function normalizeEmail(email: string) {
@@ -53,7 +47,6 @@ export function validatePassword(password: string): string | null {
   return null;
 }
 
-/** Returns the first validation error, or null when every rule passes. */
 export function firstError(...errors: (string | null)[]): string | null {
   return errors.find((error) => error !== null) ?? null;
 }

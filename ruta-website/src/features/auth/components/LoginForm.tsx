@@ -18,14 +18,14 @@ export default function LoginForm() {
   const { applySession } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // Sessions already last 30 days, so this reflects real behaviour.
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Set by the register form after a successful sign-up.
   const justRegistered = router.query.registered === '1';
+  const redirectError = typeof router.query.error === 'string' ? router.query.error : '';
+  const visibleError = error || redirectError;
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,7 +34,6 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      // Adopt the session from the response — no extra round trip on redirect.
       applySession(await authApi.login({ email, password }));
       router.push('/dashboard');
     } catch (loginError) {
@@ -90,7 +89,7 @@ export default function LoginForm() {
           Remember me for 30 days
         </Checkbox>
 
-        {error ? <Alert tone="error">{error}</Alert> : null}
+        {visibleError ? <Alert tone="error">{visibleError}</Alert> : null}
         {notice ? <Alert tone="info">{notice}</Alert> : null}
 
         <PrimaryButton withChevron type="submit" loading={loading} loadingLabel="Signing In…">
@@ -103,6 +102,13 @@ export default function LoginForm() {
           label="Or continue with"
           onSelect={(provider) => {
             setError('');
+            setNotice('');
+
+            if (provider === 'Google') {
+              window.location.href = '/api/auth/google/start';
+              return;
+            }
+
             setNotice(`${provider} sign-in isn't available yet. Please use your email and password.`);
           }}
         />

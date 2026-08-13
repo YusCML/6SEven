@@ -7,10 +7,6 @@ import useSession from '@/hooks/useSession';
 import { errorMessage } from '@/lib/http';
 import * as accountApi from '../api';
 
-/**
- * Profile details. Signed-in visitors edit and save their username and email;
- * guests see the same layout filled with their generated identity, read-only.
- */
 export default function ProfileDetailsForm() {
   const { user, isAuthenticated, isLoading, displayName, applySession } = useSession();
   const [form, setForm] = useState({ username: '', email: '' });
@@ -18,9 +14,6 @@ export default function ProfileDetailsForm() {
   const [saving, setSaving] = useState(false);
   const [seededFor, setSeededFor] = useState<string | null>(null);
 
-  // Seed the fields once the session resolves, and again if the account changes.
-  // Adjusting state during render (rather than in an effect) avoids the extra
-  // pass that would briefly paint empty inputs.
   const currentUserId = user?.id ?? null;
 
   if (seededFor !== currentUserId) {
@@ -38,7 +31,6 @@ export default function ProfileDetailsForm() {
       const data = await accountApi.updateProfile(form);
 
       applySession(data);
-      // Show the server's normalized values (trimmed username, lower-cased email).
       if (data.user) setForm({ username: data.user.username, email: data.user.email });
       setStatus({ tone: 'success', message: 'Profile saved.' });
     } catch (error) {

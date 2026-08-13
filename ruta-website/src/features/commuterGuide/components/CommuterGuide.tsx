@@ -48,7 +48,6 @@ export default function CommuterGuide() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
       <header className="bg-blue-700 text-white py-10 shadow-lg">
         <div className="max-w-6xl mx-auto px-6">
           <h1 className="text-4xl font-bold">Commuter Guide</h1>
@@ -59,7 +58,6 @@ export default function CommuterGuide() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-10 space-y-10">
-        {/* Before You Travel */}
         <section className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-2xl font-semibold mb-4">
             🚶 Before You Travel
@@ -72,7 +70,6 @@ export default function CommuterGuide() {
           </ul>
         </section>
 
-        {/* Transportation */}
         <section>
           <h2 className="text-2xl font-semibold mb-5">
             🚍 Transportation Guide
@@ -91,7 +88,6 @@ export default function CommuterGuide() {
           </div>
         </section>
 
-        {/* Fare Table */}
         <section className="bg-white rounded-xl shadow-md p-6 overflow-x-auto">
           <h2 className="text-2xl font-semibold mb-4">
             💰 Estimated Fare
@@ -129,7 +125,6 @@ export default function CommuterGuide() {
           </table>
         </section>
 
-        {/* Safety */}
         <section className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-2xl font-semibold mb-4">
             🛡 Safety Tips
@@ -142,7 +137,6 @@ export default function CommuterGuide() {
           </ul>
         </section>
 
-        {/* Etiquette */}
         <section className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-2xl font-semibold mb-4">
             🤝 Commuting Etiquette
@@ -155,7 +149,6 @@ export default function CommuterGuide() {
           </ul>
         </section>
 
-        {/* Emergency */}
         <section className="bg-red-50 border-l-4 border-red-500 rounded-lg p-6">
           <h2 className="text-2xl font-semibold mb-4 text-red-700">
             🚨 Emergency Contacts
@@ -169,7 +162,6 @@ export default function CommuterGuide() {
           </div>
         </section>
 
-        {/* FAQ */}
         <section className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-2xl font-semibold mb-5">
             ❓ Frequently Asked Questions

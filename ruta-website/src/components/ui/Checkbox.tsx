@@ -8,11 +8,6 @@ type CheckboxProps = {
   name?: string;
 };
 
-/**
- * 24px checkbox with a 4px radius. The native input is kept for keyboard and
- * screen-reader behaviour and restyled with `appearance-none`, rather than
- * being replaced by a div that would lose both.
- */
 export default function Checkbox({ checked, onChange, children, name }: CheckboxProps) {
   const id = useId();
 

@@ -7,7 +7,6 @@ type ForgotPasswordBody = {
   email: string;
 };
 
-/** The same answer whether or not the email exists — no account enumeration. */
 const GENERIC_MESSAGE = 'If that email has an account, password reset instructions are on the way.';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -21,8 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const token = await createPasswordResetToken(email);
 
-    // No mailer wired up yet. Until one exists the token is only ever surfaced
-    // in development, never in a production response body.
     if (token && process.env.NODE_ENV !== 'production') {
       console.info(`[auth/forgot-password] reset token for ${email}: ${token}`);
       return res.status(200).json({ message: GENERIC_MESSAGE, devResetToken: token });

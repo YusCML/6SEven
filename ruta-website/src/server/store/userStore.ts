@@ -3,30 +3,19 @@ import { normalizeEmail } from '@/lib/validation';
 import { prisma } from '@/server/db/prisma';
 import { DuplicateEmailError, NotFoundError } from '@/server/errors';
 
-/**
- * Accounts, persisted in Postgres.
- *
- * This module is the only place that talks to `prisma.user`. Everything above it
- * works with `UserRecord`, so the rest of the app never imports a Prisma type
- * and swapping the database again would touch this file alone.
- */
-
 export type UserRecord = {
   id: string;
   username: string;
   email: string;
-  passwordHash: string;
-  /**
-   * ⚠️ Classroom demonstration only — the password as typed. Never read by
-   * authentication; login verifies against `passwordHash`. See the schema
-   * comment on `User.plaintextPassword` for how to remove it.
-   */
+  passwordHash: string | null;
   plaintextPassword: string | null;
+  googleId: string | null;
+  avatarUrl: string | null;
+  emailVerified: boolean;
   createdAt: string;
   updatedAt: string;
 };
 
-/** The user shape that is safe to send to the browser — no password hash. */
 export type PublicUser = {
   id: string;
   username: string;
@@ -34,7 +23,6 @@ export type PublicUser = {
   createdAt: string;
 };
 
-/** Postgres returns Date objects; the app passes ISO strings over the wire. */
 function toRecord(user: UserModel): UserRecord {
   return {
     id: user.id,
@@ -42,6 +30,9 @@ function toRecord(user: UserModel): UserRecord {
     email: user.email,
     passwordHash: user.passwordHash,
     plaintextPassword: user.plaintextPassword,
+    googleId: user.googleId,
+    avatarUrl: user.avatarUrl,
+    emailVerified: user.emailVerified,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   };
@@ -56,7 +47,6 @@ export function toPublicUser(user: UserRecord): PublicUser {
   };
 }
 
-/** Prisma's code for a unique-constraint violation — here, a taken email. */
 function isUniqueViolation(error: unknown): boolean {
   return typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'P2002';
 }
@@ -71,26 +61,37 @@ export async function findUserByEmail(email: string): Promise<UserRecord | null>
   return user ? toRecord(user) : null;
 }
 
+export async function findUserByGoogleId(googleId: string): Promise<UserRecord | null> {
+  if (!googleId) return null;
+
+  const user = await prisma.user.findUnique({ where: { googleId } });
+  return user ? toRecord(user) : null;
+}
+
 export async function createUser(input: {
   username: string;
   email: string;
-  passwordHash: string;
-  /** ⚠️ Demonstration only — see the note on `UserRecord`. */
-  plaintextPassword?: string;
+  passwordHash?: string | null;
+  plaintextPassword?: string | null;
+  googleId?: string | null;
+  avatarUrl?: string | null;
+  emailVerified?: boolean;
 }): Promise<UserRecord> {
   try {
     const user = await prisma.user.create({
       data: {
         username: input.username,
         email: normalizeEmail(input.email),
-        passwordHash: input.passwordHash,
+        passwordHash: input.passwordHash ?? null,
         plaintextPassword: input.plaintextPassword ?? null,
+        googleId: input.googleId ?? null,
+        avatarUrl: input.avatarUrl ?? null,
+        emailVerified: input.emailVerified ?? false,
       },
     });
 
     return toRecord(user);
   } catch (error) {
-    // The unique index is the real guard — checking first would still race.
     if (isUniqueViolation(error)) throw new DuplicateEmailError();
     throw error;
   }
@@ -98,7 +99,12 @@ export async function createUser(input: {
 
 export async function updateUser(
   id: string,
-  patch: Partial<Pick<UserRecord, 'username' | 'email' | 'passwordHash' | 'plaintextPassword'>>,
+  patch: Partial<
+    Pick<
+      UserRecord,
+      'username' | 'email' | 'passwordHash' | 'plaintextPassword' | 'googleId' | 'avatarUrl' | 'emailVerified'
+    >
+  >,
 ): Promise<UserRecord> {
   try {
     const user = await prisma.user.update({
@@ -108,13 +114,15 @@ export async function updateUser(
         ...(patch.email !== undefined ? { email: normalizeEmail(patch.email) } : {}),
         ...(patch.passwordHash !== undefined ? { passwordHash: patch.passwordHash } : {}),
         ...(patch.plaintextPassword !== undefined ? { plaintextPassword: patch.plaintextPassword } : {}),
+        ...(patch.googleId !== undefined ? { googleId: patch.googleId } : {}),
+        ...(patch.avatarUrl !== undefined ? { avatarUrl: patch.avatarUrl } : {}),
+        ...(patch.emailVerified !== undefined ? { emailVerified: patch.emailVerified } : {}),
       },
     });
 
     return toRecord(user);
   } catch (error) {
     if (isUniqueViolation(error)) throw new DuplicateEmailError();
-    // P2025 — update targeted a row that does not exist.
     if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'P2025') {
       throw new NotFoundError('User not found.');
     }

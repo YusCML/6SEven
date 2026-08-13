@@ -1,13 +1,7 @@
 import { randomInt } from 'node:crypto';
 
-/**
- * Guest identity. Visitors who have not signed in still get a session so the
- * app can hold their preferences; they are shown as `User` + a random suffix.
- */
-
 const GUEST_NAME_PREFIX = 'User';
 const GUEST_SUFFIX_LENGTH = 6;
-// No 0/O/1/I/l — the name is meant to be read aloud and retyped.
 const SUFFIX_ALPHABET = '23456789abcdefghjkmnpqrstuvwxyz';
 
 export function generateGuestName(): string {

@@ -1,16 +1,7 @@
 import type { SVGProps } from 'react';
 
-/**
- * Inline SVG icons.
- *
- * The glyphs below are the vectors exported from the RUTA Figma file, so the
- * rendered screens match the design exactly. They use `currentColor` rather
- * than baked-in fills, which lets Tailwind drive their colour.
- */
-
 type IconProps = SVGProps<SVGSVGElement>;
 
-/** RUTA brand mark — the bus glyph inside the blue tile. */
 export function RutaMarkIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" {...props}>
@@ -19,7 +10,6 @@ export function RutaMarkIcon(props: IconProps) {
   );
 }
 
-/** Field glyph used on the Email inputs in the design. */
 export function SearchIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" {...props}>
@@ -28,7 +18,6 @@ export function SearchIcon(props: IconProps) {
   );
 }
 
-/** Field glyph used on the Password inputs in the design. */
 export function MapPinIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 12 16" fill="currentColor" aria-hidden="true" {...props}>
@@ -37,7 +26,6 @@ export function MapPinIcon(props: IconProps) {
   );
 }
 
-/** Field glyph used on the first input of the sign-up form in the design. */
 export function ArrowsUpDownIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" {...props}>

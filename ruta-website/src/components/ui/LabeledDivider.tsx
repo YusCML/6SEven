@@ -2,7 +2,6 @@ type LabeledDividerProps = {
   label: string;
 };
 
-/** Horizontal rule with a centred caption, e.g. "OR CONTINUE WITH". */
 export default function LabeledDivider({ label }: LabeledDividerProps) {
   return (
     <div className="flex items-center gap-4">

@@ -1,11 +1,5 @@
 import type { NextApiResponse } from 'next';
 
-/**
- * Minimal `Set-Cookie` serializer. Next.js parses incoming cookies for us via
- * `req.cookies`, but writing them is left to the handler — and we do not want a
- * dependency just for this.
- */
-
 export type CookieOptions = {
   maxAge?: number;
   expires?: Date;
@@ -38,7 +32,6 @@ export function serializeCookie(name: string, value: string, options: CookieOpti
   return segments.join('; ');
 }
 
-/** Appends to `Set-Cookie` instead of overwriting whatever a previous call set. */
 export function appendCookie(res: NextApiResponse, cookie: string) {
   const existing = res.getHeader('Set-Cookie');
 

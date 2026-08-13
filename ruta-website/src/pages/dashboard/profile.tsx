@@ -64,7 +64,6 @@ export default function UserProfile() {
                 </label>
               </div>
             </div>
-            {/* Preferences are still local-only — no endpoint for them yet. */}
             <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
               <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow-sm transition">
                 Save Changes

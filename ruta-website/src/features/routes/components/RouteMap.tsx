@@ -29,7 +29,7 @@ export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
     async function resolveAll() {
       const entries = await Promise.all(
         routes.map(async (route) => {
-          const path = await getRoadPath(route.path); // pass your rough waypoints in
+          const path = await getRoadPath(route.path);
           return [route.id, path] as const;
         })
       );
@@ -56,7 +56,7 @@ export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
 
       {routes.map((route) => {
         const isSelected = route.id === selectedRouteId;
-        const path = resolvedPaths[route.id] ?? route.path; // fallback while loading
+        const path = resolvedPaths[route.id] ?? route.path;
         return (
           <Polyline
             key={route.id}

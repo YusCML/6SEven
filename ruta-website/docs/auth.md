@@ -183,14 +183,15 @@ use the site and appear on the profile page as a read-only default profile.
 Signing out does not strand anyone — it deletes the authenticated session and
 immediately issues a fresh guest one.
 
-### Storage — `src/server/store/authStore.ts`
+### Storage — `userStore.ts` (Postgres) + `sessionStore.ts` (memory)
 
-There is **no database yet**. Users, sessions and reset tokens live in `Map`s
-pinned to `globalThis` so they survive hot reloads, and are lost when the server
-restarts.
+Accounts are persisted in Neon Postgres through Prisma 7
+(`src/server/store/userStore.ts` — the only module that touches `prisma.user`).
 
-Every function is `async` even though nothing awaits. That is deliberate: when
-Neon/Prisma lands, only this one file changes and no call site has to be touched.
+Sessions and reset tokens are **still** `Map`s pinned to `globalThis`
+(`src/server/store/sessionStore.ts`), so a server restart signs everyone out
+while accounts survive. Every function there is already `async`, so moving them
+into Postgres would not touch a single call site.
 
 ---
 
@@ -280,8 +281,69 @@ display name shown in the navbar, profile and greeting.
 
 ---
 
-## 7. Next sprint — Neon
+## 7. Google sign-in
 
-`authStore.ts` is the only file that needs to change. The intended path is
-Prisma (`prisma` + `@prisma/client`), which **would** be the first dependency
-added to this project.
+Added 2026-08-13. Still **no dependency** — the OAuth 2.0 authorization-code
+flow with PKCE is ~200 lines over `node:crypto` and `fetch`. There is no
+`next-auth`, no `google-auth-library`, no `jose`.
+
+> Source comments were stripped from the tree on request, so this section is the
+> only prose explanation of the flow. Keep it current.
+
+### Setup
+
+Create an **OAuth 2.0 Client ID → Web application** at
+<https://console.cloud.google.com/apis/credentials>, then set in `.env`:
+
+| Variable | Value |
+| --- | --- |
+| `GOOGLE_CLIENT_ID` | from the Google console |
+| `GOOGLE_CLIENT_SECRET` | from the Google console |
+| `GOOGLE_REDIRECT_URI` | `http://localhost:3000/api/auth/google/callback` |
+
+The redirect URI must match the console entry character for character, or Google
+answers `redirect_uri_mismatch`. None of these carry the `NEXT_PUBLIC_` prefix,
+which is exactly what keeps the secret server-only.
+
+### The two routes
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/auth/google/start` | Mints `state` + a PKCE verifier, stores both in a 10-minute HttpOnly cookie, redirects to Google. |
+| `GET` | `/api/auth/google/callback` | Verifies `state`, exchanges the code for an ID token, upserts the account, issues a session. |
+
+Failures never render a stack trace — the callback redirects to
+`/auth/login?error=<message>` and `LoginForm` surfaces it.
+
+### Why PKCE, and what is verified
+
+`state` is compared with `timingSafeEqual` against the cookie, which is what
+stops a cross-site request from completing someone else's sign-in. PKCE means the
+authorization code is useless without the verifier that never left the server.
+
+The ID token's `iss`, `aud`, `exp` and `sub` claims are all checked
+(`assertClaims` in `src/server/auth/oauth/google.ts`). Its **signature is not**
+verified — the token is read straight off Google's token endpoint over TLS, which
+Google documents as sufficient for this flow. If the token ever arrives by another
+path, that assumption breaks and JWKS verification becomes mandatory.
+
+### Account linking
+
+| Situation | Result |
+| --- | --- |
+| `googleId` already known | Signs in. Refreshes `avatarUrl` / `emailVerified` if they changed. |
+| Email matches an existing account **and** Google says `email_verified` | Links: sets `googleId` on that account, then signs in. |
+| Email matches **but** Google has not verified it | **Refused.** Otherwise anyone able to assert an unverified address could seize the account. |
+| No match | Creates an account with `passwordHash = null`. |
+
+Because a Google-only account has no password, `passwordHash` is now nullable.
+`authenticate()` still runs its decoy hash so a passwordless account is
+indistinguishable from a wrong password, and `changePassword()` refuses with a
+clear message rather than throwing.
+
+### Not done yet
+
+- `avatarUrl` is stored but nothing renders it. Doing so needs
+  `images.remotePatterns` in `next.config.ts` for `lh3.googleusercontent.com`.
+- No rate limit on the two Google routes; the rest of `/api/auth/` has one.
+- Facebook is still a stub — the button says so.

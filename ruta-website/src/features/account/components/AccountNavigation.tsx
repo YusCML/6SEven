@@ -5,7 +5,6 @@ import useSession from '@/hooks/useSession';
 type AccountNavigationProps = {
   active: 'profile' | 'settings';
   title: string;
-  /** Show the sign-out / sign-in control at the bottom of the list. */
   showSignOut?: boolean;
 };
 

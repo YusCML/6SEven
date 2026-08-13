@@ -8,10 +8,6 @@ type ProfileBody = {
   email: string;
 };
 
-/**
- * GET   — the profile behind the current session (guest identity included).
- * PATCH — persist username / email. Signed-in visitors only.
- */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!allowMethods(req, res, ['GET', 'PATCH'])) return;
   noStore(res);

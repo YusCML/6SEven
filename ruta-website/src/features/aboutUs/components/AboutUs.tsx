@@ -66,7 +66,6 @@ export default function About() {
   return (
     <>
       <div className="min-h-screen bg-gray-100">
-        {/* Hero */}
         <section className="bg-blue-700 text-white py-16">
           <div className="max-w-6xl mx-auto px-6 text-center">
             <h1 className="text-5xl font-bold mb-4">About RUTA</h1>
@@ -80,7 +79,6 @@ export default function About() {
         </section>
 
         <main className="max-w-6xl mx-auto px-6 py-12 space-y-10">
-          {/* Mission */}
           <section className="bg-white rounded-xl shadow p-8">
             <h2 className="text-3xl font-bold mb-4">🎯 Our Mission</h2>
 
@@ -91,7 +89,6 @@ export default function About() {
             </p>
           </section>
 
-          {/* Vision */}
           <section className="bg-white rounded-xl shadow p-8">
             <h2 className="text-3xl font-bold mb-4">🌎 Our Vision</h2>
 
@@ -101,7 +98,6 @@ export default function About() {
             </p>
           </section>
 
-          {/* Features */}
           <section>
             <h2 className="text-3xl font-bold mb-6">
               ✨ What RUTA Offers
@@ -125,7 +121,6 @@ export default function About() {
             </div>
           </section>
 
-          {/* Team */}
           <section className="bg-white rounded-xl shadow p-8">
             <h2 className="text-3xl font-bold text-center mb-8">
               👨‍💻 Meet the Team
@@ -159,7 +154,6 @@ export default function About() {
             </div>
           </section>
 
-          {/* Contact */}
           <section className="bg-blue-700 text-white rounded-xl p-8 text-center">
             <h2 className="text-3xl font-bold mb-3">
               📩 Contact Us

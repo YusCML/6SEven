@@ -14,7 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!allowMethods(req, res, ['POST'])) return;
   noStore(res);
 
-  // The service verifies the current password, so cap guesses here.
   if (!enforceRateLimit(req, res, RATE_LIMITS.changePassword)) return;
 
   try {
@@ -30,7 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       confirmPassword: readString(body.confirmPassword),
     });
 
-    // Every session was revoked, including this one — re-issue for this browser.
     await startUserSession(req, res, resolved.user.id);
 
     return res.status(200).json({ message: 'Password updated. Other devices have been signed out.' });

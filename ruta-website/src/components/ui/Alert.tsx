@@ -12,10 +12,6 @@ const tones = {
   info: 'border-blue-200 bg-blue-50 text-blue-700',
 } as const;
 
-/**
- * Inline feedback banner. Errors use `role="alert"` so assistive tech announces
- * them immediately; softer tones use `role="status"` to avoid interrupting.
- */
 export default function Alert({ tone, children, className = '' }: AlertProps) {
   return (
     <p

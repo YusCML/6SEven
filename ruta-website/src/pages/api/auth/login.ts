@@ -17,8 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const body = readBody<LoginBody>(req);
   const email = normalizeEmail(readString(body.email));
 
-  // Scoped by email as well as IP, so one account cannot be brute-forced from
-  // many addresses, and one address cannot sweep many accounts.
   if (!enforceRateLimit(req, res, RATE_LIMITS.login, email)) return;
 
   try {

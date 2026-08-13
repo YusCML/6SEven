@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { frequentRides } from '../content';
 import RideCard from './RideCard';
 
-/** "Your Frequent Rides" — the saved-routes shortcut row. */
 export default function FrequentRides() {
   return (
     <section className="mx-auto w-full max-w-[1440px] px-6 py-14 sm:px-11">
