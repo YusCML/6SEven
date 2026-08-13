@@ -1,6 +1,7 @@
 export type SessionUser = {
   id: string;
   username: string;
+  nickname: string | null;
   email: string;
   createdAt: string;
 };
@@ -17,5 +18,8 @@ export type SessionPayload = {
 };
 
 export function sessionDisplayName(payload: SessionPayload): string {
-  return payload.user?.username ?? payload.guest?.name ?? 'Guest';
+  const user = payload.user;
+  if (user) return user.nickname?.trim() || user.username;
+
+  return payload.guest?.name ?? 'Guest';
 }

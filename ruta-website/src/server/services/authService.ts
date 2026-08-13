@@ -1,5 +1,14 @@
 import { createHash, randomBytes } from 'node:crypto';
-import { firstError, normalizeEmail, normalizeUsername, validateEmail, validatePassword, validateUsername } from '@/lib/validation';
+import {
+  firstError,
+  normalizeEmail,
+  normalizeNickname,
+  normalizeUsername,
+  validateEmail,
+  validateNickname,
+  validatePassword,
+  validateUsername,
+} from '@/lib/validation';
 import { hashPassword, needsRehash, verifyPassword } from '@/server/auth/password';
 import { DuplicateEmailError, InvalidCredentialsError, NotFoundError, ValidationError } from '@/server/errors';
 import {
@@ -79,25 +88,30 @@ export async function authenticate(email: string, password: string): Promise<Use
 
 export type ProfileUpdate = {
   username?: string;
+  nickname?: string;
   email?: string;
 };
 
 export async function updateProfile(userId: string, patch: ProfileUpdate): Promise<UserRecord> {
   const hasUsername = patch.username !== undefined;
+  const hasNickname = patch.nickname !== undefined;
   const hasEmail = patch.email !== undefined;
 
-  if (!hasUsername && !hasEmail) throw new ValidationError('Nothing to update.');
+  if (!hasUsername && !hasNickname && !hasEmail) throw new ValidationError('Nothing to update.');
 
   const username = hasUsername ? normalizeUsername(patch.username ?? '') : undefined;
+  const nickname = hasNickname ? normalizeNickname(patch.nickname ?? '') : undefined;
   const email = hasEmail ? normalizeEmail(patch.email ?? '') : undefined;
 
   assertValid(
     username !== undefined ? validateUsername(username) : null,
+    nickname !== undefined ? validateNickname(nickname) : null,
     email !== undefined ? validateEmail(email) : null,
   );
 
   return updateUser(userId, {
     ...(username !== undefined ? { username } : {}),
+    ...(nickname !== undefined ? { nickname } : {}),
     ...(email !== undefined ? { email } : {}),
   });
 }

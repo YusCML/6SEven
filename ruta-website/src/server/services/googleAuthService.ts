@@ -1,41 +1,63 @@
+import { randomInt } from 'node:crypto';
 import type { GoogleProfile } from '@/server/auth/oauth/google';
 import { generateGuestName } from '@/server/auth/guest';
-import { normalizeEmail, USERNAME_MAX_LENGTH, validateUsername } from '@/lib/validation';
+import {
+  normalizeEmail,
+  normalizeNickname,
+  USERNAME_MAX_LENGTH,
+  validateNickname,
+  validateUsername,
+} from '@/lib/validation';
 import { ValidationError } from '@/server/errors';
 import {
   createUser,
   findUserByEmail,
   findUserByGoogleId,
+  findUserByUsername,
   updateUser,
   type UserRecord,
 } from '@/server/store/userStore';
 
-function sanitizeUsername(value: string): string {
-  const stripped = value
-    .normalize('NFKD')
-    .replace(/[^a-zA-Z0-9_.]/g, '')
-    .slice(0, USERNAME_MAX_LENGTH);
-
-  return stripped.replace(/^[^a-zA-Z0-9]+/, '').replace(/[^a-zA-Z0-9]+$/, '');
-}
+const SUFFIX_MIN = 1000;
+const SUFFIX_MAX = 9999;
+const USERNAME_ATTEMPTS = 5;
 
 function firstWordOf(value: string): string {
   return value.trim().split(/\s+/)[0] ?? '';
 }
 
-function deriveUsername(profile: GoogleProfile): string {
-  const candidates = [
-    firstWordOf(profile.givenName),
-    firstWordOf(profile.name),
-    profile.email.split('@')[0] ?? '',
-  ];
+function usernameBase(profile: GoogleProfile): string {
+  const source = firstWordOf(profile.givenName) || firstWordOf(profile.name) || (profile.email.split('@')[0] ?? '');
+  const cleaned = source
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
 
-  for (const candidate of candidates) {
-    const cleaned = sanitizeUsername(candidate);
-    if (cleaned && validateUsername(cleaned) === null) return cleaned;
+  return cleaned.slice(0, USERNAME_MAX_LENGTH - 5) || 'ruta';
+}
+
+async function deriveUsername(profile: GoogleProfile): Promise<string> {
+  const base = usernameBase(profile);
+
+  for (let attempt = 0; attempt < USERNAME_ATTEMPTS; attempt += 1) {
+    const candidate = `${base}${randomInt(SUFFIX_MIN, SUFFIX_MAX + 1)}`;
+
+    if (validateUsername(candidate) !== null) break;
+    if (!(await findUserByUsername(candidate))) return candidate;
   }
 
-  return generateGuestName();
+  return generateGuestName().toLowerCase();
+}
+
+function deriveNickname(profile: GoogleProfile): string {
+  const candidates = [profile.givenName, profile.name, profile.email.split('@')[0] ?? ''];
+
+  for (const candidate of candidates) {
+    const cleaned = normalizeNickname(candidate);
+    if (cleaned && validateNickname(cleaned) === null) return cleaned;
+  }
+
+  return 'Commuter';
 }
 
 async function refreshProfile(user: UserRecord, profile: GoogleProfile): Promise<UserRecord> {
@@ -43,6 +65,7 @@ async function refreshProfile(user: UserRecord, profile: GoogleProfile): Promise
 
   if (user.avatarUrl !== profile.picture) patch.avatarUrl = profile.picture;
   if (profile.emailVerified && !user.emailVerified) patch.emailVerified = true;
+  if (!user.nickname) patch.nickname = deriveNickname(profile);
 
   if (Object.keys(patch).length === 0) return user;
 
@@ -72,12 +95,14 @@ export async function signInWithGoogle(profile: GoogleProfile): Promise<UserReco
       googleId: profile.googleId,
       avatarUrl: profile.picture,
       emailVerified: true,
+      ...(existing.nickname ? {} : { nickname: deriveNickname(profile) }),
     });
   }
 
   try {
     return await createUser({
-      username: deriveUsername(profile),
+      username: await deriveUsername(profile),
+      nickname: deriveNickname(profile),
       email,
       passwordHash: null,
       googleId: profile.googleId,

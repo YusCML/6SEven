@@ -3,6 +3,7 @@ import type { SessionPayload } from '@/types/session';
 
 export type ProfileInput = {
   username?: string;
+  nickname?: string;
   email?: string;
 };
 
