@@ -34,7 +34,7 @@ export default function CommuterGuide() {
         <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {transportOptions.map((item) => (
             <article key={item.title} className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-slate-100">
-              <span className={`grid h-7 w-7 place-items-center rounded-md ${item.tone}`}><item.Icon className="h-3.5 w-3.5" /></span>
+              <span className={`grid h-7 w-7 place-items-center rounded-md ${item.tone}`}><item.Icon className="h-5 w-5" /></span>
               <h2 className="mt-3 text-sm font-bold">{item.title}</h2>
               <p className="mt-1 text-xs leading-5 text-slate-500">{item.text}</p>
             </article>
@@ -59,7 +59,7 @@ export default function CommuterGuide() {
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             {fares.map((fare) => (
               <article key={fare.title} className="rounded-xl bg-white/10 p-4 ring-1 ring-white/10">
-                <fare.Icon className="h-4 w-4 text-blue-300" /><h3 className="mt-2 text-sm font-bold">{fare.title}</h3>
+                <fare.Icon className="h-5 w-5 text-blue-300" /><h3 className="mt-2 text-sm font-bold">{fare.title}</h3>
                 <p className="mt-1 min-h-10 text-xs leading-4 text-slate-300">{fare.text}</p>
                 <p className="mt-3 text-lg font-bold">{fare.fare}</p>
               </article>
@@ -68,7 +68,7 @@ export default function CommuterGuide() {
         </section>
 
         <section>
-          <div className="mb-4 flex items-end justify-between gap-4"><div><h2 className="text-xl font-bold">Network Maps</h2><p className="mt-1 text-xs text-slate-500">Explore our interconnected rail and bus networks across the city.</p></div><button className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold shadow-sm"><DownloadIcon className="h-3.5 w-3.5" />Download PDF Maps</button></div>
+          <div className="mb-4 flex items-end justify-between gap-4"><div><h2 className="text-xl font-bold">Network Maps</h2><p className="mt-1 text-xs text-slate-500">Explore our interconnected rail and bus networks across the city.</p></div><button className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold shadow-sm"><DownloadIcon className="h-4 w-4" />Download PDF Maps</button></div>
           <div className="grid gap-4 md:grid-cols-2">
             <figure className="relative overflow-hidden rounded-lg"><img src={railwayMap.src} alt="System map" className="h-56 w-full object-cover" /><figcaption className="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1 text-[10px] font-bold shadow">System Rail Map</figcaption></figure>
             <figure className="relative overflow-hidden rounded-lg"><img src={busRouteMap.src} alt="Bus route map" className="h-56 w-full object-cover" /><figcaption className="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1 text-[10px] font-bold shadow">Metro Bus Network</figcaption></figure>
@@ -76,7 +76,7 @@ export default function CommuterGuide() {
         </section>
 
         <section className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
-          <div className="grid gap-5 md:grid-cols-[1.1fr_2fr]"><div><h2 className="text-lg font-bold">Your Safety is Our Priority</h2><div className="mt-4 flex gap-2 rounded-lg bg-amber-50 p-3 text-xs leading-5 text-amber-800"><AlertIcon className="mt-0.5 h-4 w-4 shrink-0" />In case of emergency, use the red emergency intercom or contact station staff immediately.</div><p className="mt-4 flex items-center gap-2 text-sm font-bold"><PhoneIcon className="h-4 w-4" />1-800-RUTA-SEC</p></div><div className="grid gap-4 sm:grid-cols-2"><Safety title="CCTV Monitoring" text="All stations and vehicles are equipped with high-definition cameras." /><Safety title="Well-Lit Areas" text="Personal safety lighting is in place during hours and late-night service." /><Safety title="Trained Police" text="Certified staff and police officers are present on weekends and at key locations." /><Safety title="Passenger Assistance" text="Voice call boxes and trained staff are available for immediate assistance." /></div></div>
+          <div className="grid gap-5 md:grid-cols-[1.1fr_2fr]"><div><h2 className="text-lg font-bold">Your Safety is Our Priority</h2><div className="mt-4 flex gap-2 rounded-lg bg-amber-50 p-3 text-xs leading-5 text-amber-800"><AlertIcon className="mt-0.5 h-5 w-5 shrink-0" />In case of emergency, use the red emergency intercom or contact station staff immediately.</div><p className="mt-4 flex items-center gap-2 text-sm font-bold"><PhoneIcon className="h-5 w-5" />1-800-RUTA-SEC</p></div><div className="grid gap-4 sm:grid-cols-2"><Safety title="CCTV Monitoring" text="All stations and vehicles are equipped with high-definition cameras." /><Safety title="Well-Lit Areas" text="Personal safety lighting is in place during hours and late-night service." /><Safety title="Trained Police" text="Certified staff and police officers are present on weekends and at key locations." /><Safety title="Passenger Assistance" text="Voice call boxes and trained staff are available for immediate assistance." /></div></div>
         </section>
 
         <footer className="border-t border-slate-200 py-7 text-center"><p className="text-xs text-slate-400">Was this guide helpful?</p><div className="mt-3 flex justify-center gap-2"><button className="rounded-md border border-slate-200 bg-white px-4 py-2 text-xs">Yes, it was</button><button className="rounded-md border border-slate-200 bg-white px-4 py-2 text-xs">Needs more info</button></div></footer>
@@ -86,7 +86,7 @@ export default function CommuterGuide() {
 }
 
 function Safety({ title, text }: { title: string; text: string }) {
-  return <div><h3 className="flex items-center gap-1.5 text-xs font-bold text-slate-800"><ShieldCheckIcon className="h-3.5 w-3.5 text-blue-600" />{title}</h3><p className="mt-1 text-xs leading-5 text-slate-500">{text}</p></div>;
+  return <div><h3 className="flex items-center gap-1.5 text-xs font-bold text-slate-800"><ShieldCheckIcon className="h-5 w-5 text-blue-600" />{title}</h3><p className="mt-1 text-xs leading-5 text-slate-500">{text}</p></div>;
 }
 
 type IconProps = { className?: string };
