@@ -159,7 +159,7 @@ export default function AboutUs() {
               </p>
               <p className="flex items-center gap-2">
                 <PinIcon className="h-4 w-4 text-blue-300" />
-                Cebu City, Philippines
+                Iloilo City, Philippines
               </p>
             </div>
           </div>
