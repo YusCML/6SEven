@@ -4,14 +4,14 @@ import Avatar from '@/components/ui/Avatar';
 import useSession from '@/hooks/useSession';
 
 export default function AccountMenu() {
-  const { isAuthenticated, isLoading, displayName, user } = useSession();
+  const { isAuthenticated, isLoading, displayName } = useSession();
 
   if (isLoading) {
     return <span className="h-10 w-32 animate-pulse rounded-full bg-slate-100" aria-hidden />;
   }
 
   const account = isAuthenticated
-    ? { href: '/dashboard/profile', primary: user?.username ?? displayName, secondary: 'Pro Commuter', photo: undefined }
+    ? { href: '/dashboard/profile', primary: displayName, secondary: 'Pro Commuter', photo: undefined }
     : { href: '/auth/login', primary: 'Sign In', secondary: 'Guest Member', photo: defaultAvatar };
 
   return (

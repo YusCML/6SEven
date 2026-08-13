@@ -5,6 +5,7 @@ import { updateProfile } from '@/server/services/authService';
 
 type ProfileBody = {
   username: string;
+  nickname: string;
   email: string;
 };
 
@@ -24,6 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const body = readBody<ProfileBody>(req);
     const user = await updateProfile(resolved.user.id, {
       ...(body.username !== undefined ? { username: readString(body.username) } : {}),
+      ...(body.nickname !== undefined ? { nickname: readString(body.nickname) } : {}),
       ...(body.email !== undefined ? { email: readString(body.email) } : {}),
     });
 

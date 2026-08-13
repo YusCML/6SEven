@@ -52,42 +52,62 @@ describe('signInWithGoogle — new account', () => {
     expect(user.emailVerified).toBe(false);
   });
 
-  it('uses only the first name, never the full name', async () => {
+  it('builds the username from a lower-cased first name plus digits', async () => {
     const user = await signInWithGoogle(profile());
 
-    expect(user.username).toBe('Juan');
+    expect(user.username).toMatch(/^juan\d{4}$/);
     expect(validateUsername(user.username)).toBeNull();
   });
 
-  it('takes the first word when Google puts several names in given_name', async () => {
+  it('lower-cases and strips punctuation from a multi-word given name', async () => {
     const user = await signInWithGoogle(
       profile({ givenName: 'DenverNeil R.', name: 'DenverNeil R. ALEJANDRO' }),
     );
 
-    expect(user.username).toBe('DenverNeil');
+    expect(user.username).toMatch(/^denverneil\d{4}$/);
   });
 
-  it('falls back to the first word of the full name when given_name is absent', async () => {
-    const user = await signInWithGoogle(profile({ givenName: '', name: 'Maria Clara Santos' }));
+  it('gives two people with the same first name different usernames', async () => {
+    const a = await signInWithGoogle(profile({ googleId: 'g1', email: 'juan1@ruta.ph' }));
+    const b = await signInWithGoogle(profile({ googleId: 'g2', email: 'juan2@ruta.ph' }));
 
-    expect(user.username).toBe('Maria');
+    expect(a.username).not.toBe(b.username);
   });
 
   it('falls back to the email local part when no name is usable', async () => {
     const user = await signInWithGoogle(profile({ givenName: '', name: '', email: 'juan.delacruz@ruta.ph' }));
 
-    expect(user.username).toBe('juan.delacruz');
-  });
-
-  it('falls back to a generated name when neither name nor email survives sanitising', async () => {
-    const user = await signInWithGoogle(profile({ givenName: '!!!', name: '!!!', email: '!!!@ruta.ph' }));
-
-    expect(validateUsername(user.username)).toBeNull();
+    expect(user.username).toMatch(/^juandelacruz\d{4}$/);
   });
 
   it('never produces a username that would fail the project rules', async () => {
     const user = await signInWithGoogle(profile({ givenName: 'A'.repeat(120), name: 'A'.repeat(120) }));
 
+    expect(validateUsername(user.username)).toBeNull();
+  });
+
+  it('keeps the spacing of the given name in the nickname', async () => {
+    const user = await signInWithGoogle(profile({ givenName: 'Denver Neil', name: 'Denver Neil ALEJANDRO' }));
+
+    expect(user.nickname).toBe('Denver Neil');
+  });
+
+  it('uses the given name verbatim as the nickname', async () => {
+    const user = await signInWithGoogle(profile());
+
+    expect(user.nickname).toBe('Juan');
+  });
+
+  it('collapses runaway whitespace in the nickname', async () => {
+    const user = await signInWithGoogle(profile({ givenName: '  Maria   Clara  ' }));
+
+    expect(user.nickname).toBe('Maria Clara');
+  });
+
+  it('falls back to a usable nickname when Google sends nothing usable', async () => {
+    const user = await signInWithGoogle(profile({ givenName: '!!!', name: '!!!', email: '!!!@ruta.ph' }));
+
+    expect(user.nickname).toBe('Commuter');
     expect(validateUsername(user.username)).toBeNull();
   });
 });

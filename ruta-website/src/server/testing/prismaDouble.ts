@@ -13,6 +13,7 @@ class PrismaErrorDouble extends Error {
 
 type UserWritableFields = {
   username: string;
+  nickname: string | null;
   email: string;
   passwordHash: string | null;
   plaintextPassword: string | null;
@@ -23,6 +24,7 @@ type UserWritableFields = {
 
 export type UserDouble = {
   findUnique(args: { where: { id?: string; email?: string; googleId?: string } }): Promise<UserModel | null>;
+  findFirst(args: { where: { username?: string } }): Promise<UserModel | null>;
   findMany(args?: { orderBy?: unknown }): Promise<UserModel[]>;
   create(args: { data: Pick<UserWritableFields, 'username' | 'email'> & Partial<UserWritableFields> }): Promise<UserModel>;
   update(args: { where: { id: string }; data: Partial<UserWritableFields> }): Promise<UserModel>;
@@ -38,6 +40,11 @@ export function createUserDouble(rows: Map<string, UserModel>): UserDouble {
       if (where.email !== undefined) return byEmail(where.email);
       if (where.googleId !== undefined) return byGoogleId(where.googleId);
       return null;
+    },
+
+    async findFirst({ where }) {
+      if (where.username === undefined) return null;
+      return [...rows.values()].find((row) => row.username === where.username) ?? null;
     },
 
     async findMany() {
@@ -56,6 +63,7 @@ export function createUserDouble(rows: Map<string, UserModel>): UserDouble {
       const now = new Date();
       const row: UserModel = {
         id: randomUUID(),
+        nickname: null,
         passwordHash: null,
         plaintextPassword: null,
         googleId: null,

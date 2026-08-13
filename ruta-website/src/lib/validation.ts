@@ -2,9 +2,11 @@ export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_MAX_LENGTH = 128;
 export const USERNAME_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 24;
+export const NICKNAME_MAX_LENGTH = 40;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_PATTERN = /^[a-zA-Z0-9](?:[a-zA-Z0-9_.]*[a-zA-Z0-9])?$/;
+const NICKNAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9 .'-]*$/;
 
 export function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
@@ -32,6 +34,22 @@ export function validateUsername(username: string): string | null {
   if (normalized.length > USERNAME_MAX_LENGTH) return `Username must be at most ${USERNAME_MAX_LENGTH} characters long.`;
   if (!USERNAME_PATTERN.test(normalized)) {
     return 'Username can only use letters, numbers, underscores and periods, and must start and end with a letter or number.';
+  }
+
+  return null;
+}
+
+export function normalizeNickname(nickname: string) {
+  return nickname.trim().replace(/\s+/g, ' ');
+}
+
+export function validateNickname(nickname: string): string | null {
+  const normalized = normalizeNickname(nickname);
+
+  if (!normalized) return 'Nickname is required.';
+  if (normalized.length > NICKNAME_MAX_LENGTH) return `Nickname must be at most ${NICKNAME_MAX_LENGTH} characters long.`;
+  if (!NICKNAME_PATTERN.test(normalized)) {
+    return 'Nickname can only use letters, numbers, spaces, periods, apostrophes and hyphens.';
   }
 
   return null;

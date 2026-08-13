@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import * as authApi from '@/features/auth/api';
-import type { SessionPayload, SessionUser } from '@/types/session';
+import { sessionDisplayName, type SessionPayload, type SessionUser } from '@/types/session';
 
 export type SessionStatus = 'loading' | 'authenticated' | 'guest';
 
@@ -19,7 +19,7 @@ export const SessionContext = createContext<SessionContextValue | null>(null);
 
 function displayNameOf(payload: SessionPayload | null): string {
   if (!payload) return 'Guest';
-  return payload.user?.username ?? payload.guest?.name ?? 'Guest';
+  return sessionDisplayName(payload);
 }
 
 async function loadSession(): Promise<SessionPayload | null> {

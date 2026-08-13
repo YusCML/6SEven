@@ -1,11 +1,12 @@
 import type { UserModel } from '@/generated/prisma/models';
-import { normalizeEmail } from '@/lib/validation';
+import { normalizeEmail, normalizeNickname } from '@/lib/validation';
 import { prisma } from '@/server/db/prisma';
 import { DuplicateEmailError, NotFoundError } from '@/server/errors';
 
 export type UserRecord = {
   id: string;
   username: string;
+  nickname: string | null;
   email: string;
   passwordHash: string | null;
   plaintextPassword: string | null;
@@ -19,6 +20,7 @@ export type UserRecord = {
 export type PublicUser = {
   id: string;
   username: string;
+  nickname: string | null;
   email: string;
   createdAt: string;
 };
@@ -27,6 +29,7 @@ function toRecord(user: UserModel): UserRecord {
   return {
     id: user.id,
     username: user.username,
+    nickname: user.nickname,
     email: user.email,
     passwordHash: user.passwordHash,
     plaintextPassword: user.plaintextPassword,
@@ -42,6 +45,7 @@ export function toPublicUser(user: UserRecord): PublicUser {
   return {
     id: user.id,
     username: user.username,
+    nickname: user.nickname,
     email: user.email,
     createdAt: user.createdAt,
   };
@@ -68,8 +72,16 @@ export async function findUserByGoogleId(googleId: string): Promise<UserRecord |
   return user ? toRecord(user) : null;
 }
 
+export async function findUserByUsername(username: string): Promise<UserRecord | null> {
+  if (!username) return null;
+
+  const user = await prisma.user.findFirst({ where: { username } });
+  return user ? toRecord(user) : null;
+}
+
 export async function createUser(input: {
   username: string;
+  nickname?: string | null;
   email: string;
   passwordHash?: string | null;
   plaintextPassword?: string | null;
@@ -81,6 +93,7 @@ export async function createUser(input: {
     const user = await prisma.user.create({
       data: {
         username: input.username,
+        nickname: input.nickname ? normalizeNickname(input.nickname) : null,
         email: normalizeEmail(input.email),
         passwordHash: input.passwordHash ?? null,
         plaintextPassword: input.plaintextPassword ?? null,
@@ -102,7 +115,14 @@ export async function updateUser(
   patch: Partial<
     Pick<
       UserRecord,
-      'username' | 'email' | 'passwordHash' | 'plaintextPassword' | 'googleId' | 'avatarUrl' | 'emailVerified'
+      | 'username'
+      | 'nickname'
+      | 'email'
+      | 'passwordHash'
+      | 'plaintextPassword'
+      | 'googleId'
+      | 'avatarUrl'
+      | 'emailVerified'
     >
   >,
 ): Promise<UserRecord> {
@@ -111,6 +131,9 @@ export async function updateUser(
       where: { id },
       data: {
         ...(patch.username !== undefined ? { username: patch.username } : {}),
+        ...(patch.nickname !== undefined
+          ? { nickname: patch.nickname ? normalizeNickname(patch.nickname) : null }
+          : {}),
         ...(patch.email !== undefined ? { email: normalizeEmail(patch.email) } : {}),
         ...(patch.passwordHash !== undefined ? { passwordHash: patch.passwordHash } : {}),
         ...(patch.plaintextPassword !== undefined ? { plaintextPassword: patch.plaintextPassword } : {}),
