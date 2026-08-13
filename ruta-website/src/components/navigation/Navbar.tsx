@@ -4,9 +4,8 @@ import RutaLogo from '@/components/brand/RutaLogo';
 import AccountMenu from './AccountMenu';
 
 const navigationItems = [
-  { href: '/home', label: 'Home' },
-  { href: '/dashboard', label: 'Dashboard' },
   { href: '/routes', label: 'Routes' },
+  { href: '/dashboard', label: 'Incidents' },
   { href: '/commuter-guide', label: 'Commuter Guide' },
   { href: '/about-us', label: 'About' },
 ];
@@ -39,12 +38,6 @@ export default function Navbar() {
         </nav>
 
         <div className="ml-auto flex items-center gap-8 lg:ml-0 lg:gap-12">
-          <Link
-            href="/commuter-guide"
-            className="hidden text-sm font-medium text-slate-400 transition hover:text-slate-600 sm:block"
-          >
-            Help Center
-          </Link>
           <AccountMenu />
         </div>
       </div>

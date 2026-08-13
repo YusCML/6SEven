@@ -16,7 +16,7 @@ export const landingStats: LandingStat[] = [
   { label: 'Active Routes', value: '482', icon: '🚏', tone: 'brand' },
   { label: 'Status', value: 'Normal', icon: '✅', tone: 'success' },
   { label: 'Reports', value: '3 Alerts', icon: '⚠️', tone: 'warning' },
-  { label: 'Weather', value: '29°C Clear', icon: '🌤️', tone: 'accent' },
+  { label: 'Weather', value: '28°C Clear', icon: '🌤️', tone: 'accent' },
 ];
 
 export type RideTag = {
@@ -83,7 +83,7 @@ export const trafficHighlights: TrafficHighlight[] = [
     description: 'Always get a Plan B when the main roads are blocked.',
   },
   {
-    title: 'Jeepney Fare Calculator',
+    title: 'Journey Fare Calculator',
     description: 'Never overpay again. Accurate fare computation based on LTFRB matrix.',
   },
 ];
