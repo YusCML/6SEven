@@ -2,6 +2,9 @@
   "name": "ruta-server",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "prisma generate && tsx watch src/server.ts",
     "start": "prisma generate && tsx src/server.ts",
@@ -16,14 +19,14 @@
     "@prisma/client": "^7.9.1",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "prisma": "^7.9.1",
+    "tsx": "^4.20.2"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/node": "^20.19.43",
-    "prisma": "^7.9.1",
-    "tsx": "^4.20.2",
     "typescript": "^5.9.3",
     "vitest": "^4.1.10"
   }
