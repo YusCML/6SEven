@@ -78,7 +78,7 @@ export default function AboutUs() {
             Our mission is to provide every Filipino with real-time, accurate
             transit data that makes commuting predictable, efficient, and
             dignified. By leveraging community-sourced incident reporting and
-            advanced route planning, we're putting the power back in the hands
+            advanced route planning, we&apos;re putting the power back in the hands
             of the commuter.
           </p>
 
@@ -165,7 +165,7 @@ export default function AboutUs() {
             </h2>
 
             <p className="mt-4 max-w-sm text-sm leading-6 text-slate-300">
-              We're always looking for ways to improve RUTA and collaborate
+              We&apos;re always looking for ways to improve RUTA and collaborate
               with LGUs and transit operators.
             </p>
 
@@ -338,7 +338,7 @@ type IconProps = { className?: string };
 function IconFrame({
   children,
   className,
-}: IconProps & { children: any }) {
+}: IconProps & { children: React.ReactNode }) {
   return (
     <svg
       viewBox="0 0 24 24"

@@ -5,7 +5,7 @@ import PrimaryButton from '@/components/ui/PrimaryButton';
 import TextField from '@/components/ui/TextField';
 import useSession from '@/hooks/useSession';
 import { errorMessage } from '@/lib/http';
-import * as accountApi from '../api';
+import * as accountApi from '@/services/account.service';
 
 export default function ProfileDetailsForm() {
   const { user, isAuthenticated, isLoading, displayName, applySession } = useSession();

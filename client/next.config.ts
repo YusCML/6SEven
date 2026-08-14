@@ -1,11 +1,19 @@
 import type { NextConfig } from "next";
 
+const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN ?? "http://localhost:4000";
+
 const nextConfig: NextConfig = {
   reactCompiler: true,
   reactStrictMode: true,
 
   images: {
     qualities: [75, 85],
+  },
+
+  async rewrites() {
+    return [
+      { source: "/api/:path*", destination: `${API_ORIGIN}/api/:path*` },
+    ];
   },
 
   async redirects() {

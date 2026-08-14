@@ -3,8 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ArrowsUpDownIcon, MapPinIcon, SearchIcon } from '@/components/icons';
 import { errorMessage } from '@/lib/http';
-import { firstError, validateEmail, validatePassword, validateUsername } from '@/lib/validation';
-import * as authApi from '../api';
+import * as authApi from '@/services/auth.service';
 import Alert from '@/components/ui/Alert';
 import Checkbox from '@/components/ui/Checkbox';
 import PrimaryButton from '@/components/ui/PrimaryButton';
@@ -26,13 +25,6 @@ export default function RegisterForm() {
     setError('');
     setNotice('');
 
-    const validationError = firstError(
-      validateUsername(formData.username),
-      validateEmail(formData.email),
-      validatePassword(formData.password),
-    );
-
-    if (validationError) return setError(validationError);
     if (!acceptedTerms) return setError('Please accept the Terms of Service and Privacy Policy to continue.');
 
     setLoading(true);

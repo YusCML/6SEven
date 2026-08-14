@@ -5,7 +5,7 @@ import Alert from '@/components/ui/Alert';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 import TextField from '@/components/ui/TextField';
 import { errorMessage } from '@/lib/http';
-import * as authApi from '../api';
+import * as authApi from '@/services/auth.service';
 import AuthCard from './AuthCard';
 import AuthStatusStrip from './AuthStatusStrip';
 

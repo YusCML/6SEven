@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { MapPinIcon, SearchIcon } from '@/components/icons';
 import useSession from '@/hooks/useSession';
 import { errorMessage } from '@/lib/http';
-import * as authApi from '../api';
+import * as authApi from '@/services/auth.service';
 import Alert from '@/components/ui/Alert';
 import Checkbox from '@/components/ui/Checkbox';
 import PrimaryButton from '@/components/ui/PrimaryButton';

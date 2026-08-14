@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import * as authApi from '@/features/auth/api';
-import { sessionDisplayName, type SessionPayload, type SessionUser } from '@/types/session';
+import * as authApi from '@/services/auth.service';
+import type { SessionPayload, SessionUser } from '@shared/types/session';
+import { sessionDisplayName } from '@/lib/session';
 
 export type SessionStatus = 'loading' | 'authenticated' | 'guest';
 

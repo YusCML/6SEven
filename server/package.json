@@ -1,0 +1,30 @@
+{
+  "name": "ruta-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "prisma generate && tsx watch src/server.ts",
+    "start": "prisma generate && tsx src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prisma:push": "prisma db push",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "^7.9.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.19.43",
+    "prisma": "^7.9.1",
+    "tsx": "^4.20.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
+  }
+}
