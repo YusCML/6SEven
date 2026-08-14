@@ -35,16 +35,8 @@ actually move around Iloilo City — jeepney codes, tricycle hops, transfer poin
 
 ## The team
 
-**Group 5** · Software Development III · Central Philippine University
+**Group 5** · Software Development III
 
-| Member | Role |
-| --- | --- |
-| Bryan Del Rosario | Project Manager |
-| Denver Neil Alejandro | Lead Developer |
-| Joe Steven Bandong | Lead Backend Developer |
-| Zephaniah Raye D. Belmis | Frontend Developer |
-| Novie Glynn Farrol | Frontend Developer |
-| Nherf Rossel Gempasao | QA Tester |
 
 ---
 
