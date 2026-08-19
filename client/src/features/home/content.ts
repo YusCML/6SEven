@@ -1,4 +1,6 @@
+import type { ComponentType, SVGProps } from 'react';
 import type { StaticImageData } from 'next/image';
+import { AlertTriangleIcon, CloudSunIcon, RouteIcon, ShieldCheckIcon } from '@/components/icons';
 import cpuPhoto from '@/assets/landing/ride-cpu.jpg';
 import jaroPhoto from '@/assets/landing/ride-jaro.jpg';
 import smIloiloPhoto from '@/assets/landing/ride-sm-iloilo.jpg';
@@ -8,15 +10,15 @@ export type StatTone = 'brand' | 'success' | 'warning' | 'accent';
 export type LandingStat = {
   label: string;
   value: string;
-  icon: string;
+  Icon: ComponentType<SVGProps<SVGSVGElement>>;
   tone: StatTone;
 };
 
 export const landingStats: LandingStat[] = [
-  { label: 'Active Routes', value: '482', icon: '🚏', tone: 'brand' },
-  { label: 'Status', value: 'Normal', icon: '✅', tone: 'success' },
-  { label: 'Reports', value: '3 Alerts', icon: '⚠️', tone: 'warning' },
-  { label: 'Weather', value: '28°C Clear', icon: '🌤️', tone: 'accent' },
+  { label: 'Active Routes', value: '482', Icon: RouteIcon, tone: 'brand' },
+  { label: 'Status', value: 'Normal', Icon: ShieldCheckIcon, tone: 'success' },
+  { label: 'Reports', value: '3 Alerts', Icon: AlertTriangleIcon, tone: 'warning' },
+  { label: 'Weather', value: '28°C Clear', Icon: CloudSunIcon, tone: 'accent' },
 ];
 
 export type RideTag = {
