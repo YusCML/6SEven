@@ -15,6 +15,6 @@ export interface RouteData {
   path: [number, number][];
   fare: string;
   distance: string;
-  category?: 'fastest' | 'cheapest' | 'least-walk';
+  category?: 'recommended';
   segments: JourneySegment[];
 }

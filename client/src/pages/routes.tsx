@@ -20,7 +20,7 @@ const ROUTES: RouteData[] = [
     color: '#16a34a',
     fare: '₱12.00',
     distance: '1.2 km',
-    category: 'fastest',
+    category: 'recommended',
     path: [
       [10.7307, 122.5634],
       [10.7265, 122.5580],
@@ -28,7 +28,6 @@ const ROUTES: RouteData[] = [
       [10.7215, 122.5445],
     ],
     segments: [
-      { mode: 'Walk', from: 'Start', to: 'Terminal', duration: '4 mins' },
       { mode: 'Jeepney', from: 'Jaro Terminal', to: 'Diversion Rd', duration: '12 mins' },
       { mode: 'Tricycle', from: 'Diversion Rd', to: 'Business Park', duration: '5 mins', distance: '0.4 km' },
     ],
@@ -41,47 +40,25 @@ const ROUTES: RouteData[] = [
     color: '#f59e0b',
     fare: '₱18.00',
     distance: '2.1 km',
-    category: 'cheapest',
+    category: 'recommended',
     path: [
       [10.6994, 122.5645],
       [10.6978, 122.5680],
       [10.6963, 122.5726],
     ],
     segments: [
-      { mode: 'Walk', from: 'Start', to: 'Terminal', duration: '3 mins' },
-      { mode: 'Bus', from: 'Main Terminal', to: 'SM City', duration: '22 mins' },
-      { mode: 'Walk', from: 'SM City', to: 'Destination', duration: '5 mins' },
-    ],
-  },
-  {
-    id: 'direct-via-commonwealth',
-    title: 'Direct via Commonwealth',
-    duration: '42 mins',
-    description: 'Longer route but fewer transfers.',
-    color: '#8b5cf6',
-    fare: '₱25.00',
-    distance: '3.2 km',
-    category: 'least-walk',
-    path: [
-      [10.7307, 122.5634],
-      [10.7200, 122.5500],
-      [10.7100, 122.5400],
-    ],
-    segments: [
-      { mode: 'Walk', from: 'Start', to: 'Stop', duration: '2 mins' },
-      { mode: 'MRT', from: 'Monumento', to: 'Makati', duration: '35 mins' },
-      { mode: 'Walk', from: 'Makati Station', to: 'Destination', duration: '3 mins' },
+      { mode: 'Jeepney', from: 'Main Terminal', to: 'SM City', duration: '22 mins' },
     ],
   },
 ];
 
-type FilterTab = 'fastest' | 'cheapest' | 'least-walk' | 'all';
+type FilterTab = 'recommended' ;
 
 export default function RouteExplorer() {
   const [selectedRouteId, setSelectedRouteId] = useState(ROUTES[0].id);
-  const [filterTab, setFilterTab] = useState<FilterTab>('all');
+  const [filterTab, setFilterTab] = useState<FilterTab>('recommended');
 
-  const filteredRoutes = filterTab === 'all' ? ROUTES : ROUTES.filter((r) => r.category === filterTab);
+  const filteredRoutes = filterTab === 'recommended' ? ROUTES : ROUTES.filter((r) => r.category === filterTab);
   const selectedRoute = ROUTES.find((r) => r.id === selectedRouteId);
 
   return (
@@ -96,9 +73,9 @@ export default function RouteExplorer() {
         </div>
 
         <div className="px-6 pt-4 pb-2">
-          <h3 className="font-bold text-sm text-slate-900 mb-3">Suggested Routes</h3>
+          <h3 className="font-bold text-sm text-slate-900 mb-3">Recommended Routes</h3>
           <div className="flex gap-2 mb-4">
-            {(['fastest', 'cheapest', 'least-walk'] as const).map((tab) => (
+            {(['recommended'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setFilterTab(tab)}
@@ -108,9 +85,7 @@ export default function RouteExplorer() {
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
-                {tab === 'fastest' && 'Fastest'}
-                {tab === 'cheapest' && 'Cheapest'}
-                {tab === 'least-walk' && 'Least Walk'}
+                {tab === 'recommended' && 'Recommended'}
               </button>
             ))}
           </div>

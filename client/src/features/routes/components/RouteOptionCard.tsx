@@ -10,9 +10,6 @@ const getModeIcon = (mode: string) => {
   const icons: Record<string, string> = {
     Jeepney: '🚐',
     Tricycle: '🛺',
-    MRT: '🚇',
-    Bus: '🚌',
-    Walk: '🚶',
   };
   return icons[mode] || '🚌';
 };
@@ -31,9 +28,7 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
         <div className="flex-1">
           {route.category && (
             <span className="inline-block px-2 py-1 text-xs font-bold rounded-full mb-1 bg-blue-100 text-blue-600">
-              {route.category === 'fastest' && '⚡ FASTEST'}
-              {route.category === 'cheapest' && '💰 CHEAPEST'}
-              {route.category === 'least-walk' && '🚶 LEAST WALK'}
+              {route.category === 'recommended' && '⚡ Recommended'}
             </span>
           )}
           <h3 className="font-bold text-slate-900 text-sm">{route.title}</h3>
@@ -81,17 +76,6 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
           </div>
         ))}
       </div>
-
-      {selected && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          className="w-full py-2.5 bg-blue-600 text-white font-bold text-sm rounded-lg hover:bg-blue-700 transition"
-        >
-          ▶ Start Navigation
-        </button>
-      )}
     </div>
   );
 }
