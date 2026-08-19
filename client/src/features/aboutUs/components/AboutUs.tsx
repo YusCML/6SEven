@@ -5,7 +5,7 @@ import joe from "@/assets/team/joe.jpg";
 import zephaniah from "@/assets/team/zephaniah.jpg";
 import novie from "@/assets/team/novie.jpg";
 import nherf from "@/assets/team/nherf.jpg";
-import iloilo from "@/assets/aboutUs/iloilo.png";
+import skyline from "@/assets/aboutUs/skyline.jpg";
 import transit from "@/assets/aboutUs/rapidTransit.jpg";
 
 const teamMembers = [
@@ -34,12 +34,13 @@ export default function AboutUs() {
   return (
     <main className="min-h-screen bg-white font-sans text-slate-900">
       {/* Hero Section */}
-      <section className="relative h-52 overflow-hidden bg-slate-900 text-center text-white sm:h-60">
+      <section className="relative aspect-[16/10] overflow-hidden bg-slate-900 text-center text-white md:aspect-[64/15]">
         <Image
-          src={iloilo}
-          alt="Iloilo City skyline"
+          src={skyline}
+          alt="City skyline lit up at dusk across the harbor"
           fill
           priority
+          sizes="100vw"
           className="object-cover object-center"
         />
 

@@ -1,7 +1,7 @@
 import type { StaticImageData } from 'next/image';
-import makatiPhoto from '@/assets/landing/ride-makati.jpg';
-import moaPhoto from '@/assets/landing/ride-moa.jpg';
-import upPhoto from '@/assets/landing/ride-up.jpg';
+import cpuPhoto from '@/assets/landing/ride-cpu.jpg';
+import jaroPhoto from '@/assets/landing/ride-jaro.jpg';
+import smIloiloPhoto from '@/assets/landing/ride-sm-iloilo.jpg';
 
 export type StatTone = 'brand' | 'success' | 'warning' | 'accent';
 
@@ -37,38 +37,38 @@ export type FrequentRide = {
 
 export const frequentRides: FrequentRide[] = [
   {
-    id: 'up-diliman',
+    id: 'cpu',
     from: 'Home',
     to: 'Campus',
-    title: 'University of the Philippines',
+    title: 'Central Philippine University',
     duration: '~45 mins',
     tags: [
       { label: 'Jeepney', tone: 'brand' },
       { label: 'LRT-2', tone: 'neutral' },
     ],
-    photo: upPhoto,
+    photo: cpuPhoto,
     favorite: true,
   },
   {
-    id: 'moa',
+    id: 'jaro-plaza',
     from: 'Boarding House',
-    to: 'Mall',
-    title: 'SM Mall of Asia',
+    to: 'Plaza',
+    title: 'Jaro Plaza',
     duration: '~30 mins',
     tags: [{ label: 'UV Express', tone: 'brand' }],
-    photo: moaPhoto,
+    photo: jaroPhoto,
   },
   {
-    id: 'makati-cbd',
+    id: 'sm-iloilo',
     from: 'Home',
-    to: 'Office',
-    title: 'Makati CBD (Ayala Ave)',
+    to: 'Mall',
+    title: 'SM City Iloilo',
     duration: '~55 mins',
     tags: [
       { label: 'P2P Bus', tone: 'brand' },
       { label: 'MRT-3', tone: 'neutral' },
     ],
-    photo: makatiPhoto,
+    photo: smIloiloPhoto,
   },
 ];
 
