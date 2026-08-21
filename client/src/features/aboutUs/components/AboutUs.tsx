@@ -34,7 +34,7 @@ export default function AboutUs() {
   return (
     <main className="min-h-screen bg-white font-sans text-slate-900">
       {/* Hero Section */}
-      <section className="relative aspect-[16/10] overflow-hidden bg-slate-900 text-center text-white md:aspect-[64/15]">
+      <section className="relative aspect-[16/10] overflow-hidden bg-ink text-center text-paper md:aspect-[64/15]">
         <Image
           src={skyline}
           alt="City skyline lit up at dusk across the harbor"
@@ -44,7 +44,7 @@ export default function AboutUs() {
           className="object-cover object-center"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/30 via-slate-950/45 to-slate-950/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/45 to-ink/80" />
 
         <div className="relative mx-auto flex h-full max-w-3xl flex-col justify-center px-6">
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -159,7 +159,7 @@ export default function AboutUs() {
 
       {/* Contact Section */}
       <section className="mx-auto max-w-5xl px-6 py-16 lg:py-20">
-        <div className="grid overflow-hidden rounded-2xl bg-[#102246] text-white shadow-sm lg:grid-cols-[1fr_1.05fr]">
+        <div className="grid overflow-hidden rounded-2xl bg-[#102246] text-paper shadow-sm lg:grid-cols-[1fr_1.05fr]">
           <div className="flex flex-col justify-center p-8 sm:p-10">
             <h2 className="max-w-xs text-2xl font-extrabold leading-tight">
               Have questions or want to partner?

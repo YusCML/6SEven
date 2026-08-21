@@ -58,8 +58,6 @@ export default function AccountMenu() {
       <div className="flex items-center gap-4">
         {isAuthenticated ? <SignedIn displayName={displayName} avatarUrl={user?.avatarUrl ?? null} /> : <SignedOut />}
 
-        <span className="h-6 w-px shrink-0 bg-slate-200" aria-hidden />
-
         <ThemeToggle />
       </div>
     </div>

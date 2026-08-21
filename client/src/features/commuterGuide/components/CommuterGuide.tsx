@@ -58,16 +58,16 @@ export default function CommuterGuide() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-4 font-sans text-slate-900 sm:px-6 sm:py-6">
       <div className="mx-auto max-w-6xl space-y-8">
-        <section className="relative min-h-64 overflow-hidden rounded-2xl bg-slate-900 shadow-sm">
+        <section className="relative min-h-64 overflow-hidden rounded-2xl bg-ink shadow-sm">
           <img
             src={commuterHero.src}
             alt="Bus at the terminal"
             className="absolute inset-0 h-full w-full object-cover opacity-75"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/25 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/75 via-ink/25 to-transparent" />
 
-          <div className="relative flex min-h-64 max-w-md flex-col justify-center p-7 text-white sm:p-10">
-            <span className="mb-3 w-fit rounded-full bg-slate-900 px-3 py-1 text-[11px] font-bold tracking-widest">
+          <div className="relative flex min-h-64 max-w-md flex-col justify-center p-7 text-paper sm:p-10">
+            <span className="mb-3 w-fit rounded-full bg-paper/15 px-3 py-1 text-[11px] font-bold tracking-widest ring-1 ring-paper/25 backdrop-blur">
               OFFICIAL GUIDE
             </span>
 
@@ -75,7 +75,7 @@ export default function CommuterGuide() {
               Master the RUTA Network
             </h1>
 
-            <p className="mt-3 text-base leading-6 text-slate-100">
+            <p className="mt-3 text-base leading-6 text-paper/80">
               Everything you need to know about fares, routes, safety, and
               navigating the city with confidence.
             </p>
@@ -135,7 +135,7 @@ export default function CommuterGuide() {
           />
         </section>
 
-        <section className="rounded-2xl bg-[#10182b] p-7 text-white shadow-sm sm:p-9">
+        <section className="rounded-2xl bg-[#10182b] p-7 text-paper shadow-sm sm:p-9">
           <h2 className="text-3xl font-extrabold tracking-tight">
             Simple, Fair Fares
           </h2>
@@ -144,7 +144,7 @@ export default function CommuterGuide() {
             {fares.map((fare, index) => (
               <article
                 key={fare.title}
-                className={`flex min-h-[290px] flex-col rounded-[24px] border border-slate-500/70 p-8 ${
+                className={`flex min-h-[290px] flex-col rounded-[24px] border border-paper/25 p-8 ${
                   index === 2
                     ? "bg-gradient-to-br from-[#2d374d] to-[#314f92]"
                     : "bg-gradient-to-br from-[#293348] to-[#202a3d]"
@@ -156,7 +156,7 @@ export default function CommuterGuide() {
                   {fare.title}
                 </h3>
 
-                <p className="mt-3 text-[15px] leading-7 text-slate-300">
+                <p className="mt-3 text-[15px] leading-7 text-paper/70">
                   {fare.text}
                 </p>
 
@@ -194,7 +194,7 @@ export default function CommuterGuide() {
                 alt="System rail map"
                 className="h-60 w-full object-cover"
               />
-              <figcaption className="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1.5 text-xs font-bold shadow">
+              <figcaption className="absolute bottom-3 left-3 rounded-full bg-paper px-3 py-1.5 text-xs font-bold text-ink shadow">
                 System Rail Map
               </figcaption>
             </figure>
@@ -205,7 +205,7 @@ export default function CommuterGuide() {
                 alt="Metro bus network map"
                 className="h-60 w-full object-cover"
               />
-              <figcaption className="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1.5 text-xs font-bold shadow">
+              <figcaption className="absolute bottom-3 left-3 rounded-full bg-paper px-3 py-1.5 text-xs font-bold text-ink shadow">
                 Metro Bus Network
               </figcaption>
             </figure>
