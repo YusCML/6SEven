@@ -68,3 +68,30 @@ export function validatePassword(password: string): string | null {
 export function firstError(...errors: (string | null)[]): string | null {
   return errors.find((error) => error !== null) ?? null;
 }
+
+export const AVATAR_MAX_BYTES = 512 * 1024;
+
+const AVATAR_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+const DATA_URL_PATTERN = /^data:([a-z]+\/[a-z0-9+.-]+);base64,([A-Za-z0-9+/]+={0,2})$/;
+
+export function validateAvatarDataUrl(dataUrl: string): string | null {
+  if (!dataUrl) return 'No image was uploaded.';
+
+  const match = DATA_URL_PATTERN.exec(dataUrl);
+  if (!match) return 'That file could not be read as an image.';
+
+  const [, mimeType, base64] = match;
+
+  if (!AVATAR_MIME_TYPES.includes(mimeType)) {
+    return 'Profile pictures must be a PNG, JPEG or WebP image.';
+  }
+
+  const padding = base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0;
+  const bytes = (base64.length * 3) / 4 - padding;
+
+  if (bytes > AVATAR_MAX_BYTES) {
+    return `That image is too large. Keep it under ${Math.round(AVATAR_MAX_BYTES / 1024)}KB.`;
+  }
+
+  return null;
+}

@@ -1,4 +1,4 @@
-import { patchJson, postJson } from '@/lib/http';
+import { patchJson, postJson, putJson } from '@/lib/http';
 import type { SessionPayload } from '@shared/types/session';
 
 export type ProfileInput = {
@@ -13,6 +13,10 @@ export type PasswordChangeInput = {
 
 export function updateProfile(input: ProfileInput): Promise<SessionPayload> {
   return patchJson<SessionPayload>('/api/auth/profile', input);
+}
+
+export function updateProfilePhoto(image: string | null): Promise<SessionPayload> {
+  return putJson<SessionPayload>('/api/auth/profile/photo', { image });
 }
 
 export function unlinkGoogle(): Promise<{ message: string }> {

@@ -3,9 +3,11 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Avatar from '@/components/ui/Avatar';
 import Badge from '@/components/ui/Badge';
-import { CameraIcon, PencilIcon, XIcon } from '@/components/icons';
+import Alert from '@/components/ui/Alert';
+import { PencilIcon, XIcon } from '@/components/icons';
 import useSession from '@/hooks/useSession';
 import ProfileDetailsForm from './ProfileDetailsForm';
+import ProfilePhotoPicker from './ProfilePhotoPicker';
 
 function Field({ label, value }: { label: string; value: string }) {
   return (
@@ -29,6 +31,7 @@ export default function InformationCard() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading, displayName, signOut } = useSession();
   const [editing, setEditing] = useState(false);
+  const [photoStatus, setPhotoStatus] = useState<{ tone: 'error' | 'success'; message: string } | null>(null);
 
   const handleSignOut = async () => {
     await signOut();
@@ -36,26 +39,35 @@ export default function InformationCard() {
   };
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-lg font-bold text-slate-900">Information</h2>
-
+    <div className="rounded-lg border border-slate-200 bg-white p-6">
       <div className="flex justify-center">
-        <span className="relative inline-flex rounded-full ring-2 ring-amber-400 ring-offset-4 ring-offset-white">
-          <Avatar name={displayName} src={user?.avatarUrl ?? undefined} size="lg" />
-          <span className="absolute -bottom-1 -right-1 grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-slate-900 text-white">
-            <CameraIcon className="h-4 w-4" />
+        {isAuthenticated ? (
+          <ProfilePhotoPicker onStatus={setPhotoStatus}>
+            <span className="inline-flex rounded-full ring-2 ring-amber-400 ring-offset-4 ring-offset-white">
+              <Avatar name={displayName} src={user?.avatarUrl} size="lg" />
+            </span>
+          </ProfilePhotoPicker>
+        ) : (
+          <span className="inline-flex rounded-full ring-2 ring-slate-200 ring-offset-4 ring-offset-white">
+            <Avatar name={displayName} size="lg" />
           </span>
-        </span>
+        )}
       </div>
 
-      {isLoading ? (
-        <p className="mt-6 text-sm text-slate-400">Loading your profile…</p>
-      ) : editing ? (
+      {photoStatus ? (
         <div className="mt-6">
+          <Alert tone={photoStatus.tone}>{photoStatus.message}</Alert>
+        </div>
+      ) : null}
+
+      {isLoading ? (
+        <p className="mt-8 text-sm text-slate-400">Loading your profile…</p>
+      ) : editing ? (
+        <div className="mt-8">
           <ProfileDetailsForm onSaved={() => setEditing(false)} />
         </div>
       ) : (
-        <dl className="mt-6 space-y-4">
+        <dl className="mt-8 space-y-4">
           <Field label="Username" value={user?.username ?? displayName} />
           <Field label="Nickname" value={user?.nickname ?? '—'} />
           <Field label="Member Since" value={isAuthenticated ? monthAndYear(user?.createdAt) : '—'} />
@@ -73,13 +85,13 @@ export default function InformationCard() {
         </dl>
       )}
 
-      <div className="mt-6 space-y-2">
+      <div className="mt-8 space-y-1">
         {isAuthenticated ? (
           <>
             <button
               type="button"
               onClick={() => setEditing(!editing)}
-              className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-100 text-sm font-bold text-slate-700 transition hover:bg-slate-200"
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-slate-100 text-sm font-bold text-slate-700 transition hover:bg-slate-200"
             >
               {editing ? <XIcon className="h-4 w-4" /> : <PencilIcon className="h-4 w-4" />}
               {editing ? 'Cancel' : 'Edit'}
@@ -88,7 +100,7 @@ export default function InformationCard() {
             <button
               type="button"
               onClick={handleSignOut}
-              className="flex h-11 w-full items-center justify-center rounded-xl text-sm font-bold text-red-600 transition hover:bg-red-50"
+              className="flex h-11 w-full items-center justify-center rounded-lg text-sm font-bold text-red-600 transition hover:bg-red-50"
             >
               Sign Out
             </button>
@@ -96,12 +108,12 @@ export default function InformationCard() {
         ) : isLoading ? null : (
           <Link
             href="/auth/login"
-            className="flex h-11 w-full items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+            className="flex h-11 w-full items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white transition hover:bg-blue-700"
           >
             Sign In
           </Link>
         )}
       </div>
-    </section>
+    </div>
   );
 }

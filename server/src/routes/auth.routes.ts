@@ -8,6 +8,7 @@ import {
   loginController,
   logoutController,
   patchProfileController,
+  putProfilePhotoController,
   registerController,
   resetPasswordController,
 } from '@/controllers/auth.controller';
@@ -27,6 +28,7 @@ router.post('/logout', logoutController);
 
 router.get('/profile', getProfileController);
 router.patch('/profile', patchProfileController);
+router.put('/profile/photo', putProfilePhotoController);
 
 router.post('/change-password', changePasswordController);
 router.post('/forgot-password', forgotPasswordController);

@@ -9,6 +9,7 @@ import {
   createPasswordResetToken,
   registerAccount,
   resetPasswordWithToken,
+  setProfilePhoto,
   updateProfile,
 } from '@/services/authService';
 import { listUsers, toPublicUser } from '@/repositories/userStore';
@@ -197,5 +198,29 @@ export async function listUsersController(_req: Request, res: Response) {
     return res.status(200).json({ users: users.map(toPublicUser) });
   } catch (error) {
     return serverError(res, error, 'auth/users');
+  }
+}
+
+export async function putProfilePhotoController(req: Request, res: Response) {
+  noStore(res);
+
+  if (!enforceRateLimit(req, res, RATE_LIMITS.changePassword)) return;
+
+  try {
+    const resolved = await getSession(req);
+
+    if (!resolved?.user) return unauthorized(res, 'Sign in to change your profile picture.');
+
+    const body = readBody<{ image: string | null }>(req);
+    const image = body.image === null ? null : readString(body.image);
+
+    const user = await setProfilePhoto(resolved.user.id, image);
+
+    return res.status(200).json({
+      message: image === null ? 'Profile picture removed.' : 'Profile picture updated.',
+      ...toSessionPayload({ session: resolved.session, user }),
+    });
+  } catch (error) {
+    return handleError(res, error, 'auth/profile/photo');
   }
 }

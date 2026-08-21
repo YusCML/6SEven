@@ -22,7 +22,7 @@ export default function ProfileBreadcrumb() {
 
       <Link
         href="/dashboard/settings"
-        className="flex h-11 items-center gap-2 rounded-xl bg-slate-900 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-slate-800"
+        className="flex h-11 items-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-bold text-white transition hover:bg-slate-800"
       >
         <SlidersIcon className="h-4 w-4" />
         Account Settings

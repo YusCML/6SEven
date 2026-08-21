@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import defaultAvatar from '@/assets/avatar/default-avatar.png';
 import Avatar from '@/components/ui/Avatar';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import useSession from '@/hooks/useSession';
@@ -8,7 +7,7 @@ function SignedIn({ displayName, avatarUrl }: { displayName: string; avatarUrl: 
   return (
     <Link href="/dashboard/profile" className="flex items-center gap-3 transition hover:opacity-75">
       <span className="relative inline-flex shrink-0 rounded-full ring-2 ring-amber-400 ring-offset-2 ring-offset-white">
-        <Avatar name={displayName} src={avatarUrl ?? undefined} />
+        <Avatar name={displayName} src={avatarUrl} />
         <span
           className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500"
           aria-hidden
@@ -26,7 +25,7 @@ function SignedIn({ displayName, avatarUrl }: { displayName: string; avatarUrl: 
 function SignedOut() {
   return (
     <Link href="/auth/login" className="flex items-center gap-3 transition hover:opacity-75">
-      <Avatar name="Sign In" src={defaultAvatar} />
+      <Avatar name="Sign In" />
 
       <span className="hidden leading-tight sm:block">
         <span className="block text-sm font-bold text-slate-900">Sign In</span>

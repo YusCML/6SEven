@@ -40,9 +40,10 @@ export default function UserProfile() {
       <ProfileBreadcrumb />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
-        <div>
+        <section>
+          <h2 className="mb-4 text-lg font-bold text-slate-900">Information</h2>
           <InformationCard />
-        </div>
+        </section>
 
         <div className="space-y-8">
           <section>
@@ -67,7 +68,7 @@ export default function UserProfile() {
 
           <section>
             <h2 className="mb-4 text-lg font-bold text-slate-900">Connected Accounts</h2>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-white p-6">
               <ConnectedAccounts />
             </div>
           </section>

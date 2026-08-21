@@ -3,6 +3,7 @@ import {
   firstError,
   normalizeNickname,
   normalizeUsername,
+  validateAvatarDataUrl,
   validateNickname,
   validatePassword,
   validateUsername,
@@ -197,4 +198,15 @@ export async function resetPasswordWithToken(input: {
   });
   await consumePasswordReset(record.id);
   await deleteSessionsForUser(user.id);
+}
+
+export async function setProfilePhoto(userId: string, dataUrl: string | null): Promise<UserRecord> {
+  const user = await findUserById(userId);
+  if (!user) throw new NotFoundError('Your account no longer exists.');
+
+  if (dataUrl === null) return updateUser(userId, { avatarUrl: null });
+
+  assertValid(validateAvatarDataUrl(dataUrl));
+
+  return updateUser(userId, { avatarUrl: dataUrl });
 }

@@ -1,47 +1,28 @@
 import Image, { type StaticImageData } from 'next/image';
+import defaultAvatar from '@/assets/avatar/default-avatar.png';
 
 type AvatarProps = {
   name: string;
-  src?: StaticImageData | string;
+  src?: StaticImageData | string | null;
   size?: 'sm' | 'md' | 'lg';
 };
 
 const sizes = {
-  sm: { box: 'h-8 w-8', text: 'text-xs', px: 32 },
-  md: { box: 'h-10 w-10', text: 'text-sm', px: 40 },
-  lg: { box: 'h-24 w-24', text: 'text-2xl', px: 96 },
+  sm: { box: 'h-8 w-8', px: 32 },
+  md: { box: 'h-10 w-10', px: 40 },
+  lg: { box: 'h-24 w-24', px: 96 },
 } as const;
-
-function initialsOf(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-
-  if (parts.length === 0) return '?';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-}
 
 export default function Avatar({ name, src, size = 'md' }: AvatarProps) {
   const style = sizes[size];
 
-  if (src) {
-    return (
-      <Image
-        src={src}
-        alt={name}
-        width={style.px}
-        height={style.px}
-        className={`${style.box} shrink-0 rounded-full border border-slate-200 object-cover`}
-      />
-    );
-  }
-
   return (
-    <span
-      aria-hidden
-      className={`${style.box} ${style.text} grid shrink-0 place-items-center rounded-full border border-slate-200 bg-slate-100 font-bold text-slate-500`}
-    >
-      {initialsOf(name)}
-    </span>
+    <Image
+      src={src || defaultAvatar}
+      alt={name}
+      width={style.px}
+      height={style.px}
+      className={`${style.box} shrink-0 rounded-full border border-slate-200 object-cover`}
+    />
   );
 }

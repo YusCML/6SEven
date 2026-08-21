@@ -60,6 +60,10 @@ export function patchJson<T>(path: string, body?: unknown): Promise<T> {
   return request<T>(path, jsonBody('PATCH', body));
 }
 
+export function putJson<T>(path: string, body?: unknown): Promise<T> {
+  return request<T>(path, jsonBody('PUT', body));
+}
+
 export function errorMessage(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
 }
