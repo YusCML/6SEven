@@ -3,12 +3,13 @@ import Image, { type StaticImageData } from 'next/image';
 type AvatarProps = {
   name: string;
   src?: StaticImageData | string;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
 };
 
 const sizes = {
   sm: { box: 'h-8 w-8', text: 'text-xs', px: 32 },
   md: { box: 'h-10 w-10', text: 'text-sm', px: 40 },
+  lg: { box: 'h-24 w-24', text: 'text-2xl', px: 96 },
 } as const;
 
 function initialsOf(name: string) {

@@ -7,7 +7,7 @@ import useSession from '@/hooks/useSession';
 import { errorMessage } from '@/lib/http';
 import * as accountApi from '@/services/account.service';
 
-export default function ProfileDetailsForm() {
+export default function ProfileDetailsForm({ onSaved }: { onSaved?: () => void } = {}) {
   const { user, isAuthenticated, isLoading, displayName, applySession } = useSession();
   const [form, setForm] = useState({ nickname: '', username: '' });
   const [status, setStatus] = useState<{ tone: 'error' | 'success'; message: string } | null>(null);
@@ -38,6 +38,7 @@ export default function ProfileDetailsForm() {
         });
       }
       setStatus({ tone: 'success', message: 'Profile saved.' });
+      onSaved?.();
     } catch (error) {
       setStatus({ tone: 'error', message: errorMessage(error, 'Could not save your profile.') });
     } finally {
@@ -52,7 +53,7 @@ export default function ProfileDetailsForm() {
   if (!isAuthenticated) {
     return (
       <div className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4">
           <TextField disabled readOnly label="Username" type="text" value={displayName} />
           <TextField disabled readOnly label="Nickname" type="text" value="" placeholder="Not set for guests" />
         </div>
@@ -73,7 +74,7 @@ export default function ProfileDetailsForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4">
         <TextField
           required
           label="Nickname"
@@ -97,7 +98,7 @@ export default function ProfileDetailsForm() {
       {status ? <Alert tone={status.tone}>{status.message}</Alert> : null}
 
       <div className="flex justify-end">
-        <div className="w-full sm:w-48">
+        <div className="w-full">
           <PrimaryButton type="submit" loading={saving} loadingLabel="Saving…">
             Save Profile
           </PrimaryButton>

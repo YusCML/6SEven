@@ -20,7 +20,7 @@ export default function Navbar() {
 
         <nav className="hidden flex-1 items-center gap-8 lg:flex">
           {navigationItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isActive = pathname === item.href;
 
             return (
               <Link
