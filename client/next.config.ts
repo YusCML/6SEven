@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
 
   images: {
     qualities: [75, 85],
+
+    remotePatterns: [{ protocol: "https", hostname: "lh3.googleusercontent.com" }],
   },
 
   async rewrites() {

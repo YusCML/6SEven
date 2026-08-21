@@ -3,6 +3,7 @@ export type SessionUser = {
   username: string;
   nickname: string | null;
   email: string;
+  avatarUrl: string | null;
   createdAt: string;
 };
 

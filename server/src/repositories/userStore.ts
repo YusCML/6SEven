@@ -22,6 +22,7 @@ export type PublicUser = {
   username: string;
   nickname: string | null;
   email: string;
+  avatarUrl: string | null;
   createdAt: string;
 };
 
@@ -47,6 +48,7 @@ export function toPublicUser(user: UserRecord): PublicUser {
     username: user.username,
     nickname: user.nickname,
     email: user.email,
+    avatarUrl: user.avatarUrl,
     createdAt: user.createdAt,
   };
 }
