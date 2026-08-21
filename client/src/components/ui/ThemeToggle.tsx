@@ -12,7 +12,7 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('light');
 
   return (
-    <div role="group" aria-label="Colour theme" className="flex shrink-0 items-center gap-0.5 rounded-full bg-slate-900 p-0.5">
+    <div role="group" aria-label="Colour theme" className="flex shrink-0 items-center gap-1 rounded-full bg-slate-900 p-1">
       {options.map(({ value, label, Icon }) => {
         const isSelected = theme === value;
 
@@ -22,11 +22,11 @@ export default function ThemeToggle() {
             type="button"
             aria-pressed={isSelected}
             onClick={() => setTheme(value)}
-            className={`grid h-6 w-6 place-items-center rounded-full transition ${
+            className={`grid h-8 w-8 place-items-center rounded-full transition ${
               isSelected ? 'bg-white text-slate-900' : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Icon className="h-3.5 w-3.5" />
+            <Icon className="h-4 w-4" />
             <span className="sr-only">{label}</span>
           </button>
         );

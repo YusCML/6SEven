@@ -9,7 +9,12 @@ const nextConfig: NextConfig = {
   images: {
     qualities: [75, 85],
 
-    remotePatterns: [{ protocol: "https", hostname: "lh3.googleusercontent.com" }],
+    remotePatterns: [
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
+      // Hosts allowed for Hotspot cover photos supplied as URLs.
+      { protocol: "https", hostname: "upload.wikimedia.org" },
+      { protocol: "https", hostname: "images.unsplash.com" },
+    ],
   },
 
   async rewrites() {

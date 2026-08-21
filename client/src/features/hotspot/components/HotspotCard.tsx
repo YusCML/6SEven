@@ -9,7 +9,18 @@ export default function HotspotCard({ hotspot }: { hotspot: Hotspot }) {
   return (
     <article className="mb-4 break-inside-avoid overflow-hidden rounded-lg border border-slate-200 bg-white transition hover:border-slate-400">
       <div className="relative">
-        {hotspot.photo ? (
+        {typeof hotspot.photo === 'string' ? (
+          // Remote URLs carry no intrinsic size, so they need a fixed frame.
+          <div className="relative aspect-4/3 w-full">
+            <Image
+              src={hotspot.photo}
+              alt={hotspot.title}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover"
+            />
+          </div>
+        ) : hotspot.photo ? (
           <Image
             src={hotspot.photo}
             alt={hotspot.title}

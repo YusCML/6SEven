@@ -4,8 +4,6 @@ import ThemeToggle from '@/components/ui/ThemeToggle';
 import { SettingsIcon } from '@/components/icons';
 import useSession from '@/hooks/useSession';
 
-const pill = 'flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1 pr-2';
-
 function SignedIn({ displayName, avatarUrl }: { displayName: string; avatarUrl: string | null }) {
   return (
     <Link href="/dashboard/profile" className="flex items-center gap-2.5 transition hover:opacity-75">
@@ -36,7 +34,7 @@ export default function AccountMenu() {
   const { isAuthenticated, isLoading, displayName, user } = useSession();
 
   if (isLoading) {
-    return <span className="h-11 w-64 animate-pulse rounded-full bg-slate-100" aria-hidden />;
+    return <span className="h-10 w-64 animate-pulse rounded-full bg-slate-100" aria-hidden />;
   }
 
   return (
@@ -57,10 +55,10 @@ export default function AccountMenu() {
 
       <span className="h-7 w-px shrink-0 bg-slate-200" aria-hidden />
 
-      <div className={pill}>
+      <div className="flex items-center gap-4">
         {isAuthenticated ? <SignedIn displayName={displayName} avatarUrl={user?.avatarUrl ?? null} /> : <SignedOut />}
 
-        <span className="h-5 w-px shrink-0 bg-slate-200" aria-hidden />
+        <span className="h-6 w-px shrink-0 bg-slate-200" aria-hidden />
 
         <ThemeToggle />
       </div>

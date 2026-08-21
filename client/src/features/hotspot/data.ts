@@ -3,6 +3,12 @@ import emperador from '@/assets/landing/hero-emperador.jpg';
 import cpu from '@/assets/landing/ride-cpu.jpg';
 import jaro from '@/assets/landing/ride-jaro.jpg';
 import smIloilo from '@/assets/landing/ride-sm-iloilo.jpg';
+import esplanadePhoto from '@/assets/hotspot/esplanade.jpg';
+import laPazPhoto from '@/assets/hotspot/la-paz.jpg';
+import moloPhoto from '@/assets/hotspot/molo.jpg';
+import muellePhoto from '@/assets/hotspot/muelle.jpg';
+import tagbakPhoto from '@/assets/hotspot/tagbak.jpg';
+import ungkaPhoto from '@/assets/hotspot/ungka.jpg';
 export const CATEGORIES = ['All', 'Landmark', 'Transit Hub', 'Food', 'Study Spot'] as const;
 
 export type HotspotCategory = (typeof CATEGORIES)[number];
@@ -13,9 +19,10 @@ export type Hotspot = {
   location: string;
   category: Exclude<HotspotCategory, 'All'>;
   note: string;
-  // Only set where a photo of that actual place exists. Everything else falls
-  // back to a generated cover rather than borrowing an unrelated image.
-  photo?: StaticImageData;
+  // Set to a local import (preferred) or a remote URL string. Only fill this in
+  // where the image really is that place — anything unset draws a generated
+  // cover instead of borrowing an unrelated photo.
+  photo?: StaticImageData | string;
   coverHeight: number;
   author: string;
   saves: number;
@@ -80,6 +87,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'Diversion Road',
     category: 'Landmark',
     note: 'Long walk but flat the whole way. Food carts near Gate 3 after 5pm.',
+    photo: esplanadePhoto,
     coverHeight: 300,
     author: 'bryan',
     saves: 152,
@@ -91,6 +99,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'Jaro, northbound',
     category: 'Transit Hub',
     note: 'Departures for northern Iloilo towns. Arrive early on weekends.',
+    photo: tagbakPhoto,
     coverHeight: 210,
     author: 'joe',
     saves: 43,
@@ -102,6 +111,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'La Paz District',
     category: 'Food',
     note: 'Batchoy row. Busiest 11am to 1pm — go early or go late.',
+    photo: laPazPhoto,
     coverHeight: 270,
     author: 'zephaniah',
     saves: 210,
@@ -113,6 +123,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'Molo District',
     category: 'Food',
     note: 'Pancit molo stalls open by mid-morning. Shaded benches all around.',
+    photo: moloPhoto,
     coverHeight: 190,
     author: 'shi',
     saves: 88,
@@ -124,6 +135,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'City Proper',
     category: 'Landmark',
     note: 'Heritage row along the river. Narrow footpath, watch for trucks.',
+    photo: muellePhoto,
     coverHeight: 230,
     author: 'nherf',
     saves: 37,
@@ -135,6 +147,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'Pavia boundary',
     category: 'Transit Hub',
     note: 'Transfer point for Pavia and Sta. Barbara rides.',
+    photo: ungkaPhoto,
     coverHeight: 250,
     author: 'denver',
     saves: 55,
