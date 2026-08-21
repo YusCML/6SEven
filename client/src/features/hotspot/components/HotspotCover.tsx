@@ -1,7 +1,7 @@
 import type { Hotspot } from '../data';
 
 const palettes = {
-  Landmark: ['#2563eb', '#4f46e5'],
+  Landmark: ['#0f172a', '#334155'],
   'Transit Hub': ['#0f172a', '#334155'],
   Food: ['#f59e0b', '#ea580c'],
   'Study Spot': ['#059669', '#0d9488'],

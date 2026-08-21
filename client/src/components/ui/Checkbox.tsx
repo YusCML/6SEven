@@ -20,7 +20,7 @@ export default function Checkbox({ checked, onChange, children, name }: Checkbox
           type="checkbox"
           checked={checked}
           onChange={(event) => onChange(event.target.checked)}
-          className="peer h-6 w-6 cursor-pointer appearance-none rounded border border-slate-300 bg-white transition checked:border-blue-600 checked:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
+          className="peer h-6 w-6 cursor-pointer appearance-none rounded border border-slate-300 bg-white transition checked:border-slate-900 checked:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/15"
         />
         <CheckIcon className="pointer-events-none absolute h-3.5 w-3.5 text-white opacity-0 transition peer-checked:opacity-100" />
       </span>

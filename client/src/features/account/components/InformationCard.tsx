@@ -108,7 +108,7 @@ export default function InformationCard() {
         ) : isLoading ? null : (
           <Link
             href="/auth/login"
-            className="flex h-11 w-full items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white transition hover:bg-blue-700"
+            className="flex h-11 w-full items-center justify-center rounded-lg bg-slate-900 text-sm font-bold text-white transition hover:bg-slate-700"
           >
             Sign In
           </Link>

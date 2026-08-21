@@ -20,7 +20,7 @@ export default function ToggleSetting({ title, description, checked, onChange }:
         aria-label={title}
         onClick={() => onChange(!checked)}
         className={`relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition ${
-          checked ? 'bg-blue-600' : 'bg-slate-200'
+          checked ? 'bg-slate-900' : 'bg-slate-200'
         }`}
       >
         <span

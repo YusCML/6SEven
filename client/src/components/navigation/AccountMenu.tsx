@@ -42,7 +42,7 @@ export default function AccountMenu() {
   return (
     <div className="flex items-center gap-5">
       <div className="flex items-center gap-7">
-        <Link href="/about-us" className="text-sm font-semibold text-slate-600 transition hover:text-blue-600">
+        <Link href="/about-us" className="text-sm font-semibold text-slate-600 transition hover:text-slate-900">
           About Us
         </Link>
 

@@ -81,7 +81,7 @@ export default function RouteExplorer() {
                 onClick={() => setFilterTab(tab)}
                 className={`px-3 py-1.5 text-xs font-bold rounded-full transition ${
                   filterTab === tab
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-slate-900 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >

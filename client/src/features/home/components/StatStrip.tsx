@@ -1,7 +1,7 @@
 import { landingStats, type StatTone } from '../content';
 
 const toneStyles: Record<StatTone, string> = {
-  brand: 'text-blue-600',
+  brand: 'text-slate-900',
   success: 'text-emerald-600',
   warning: 'text-amber-600',
   accent: 'text-violet-600',

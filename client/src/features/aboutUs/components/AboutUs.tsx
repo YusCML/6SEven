@@ -61,7 +61,7 @@ export default function AboutUs() {
       {/* Mission Section */}
       <section className="mx-auto grid max-w-5xl items-center gap-10 px-6 py-16 lg:grid-cols-[1.05fr_.95fr] lg:py-24">
         <div>
-          <p className="mb-4 text-xs font-bold uppercase tracking-widest text-blue-600">
+          <p className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-900">
             Our Mission
           </p>
 
@@ -148,7 +148,7 @@ export default function AboutUs() {
                   {member.name}
                 </h3>
 
-                <p className="mt-1 max-w-[12rem] text-xs leading-5 text-blue-600">
+                <p className="mt-1 max-w-[12rem] text-xs leading-5 text-slate-900">
                   {member.role}
                 </p>
               </article>
@@ -172,12 +172,12 @@ export default function AboutUs() {
 
             <div className="mt-6 space-y-2 text-sm text-slate-200">
               <p className="flex items-center gap-2">
-                <MailIcon className="h-4 w-4 text-blue-300" />
+                <MailIcon className="h-4 w-4 text-slate-300" />
                 hello@ruta.com
               </p>
 
               <p className="flex items-center gap-2">
-                <PinIcon className="h-4 w-4 text-blue-300" />
+                <PinIcon className="h-4 w-4 text-slate-300" />
                 Iloilo City, Philippines
               </p>
             </div>
@@ -192,7 +192,7 @@ export default function AboutUs() {
             <label className="mt-4 block text-xs font-semibold">
               Full name
               <input
-                className="mt-1 w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+                className="mt-1 w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-slate-900"
                 placeholder="Juan Dela Cruz"
               />
             </label>
@@ -201,7 +201,7 @@ export default function AboutUs() {
               Email address
               <input
                 type="email"
-                className="mt-1 w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+                className="mt-1 w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-slate-900"
                 placeholder="juan@email.com"
               />
             </label>
@@ -209,14 +209,14 @@ export default function AboutUs() {
             <label className="mt-3 block text-xs font-semibold">
               Message
               <textarea
-                className="mt-1 min-h-20 w-full resize-none rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-blue-500"
+                className="mt-1 min-h-20 w-full resize-none rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-slate-900"
                 placeholder="How can we help?"
               />
             </label>
 
             <button
               type="submit"
-              className="mt-4 w-full rounded-md bg-blue-600 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700"
+              className="mt-4 w-full rounded-md bg-slate-900 py-2.5 text-sm font-bold text-white transition hover:bg-slate-700"
             >
               Send Message
             </button>
@@ -291,8 +291,8 @@ export default function AboutUs() {
       <footer className="border-t border-slate-100">
         <div className="mx-auto grid max-w-5xl gap-10 px-6 py-12 md:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
-            <div className="flex items-center gap-2 text-sm font-extrabold text-blue-700">
-              <span className="grid h-5 w-5 place-items-center rounded bg-blue-600 text-[10px] text-white">
+            <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900">
+              <span className="grid h-5 w-5 place-items-center rounded bg-slate-900 text-[10px] text-white">
                 R
               </span>
               RUTA
@@ -315,7 +315,7 @@ export default function AboutUs() {
                   <li key={link}>
                     <a
                       href="#"
-                      className="text-sm text-slate-500 hover:text-blue-600"
+                      className="text-sm text-slate-500 hover:text-slate-900"
                     >
                       {link}
                     </a>

@@ -7,8 +7,8 @@ import {
   CrownIcon,
   HomeIcon,
   MapPinIcon,
-  MenuIcon,
   RouteIcon,
+  RutaMarkIcon,
 } from '@/components/icons';
 
 export const NAV_ITEMS = [
@@ -33,15 +33,16 @@ export default function Sidebar({ open, onToggle }: SidebarProps) {
         open ? 'w-60' : 'w-[4.5rem]'
       }`}
     >
-      <div className={`flex h-20 items-center gap-3 px-4 ${open ? '' : 'justify-center'}`}>
+      <div className={`flex h-24 items-center gap-3 px-4 ${open ? '' : 'justify-center'}`}>
+        {/* The mark doubles as the collapse control, so the rail keeps one anchor in both states. */}
         <button
           type="button"
           onClick={onToggle}
           aria-label={open ? 'Collapse navigation' : 'Expand navigation'}
           aria-expanded={open}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-slate-900 text-white transition hover:bg-slate-700"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-900 text-white transition hover:bg-slate-700"
         >
-          <MenuIcon className="h-5 w-5" />
+          <RutaMarkIcon className="h-5 w-5" />
         </button>
 
         {open ? <RutaWordmark /> : null}
@@ -60,7 +61,7 @@ export default function Sidebar({ open, onToggle }: SidebarProps) {
                   title={open ? undefined : label}
                   className={`flex h-11 items-center gap-3 rounded-lg text-sm font-bold transition ${
                     open ? 'px-3' : 'justify-center px-0'
-                  } ${isActive ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+                  } ${isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
                 >
                   <Icon className="h-5 w-5 shrink-0" />
                   {open ? <span className="truncate">{label}</span> : <span className="sr-only">{label}</span>}

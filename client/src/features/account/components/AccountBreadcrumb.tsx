@@ -20,7 +20,7 @@ export default function AccountBreadcrumb({ page, action }: AccountBreadcrumbPro
           <li aria-hidden className="text-slate-300">
             <ChevronRightIcon className="h-4 w-4" />
           </li>
-          <li aria-current="page" className="text-blue-600">
+          <li aria-current="page" className="text-slate-900">
             {page}
           </li>
         </ol>

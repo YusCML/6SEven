@@ -27,7 +27,7 @@ export default function ProfilePosts() {
 
         <Link
           href="/hotspot"
-          className="mt-5 inline-flex h-11 items-center gap-2 rounded-lg bg-blue-600 px-5 text-sm font-bold text-white transition hover:bg-blue-700"
+          className="mt-5 inline-flex h-11 items-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-bold text-white transition hover:bg-slate-700"
         >
           <PlusIcon className="h-4 w-4" />
           Add a place

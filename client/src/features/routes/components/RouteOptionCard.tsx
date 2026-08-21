@@ -20,14 +20,14 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
       onClick={onClick}
       className={`w-full text-left p-4 rounded-xl border-2 transition-all cursor-pointer ${
         selected
-          ? 'border-blue-500 bg-white shadow-md'
+          ? 'border-slate-900 bg-white shadow-md'
           : 'border-slate-200 hover:border-slate-300 bg-white'
       }`}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
           {route.category && (
-            <span className="inline-block px-2 py-1 text-xs font-bold rounded-full mb-1 bg-blue-100 text-blue-600">
+            <span className="inline-block px-2 py-1 text-xs font-bold rounded-full mb-1 bg-slate-100 text-slate-900">
               {route.category === 'recommended' && '⚡ Recommended'}
             </span>
           )}

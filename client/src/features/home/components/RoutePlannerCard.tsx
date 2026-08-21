@@ -68,7 +68,7 @@ export default function RoutePlannerCard() {
           type="button"
           onClick={swap}
           aria-label="Swap origin and destination"
-          className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-slate-400 hover:text-slate-900"
         >
           <ArrowsUpDownIcon className="h-3.5 w-3.5 lg:rotate-90" />
         </button>
@@ -84,7 +84,7 @@ export default function RoutePlannerCard() {
 
       <button
         type="submit"
-        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 text-sm font-bold text-white shadow-[0_10px_22px_-8px_rgb(37_99_235/0.9)] transition hover:bg-blue-700 lg:h-11 lg:w-11 lg:px-0"
+        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-bold text-white shadow-[0_10px_22px_-8px_rgb(2_6_23/0.55)] transition hover:bg-slate-700 lg:h-11 lg:w-11 lg:px-0"
       >
         <span className="lg:sr-only">Find Best Ride</span>
         <ChevronRightIcon className="h-4 w-4" />

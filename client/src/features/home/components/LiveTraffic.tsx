@@ -25,7 +25,7 @@ export default function LiveTraffic() {
               <li key={item.title} className="flex gap-3">
                 <span
                   aria-hidden
-                  className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-blue-50 text-blue-600"
+                  className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-900"
                 >
                   <CheckIcon className="h-3 w-3" />
                 </span>

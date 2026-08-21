@@ -79,7 +79,7 @@ export default function LoginForm() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           labelAction={
-            <Link href="/auth/forgot-password" className="text-xs font-bold text-blue-600 hover:underline">
+            <Link href="/auth/forgot-password" className="text-xs font-bold text-slate-900 hover:underline">
               Forgot password?
             </Link>
           }
@@ -116,7 +116,7 @@ export default function LoginForm() {
 
       <p className="mt-8 text-center text-sm font-medium text-slate-500">
         New to RUTA?{' '}
-        <Link href="/auth/register" className="font-bold text-blue-600 hover:underline">
+        <Link href="/auth/register" className="font-bold text-slate-900 hover:underline">
           Create an account
         </Link>
       </p>

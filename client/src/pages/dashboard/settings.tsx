@@ -79,7 +79,7 @@ export default function Settings() {
             <button
               type="button"
               onClick={() => setSaved(true)}
-              className="h-11 rounded-lg bg-blue-600 px-6 text-sm font-bold text-white transition hover:bg-blue-700"
+              className="h-11 rounded-lg bg-slate-900 px-6 text-sm font-bold text-white transition hover:bg-slate-700"
             >
               Save Changes
             </button>

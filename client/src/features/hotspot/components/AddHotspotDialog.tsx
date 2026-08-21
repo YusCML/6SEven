@@ -80,7 +80,7 @@ export default function AddHotspotDialog({ onClose }: { onClose: () => void }) {
                   onClick={() => setForm({ ...form, category })}
                   className={`h-9 rounded-full px-4 text-xs font-bold transition ${
                     form.category === category
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-slate-900 text-white'
                       : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
                   }`}
                 >
@@ -100,7 +100,7 @@ export default function AddHotspotDialog({ onClose }: { onClose: () => void }) {
               value={form.note}
               onChange={(event) => setForm({ ...form, note: event.target.value })}
               placeholder="Best time to go, where rides queue, anything useful."
-              className="w-full rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 transition placeholder:text-gray-400 focus:border-blue-600 focus:bg-white"
+              className="w-full rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 transition placeholder:text-gray-400 focus:border-slate-900 focus:bg-white"
             />
           </div>
 

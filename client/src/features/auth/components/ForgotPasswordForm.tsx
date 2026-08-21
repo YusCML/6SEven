@@ -65,7 +65,7 @@ export default function ForgotPasswordForm() {
       )}
 
       <p className="mt-8 text-center text-sm font-medium text-slate-500">
-        <Link href="/auth/login" className="font-bold text-blue-600 hover:underline">
+        <Link href="/auth/login" className="font-bold text-slate-900 hover:underline">
           ← Back to Log In
         </Link>
       </p>

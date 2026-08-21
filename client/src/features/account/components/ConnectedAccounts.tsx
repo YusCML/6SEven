@@ -73,7 +73,7 @@ export default function ConnectedAccounts() {
         ) : (
           <a
             href="/api/auth/google/link"
-            className="flex h-11 items-center rounded-lg bg-blue-600 px-5 text-sm font-bold text-white transition hover:bg-blue-700"
+            className="flex h-11 items-center rounded-lg bg-slate-900 px-5 text-sm font-bold text-white transition hover:bg-slate-700"
           >
             Link Google
           </a>

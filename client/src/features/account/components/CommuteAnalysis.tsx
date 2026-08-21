@@ -62,7 +62,7 @@ export default function CommuteAnalysis({ streakDays, minutesOnTransit, week, ac
                 <li key={entry.day} className="flex h-full flex-1 flex-col items-center justify-end">
                   <div
                     className={`flex w-full items-start justify-center rounded-md ${
-                      isActive ? 'bg-gradient-to-b from-blue-600 to-indigo-400' : 'bg-slate-100'
+                      isActive ? 'bg-gradient-to-b from-orange-500 to-amber-400' : 'bg-slate-100'
                     }`}
                     style={{ height: `${Math.max(height, 2)}%` }}
                   >
@@ -81,7 +81,7 @@ export default function CommuteAnalysis({ streakDays, minutesOnTransit, week, ac
             <li
               key={entry.day}
               className={`flex-1 text-center text-[11px] font-semibold ${
-                entry.day === activeDay ? 'text-blue-600' : 'text-slate-400'
+                entry.day === activeDay ? 'text-orange-600' : 'text-slate-400'
               }`}
             >
               {entry.day}

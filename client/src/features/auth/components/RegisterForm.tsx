@@ -85,11 +85,11 @@ export default function RegisterForm() {
 
         <Checkbox checked={acceptedTerms} onChange={setAcceptedTerms} name="acceptedTerms">
           I agree to the{' '}
-          <Link href="/about-us" className="font-bold text-blue-600 hover:underline">
+          <Link href="/about-us" className="font-bold text-slate-900 hover:underline">
             Terms of Service
           </Link>{' '}
           and{' '}
-          <Link href="/about-us" className="font-bold text-blue-600 hover:underline">
+          <Link href="/about-us" className="font-bold text-slate-900 hover:underline">
             Privacy Policy
           </Link>
           .
@@ -122,7 +122,7 @@ export default function RegisterForm() {
 
       <p className="mt-8 text-center text-sm font-medium text-slate-500">
         Already have an account?{' '}
-        <Link href="/auth/login" className="font-bold text-blue-600 hover:underline">
+        <Link href="/auth/login" className="font-bold text-slate-900 hover:underline">
           Log In
         </Link>
       </p>

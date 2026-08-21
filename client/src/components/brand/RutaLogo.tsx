@@ -16,7 +16,7 @@ export default function RutaLogo({ size = 'md', href = '/home' }: RutaLogoProps)
 
   return (
     <Link href={href} className="flex items-center gap-3">
-      <span className={`${style.box} grid place-items-center bg-blue-600 text-white`}>
+      <span className={`${style.box} grid place-items-center bg-slate-900 text-white`}>
         <RutaMarkIcon className={style.icon} />
       </span>
       <span className={`${style.text} font-black tracking-tight text-slate-900`}>RUTA</span>

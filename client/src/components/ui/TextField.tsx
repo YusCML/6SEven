@@ -26,7 +26,7 @@ export default function TextField({ label, icon, labelAction, ...inputProps }: T
         <input
           {...inputProps}
           id={id}
-          className={`h-14 w-full rounded-xl border border-slate-200 bg-slate-50 pr-4 text-base text-slate-900 transition placeholder:text-gray-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 disabled:cursor-not-allowed disabled:opacity-60 ${icon ? 'pl-11' : 'pl-4'}`}
+          className={`h-14 w-full rounded-xl border border-slate-200 bg-slate-50 pr-4 text-base text-slate-900 transition placeholder:text-gray-400 focus:border-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/15 disabled:cursor-not-allowed disabled:opacity-60 ${icon ? 'pl-11' : 'pl-4'}`}
         />
       </div>
     </div>

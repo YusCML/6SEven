@@ -8,7 +8,7 @@ const transportOptions = [
     Icon: RouteIcon,
     title: "Getting Started",
     text: "New to RUTA? Learn the basics of riding with us.",
-    tone: "bg-blue-50 text-blue-600",
+    tone: "bg-slate-100 text-slate-900",
   },
   {
     Icon: TicketIcon,
@@ -67,7 +67,7 @@ export default function CommuterGuide() {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/25 to-transparent" />
 
           <div className="relative flex min-h-64 max-w-md flex-col justify-center p-7 text-white sm:p-10">
-            <span className="mb-3 w-fit rounded-full bg-blue-600 px-3 py-1 text-[11px] font-bold tracking-widest">
+            <span className="mb-3 w-fit rounded-full bg-slate-900 px-3 py-1 text-[11px] font-bold tracking-widest">
               OFFICIAL GUIDE
             </span>
 
@@ -105,7 +105,7 @@ export default function CommuterGuide() {
 
         <section className="grid items-center gap-8 lg:grid-cols-[1.1fr_.9fr]">
           <div>
-            <p className="mb-3 border-l-4 border-blue-600 pl-2 text-sm font-bold uppercase tracking-wider text-blue-700">
+            <p className="mb-3 border-l-4 border-slate-900 pl-2 text-sm font-bold uppercase tracking-wider text-slate-900">
               Getting Started
             </p>
 
@@ -306,7 +306,7 @@ function Safety({ title, text }: { title: string; text: string }) {
   return (
     <div>
       <h3 className="flex items-center gap-2 text-sm font-bold text-slate-800">
-        <ShieldCheckIcon className="h-5 w-5 text-blue-600" />
+        <ShieldCheckIcon className="h-5 w-5 text-slate-900" />
         {title}
       </h3>
       <p className="mt-1 text-sm leading-6 text-slate-500">{text}</p>

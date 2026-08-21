@@ -17,7 +17,7 @@ const items = [
 
 const base = 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition';
 const inactive = `${base} text-slate-600 hover:bg-slate-50`;
-const active = `${base} bg-blue-50 text-blue-700`;
+const active = `${base} bg-slate-100 text-slate-900`;
 
 export default function AccountNavigation({ active: current, title, showSignOut = false }: AccountNavigationProps) {
   const router = useRouter();
@@ -51,7 +51,7 @@ export default function AccountNavigation({ active: current, title, showSignOut 
               Sign Out
             </button>
           ) : (
-            <Link href="/auth/login" className={`${base} text-blue-600 hover:bg-blue-50`}>
+            <Link href="/auth/login" className={`${base} text-slate-900 hover:bg-slate-100`}>
               <LogInIcon className="h-4 w-4 shrink-0" />
               Sign In
             </Link>

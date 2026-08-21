@@ -24,7 +24,7 @@ export default function AuthLayout({ children, footerLinks = defaultFooterLinks 
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between px-6 sm:px-11">
           <RutaLogo />
-          <Link href="/home" className="text-sm font-semibold text-slate-600 transition hover:text-blue-600">
+          <Link href="/home" className="text-sm font-semibold text-slate-600 transition hover:text-slate-900">
             Back to Home
           </Link>
         </div>

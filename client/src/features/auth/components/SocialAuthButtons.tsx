@@ -26,7 +26,7 @@ export default function SocialAuthButtons({ label, onSelect }: SocialAuthButtons
             key={name}
             type="button"
             onClick={() => onSelect(name)}
-            className="flex h-14 items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white text-sm font-bold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
+            className="flex h-14 items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white text-sm font-bold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-900/15"
           >
             <Image src={mark} alt="" aria-hidden width={20} height={20} className="h-5 w-5" />
             {name}
