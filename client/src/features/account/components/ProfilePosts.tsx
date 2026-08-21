@@ -19,7 +19,7 @@ export default function ProfilePosts() {
 
   if (posts.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-slate-100 bg-white px-6 py-10 text-center">
+      <div className="rounded-lg border border-dashed border-slate-200 bg-white px-6 py-10 text-center">
         <p className="text-sm font-bold text-slate-700">No posts yet</p>
         <p className="mt-1 text-xs font-medium text-slate-500">
           Pin a place you know well and it will show up here.

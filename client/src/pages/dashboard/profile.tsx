@@ -86,7 +86,7 @@ export default function UserProfile() {
 
           <section>
             <h2 className="mb-4 text-lg font-bold text-slate-900">Connected Accounts</h2>
-            <div className="rounded-lg border border-slate-100 bg-white p-6">
+            <div className="rounded-lg border border-slate-200 bg-white p-6">
               <ConnectedAccounts />
             </div>
           </section>

@@ -29,7 +29,7 @@ export default function AccountNavigation({ active: current, title, showSignOut 
   };
 
   return (
-    <nav className="rounded-lg border border-slate-100 bg-white p-4" aria-label={title}>
+    <nav className="rounded-lg border border-slate-200 bg-white p-4" aria-label={title}>
       <h2 className="px-3 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400">{title}</h2>
 
       <ul className="space-y-1">

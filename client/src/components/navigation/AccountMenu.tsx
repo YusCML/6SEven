@@ -4,7 +4,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle';
 import { SettingsIcon } from '@/components/icons';
 import useSession from '@/hooks/useSession';
 
-const pill = 'flex items-center gap-2 rounded-full border border-slate-100 bg-white p-1 pr-2';
+const pill = 'flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1 pr-2';
 
 function SignedIn({ displayName, avatarUrl }: { displayName: string; avatarUrl: string | null }) {
   return (

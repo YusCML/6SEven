@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Avatar from '@/components/ui/Avatar';
 import Badge from '@/components/ui/Badge';
 import { BookmarkIcon, MapPinIcon } from '@/components/icons';
@@ -6,9 +7,19 @@ import type { Hotspot } from '../data';
 
 export default function HotspotCard({ hotspot }: { hotspot: Hotspot }) {
   return (
-    <article className="mb-4 break-inside-avoid overflow-hidden rounded-lg border border-slate-100 bg-white">
+    <article className="mb-4 break-inside-avoid overflow-hidden rounded-lg border border-slate-200 bg-white transition hover:border-slate-400">
       <div className="relative">
-        <HotspotCover hotspot={hotspot} height={hotspot.coverHeight} />
+        {hotspot.photo ? (
+          <Image
+            src={hotspot.photo}
+            alt={hotspot.title}
+            placeholder="blur"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="h-auto w-full object-cover"
+          />
+        ) : (
+          <HotspotCover hotspot={hotspot} height={hotspot.coverHeight} />
+        )}
 
         <div className="absolute left-3 top-3">
           <Badge tone="inverse">{hotspot.category}</Badge>

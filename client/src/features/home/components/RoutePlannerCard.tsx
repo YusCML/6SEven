@@ -53,7 +53,7 @@ export default function RoutePlannerCard() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid items-center gap-1.5 rounded-xl border border-slate-100 bg-white p-1.5 shadow-[0_18px_38px_-14px_rgb(2_6_23/0.5)] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto]"
+      className="grid items-center gap-1.5 rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_18px_38px_-14px_rgb(2_6_23/0.5)] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto]"
     >
       <Field
         label="From"
@@ -68,7 +68,7 @@ export default function RoutePlannerCard() {
           type="button"
           onClick={swap}
           aria-label="Swap origin and destination"
-          className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
         >
           <ArrowsUpDownIcon className="h-3.5 w-3.5 lg:rotate-90" />
         </button>

@@ -42,7 +42,7 @@ export default function Settings() {
                 aria-label="Theme"
                 value={settings.theme}
                 onChange={(event) => update('theme', event.target.value)}
-                className="h-10 w-40 shrink-0 rounded-md border border-slate-100 bg-white px-3 text-sm font-semibold text-slate-700"
+                className="h-10 w-40 shrink-0 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
               >
                 {THEMES.map(({ value, label }) => (
                   <option key={value} value={value}>

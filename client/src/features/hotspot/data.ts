@@ -1,4 +1,8 @@
-
+import type { StaticImageData } from 'next/image';
+import emperador from '@/assets/landing/hero-emperador.jpg';
+import cpu from '@/assets/landing/ride-cpu.jpg';
+import jaro from '@/assets/landing/ride-jaro.jpg';
+import smIloilo from '@/assets/landing/ride-sm-iloilo.jpg';
 export const CATEGORIES = ['All', 'Landmark', 'Transit Hub', 'Food', 'Study Spot'] as const;
 
 export type HotspotCategory = (typeof CATEGORIES)[number];
@@ -9,6 +13,9 @@ export type Hotspot = {
   location: string;
   category: Exclude<HotspotCategory, 'All'>;
   note: string;
+  // Only set where a photo of that actual place exists. Everything else falls
+  // back to a generated cover rather than borrowing an unrelated image.
+  photo?: StaticImageData;
   coverHeight: number;
   author: string;
   saves: number;
@@ -25,6 +32,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'Iloilo Business Park, Mandurriao',
     category: 'Landmark',
     note: 'Best light just before sunset. Plenty of space to wait for a ride.',
+    photo: emperador,
     coverHeight: 260,
     author: 'shi',
     saves: 128,
@@ -36,6 +44,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'Benigno Aquino Ave, Mandurriao',
     category: 'Transit Hub',
     note: 'Covered loading bay. Queues move fastest on the north side.',
+    photo: smIloilo,
     coverHeight: 200,
     author: 'nherf',
     saves: 96,
@@ -47,6 +56,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'Jaro District',
     category: 'Landmark',
     note: 'Quiet on weekday mornings. Tricycles line up along the east gate.',
+    photo: jaro,
     coverHeight: 240,
     author: 'denver',
     saves: 74,
@@ -58,6 +68,7 @@ export const HOTSPOTS: Hotspot[] = [
     location: 'Central Philippine University, Jaro',
     category: 'Study Spot',
     note: 'Cafes across the road stay open late during exam week.',
+    photo: cpu,
     coverHeight: 180,
     author: 'novie',
     saves: 61,

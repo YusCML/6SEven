@@ -13,7 +13,7 @@ export default function HeroSearch() {
         or object-cover trims the building off the top. The scrim runs left to
         right so the copy stays legible while the facade keeps its brightness.
       */}
-      <div className="relative isolate flex min-h-[24rem] flex-col justify-center overflow-hidden rounded-2xl shadow-[0_24px_60px_-28px_rgb(2_6_23/0.6)] sm:min-h-[26rem] lg:min-h-[30rem]">
+      <div className="relative isolate flex min-h-[24rem] flex-col justify-center overflow-hidden rounded-2xl sm:min-h-[26rem] lg:min-h-[30rem]">
         <Image
           src={heroPhoto}
           alt=""

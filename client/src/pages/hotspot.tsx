@@ -47,7 +47,7 @@ export default function HotspotPage() {
             className={`h-9 rounded-full px-4 text-xs font-bold transition ${
               category === option
                 ? 'bg-slate-900 text-white'
-                : 'border border-slate-100 bg-white text-slate-600 hover:bg-slate-50'
+                : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
             }`}
           >
             {option}

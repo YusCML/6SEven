@@ -16,7 +16,7 @@ export default function AddHotspotDialog({ onClose }: { onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-hotspot-title"
-        className="w-full max-w-lg rounded-lg border border-slate-100 bg-white"
+        className="w-full max-w-lg rounded-lg border border-slate-200 bg-white"
       >
         <header className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
           <div>
@@ -41,7 +41,7 @@ export default function AddHotspotDialog({ onClose }: { onClose: () => void }) {
         <div className="space-y-5 px-6 py-5">
           <div>
             <span className="mb-2 block text-sm font-bold text-slate-700">Photo</span>
-            <div className="grid h-40 place-items-center rounded-md border-2 border-dashed border-slate-100 bg-slate-50 text-center">
+            <div className="grid h-40 place-items-center rounded-md border-2 border-dashed border-slate-200 bg-slate-50 text-center">
               <div>
                 <ImageIcon className="mx-auto h-6 w-6 text-slate-300" />
                 <p className="mt-2 text-xs font-semibold text-slate-500">Drop a photo or browse</p>
@@ -81,7 +81,7 @@ export default function AddHotspotDialog({ onClose }: { onClose: () => void }) {
                   className={`h-9 rounded-full px-4 text-xs font-bold transition ${
                     form.category === category
                       ? 'bg-blue-600 text-white'
-                      : 'border border-slate-100 text-slate-600 hover:bg-slate-50'
+                      : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   {category}
@@ -100,7 +100,7 @@ export default function AddHotspotDialog({ onClose }: { onClose: () => void }) {
               value={form.note}
               onChange={(event) => setForm({ ...form, note: event.target.value })}
               placeholder="Best time to go, where rides queue, anything useful."
-              className="w-full rounded-md border border-slate-100 bg-slate-50 p-3 text-sm text-slate-900 transition placeholder:text-gray-400 focus:border-blue-600 focus:bg-white"
+              className="w-full rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 transition placeholder:text-gray-400 focus:border-blue-600 focus:bg-white"
             />
           </div>
 

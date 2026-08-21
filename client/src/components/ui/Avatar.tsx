@@ -22,7 +22,7 @@ export default function Avatar({ name, src, size = 'md' }: AvatarProps) {
       alt={name}
       width={style.px}
       height={style.px}
-      className={`${style.box} shrink-0 rounded-full border border-slate-100 object-cover`}
+      className={`${style.box} shrink-0 rounded-full border border-slate-200 object-cover`}
     />
   );
 }

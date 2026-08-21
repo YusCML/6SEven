@@ -4,6 +4,7 @@ import RutaWordmark from '@/components/brand/RutaWordmark';
 import {
   AlertTriangleIcon,
   BookIcon,
+  CrownIcon,
   HomeIcon,
   MapPinIcon,
   MenuIcon,
@@ -28,7 +29,7 @@ export default function Sidebar({ open, onToggle }: SidebarProps) {
 
   return (
     <aside
-      className={`sticky top-0 flex h-screen shrink-0 flex-col border-r border-slate-100 bg-white transition-[width] duration-200 ${
+      className={`sticky top-0 flex h-screen shrink-0 flex-col border-r border-slate-200 bg-white transition-[width] duration-200 ${
         open ? 'w-60' : 'w-[4.5rem]'
       }`}
     >
@@ -67,6 +68,20 @@ export default function Sidebar({ open, onToggle }: SidebarProps) {
               </li>
             );
           })}
+
+          <li>
+            <Link
+              href="/upgrade"
+              aria-current={pathname === '/upgrade' ? 'page' : undefined}
+              title={open ? undefined : 'Upgrade'}
+              className={`flex h-11 items-center gap-3 rounded-lg text-sm font-bold transition ${
+                open ? 'px-3' : 'justify-center px-0'
+              } ${pathname === '/upgrade' ? 'bg-amber-50 text-amber-700' : 'text-amber-600 hover:bg-amber-50'}`}
+            >
+              <CrownIcon className="h-5 w-5 shrink-0" />
+              {open ? <span className="truncate">Upgrade</span> : <span className="sr-only">Upgrade</span>}
+            </Link>
+          </li>
         </ul>
       </nav>
     </aside>

@@ -4,7 +4,7 @@ import type { FrequentRide } from '../content';
 
 export default function RideCard({ ride }: { ride: FrequentRide }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:shadow-md">
+    <article className="overflow-hidden rounded-lg border border-slate-200 bg-white transition hover:border-slate-400">
       <div className="relative aspect-[5/2]">
         <Image
           src={ride.photo}
@@ -17,7 +17,7 @@ export default function RideCard({ ride }: { ride: FrequentRide }) {
         />
         {ride.favorite ? (
           <Badge tone="inverse" className="absolute left-3 top-3">
-            ★ Favorite
+            Favorite
           </Badge>
         ) : null}
       </div>

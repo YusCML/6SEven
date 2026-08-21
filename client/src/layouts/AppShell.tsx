@@ -10,7 +10,7 @@ export default function AppShell({ children }: AppShellProps) {
   const [navOpen, setNavOpen] = useState(true);
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
+    <div className="flex min-h-screen bg-white font-sans text-slate-900">
       <Sidebar open={navOpen} onToggle={() => setNavOpen(!navOpen)} />
 
       <div className="flex min-w-0 flex-1 flex-col">

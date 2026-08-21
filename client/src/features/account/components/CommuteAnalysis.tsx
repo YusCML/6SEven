@@ -14,7 +14,7 @@ const AXIS_STEPS = 6;
 
 function StatTile({ icon, value, label }: { icon: ReactNode; value: string; label: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-slate-100 bg-white p-5">
+    <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-5">
       <span className="shrink-0">{icon}</span>
       <div>
         <span className="block text-xl font-extrabold leading-tight text-slate-900">{value}</span>
@@ -43,7 +43,7 @@ export default function CommuteAnalysis({ streakDays, minutesOnTransit, week, ac
         />
       </div>
 
-      <div className="rounded-lg border border-slate-100 bg-white p-5">
+      <div className="rounded-lg border border-slate-200 bg-white p-5">
         <div className="flex gap-3">
           <ul className="flex h-44 w-10 shrink-0 flex-col justify-between text-right text-[10px] font-semibold text-slate-400">
             {ticks.map((tick) => (
