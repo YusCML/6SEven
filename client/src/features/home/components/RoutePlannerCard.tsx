@@ -1,6 +1,6 @@
 import { useId, useState, type FormEvent, type ReactNode } from 'react';
 import { useRouter } from 'next/router';
-import { ArrowsUpDownIcon, ChevronRightIcon, MapPinIcon, SearchIcon } from '@/components/icons';
+import { ArrowsUpDownIcon, MapPinIcon, SearchIcon } from '@/components/icons';
 
 type FieldProps = {
   label: string;
@@ -14,7 +14,7 @@ function Field({ label, icon, value, placeholder, onChange }: FieldProps) {
   const id = useId();
 
   return (
-    <div className="flex items-center gap-2.5 rounded-lg px-3 py-2 transition hover:bg-slate-50">
+    <div className="flex items-center gap-2.5 rounded-lg px-3 py-2 transition hover:bg-slate-50 dark:hover:bg-slate-200">
       <span aria-hidden className="shrink-0 text-slate-400">
         {icon}
       </span>
@@ -53,7 +53,7 @@ export default function RoutePlannerCard() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid items-center gap-1.5 rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_18px_38px_-14px_rgb(2_6_23/0.5)] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto]"
+      className="grid items-center gap-1.5 rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_18px_38px_-14px_rgb(2_6_23/0.5)] dark:border-slate-300 dark:bg-slate-100 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto]"
     >
       <Field
         label="From"
@@ -68,7 +68,7 @@ export default function RoutePlannerCard() {
           type="button"
           onClick={swap}
           aria-label="Swap origin and destination"
-          className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-slate-400 hover:text-slate-900"
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-slate-400 hover:text-slate-900 dark:border-slate-300 dark:bg-slate-200"
         >
           <ArrowsUpDownIcon className="h-3.5 w-3.5 lg:rotate-90" />
         </button>
@@ -84,10 +84,9 @@ export default function RoutePlannerCard() {
 
       <button
         type="submit"
-        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-bold text-white shadow-[0_10px_22px_-8px_rgb(2_6_23/0.55)] transition hover:bg-slate-700 lg:h-11 lg:w-11 lg:px-0"
+        className="h-11 rounded-lg bg-slate-900 px-6 text-sm font-bold text-white transition hover:bg-slate-700"
       >
-        <span className="lg:sr-only">Find Best Ride</span>
-        <ChevronRightIcon className="h-4 w-4" />
+        Search
       </button>
     </form>
   );

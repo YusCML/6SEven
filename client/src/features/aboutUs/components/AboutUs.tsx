@@ -51,7 +51,7 @@ export default function AboutUs() {
             Empowering the Filipino Commuter
           </h1>
 
-          <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-slate-200">
+          <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-paper/80">
             We are building the future of transportation in the Philippines
             through technology, data, and community.
           </p>
@@ -159,32 +159,32 @@ export default function AboutUs() {
 
       {/* Contact Section */}
       <section className="mx-auto max-w-5xl px-6 py-16 lg:py-20">
-        <div className="grid overflow-hidden rounded-2xl bg-[#102246] text-paper shadow-sm lg:grid-cols-[1fr_1.05fr]">
+        <div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 lg:grid-cols-[1fr_1.05fr]">
           <div className="flex flex-col justify-center p-8 sm:p-10">
-            <h2 className="max-w-xs text-2xl font-extrabold leading-tight">
+            <h2 className="max-w-xs text-2xl font-extrabold leading-tight text-slate-900">
               Have questions or want to partner?
             </h2>
 
-            <p className="mt-4 max-w-sm text-sm leading-6 text-slate-300">
+            <p className="mt-4 max-w-sm text-sm leading-6 text-slate-500">
               We&apos;re always looking for ways to improve RUTA and collaborate
               with LGUs and transit operators.
             </p>
 
-            <div className="mt-6 space-y-2 text-sm text-slate-200">
+            <div className="mt-6 space-y-2 text-sm font-medium text-slate-600">
               <p className="flex items-center gap-2">
-                <MailIcon className="h-4 w-4 text-slate-300" />
+                <MailIcon className="h-4 w-4 text-slate-400" />
                 hello@ruta.com
               </p>
 
               <p className="flex items-center gap-2">
-                <PinIcon className="h-4 w-4 text-slate-300" />
+                <PinIcon className="h-4 w-4 text-slate-400" />
                 Iloilo City, Philippines
               </p>
             </div>
           </div>
 
           <form
-            className="m-4 rounded-xl bg-white p-5 text-slate-900 shadow-lg sm:m-6"
+            className="m-4 rounded-lg border border-slate-200 bg-white p-5 text-slate-900 sm:m-6"
             onSubmit={(event) => event.preventDefault()}
           >
             <h3 className="text-base font-bold">Send us a message</h3>

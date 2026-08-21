@@ -135,7 +135,7 @@ export default function CommuterGuide() {
           />
         </section>
 
-        <section className="rounded-2xl bg-[#10182b] p-7 text-paper shadow-sm sm:p-9">
+        <section className="rounded-2xl border border-slate-200 bg-slate-100 p-7 text-slate-900 sm:p-9">
           <h2 className="text-3xl font-extrabold tracking-tight">
             Simple, Fair Fares
           </h2>
@@ -144,19 +144,17 @@ export default function CommuterGuide() {
             {fares.map((fare, index) => (
               <article
                 key={fare.title}
-                className={`flex min-h-[290px] flex-col rounded-[24px] border border-paper/25 p-8 ${
-                  index === 2
-                    ? "bg-gradient-to-br from-[#2d374d] to-[#314f92]"
-                    : "bg-gradient-to-br from-[#293348] to-[#202a3d]"
+                className={`flex min-h-[290px] flex-col rounded-lg border border-slate-200 bg-white p-8 ${
+                  index === 2 ? "ring-1 ring-amber-300" : ""
                 }`}
               >
-                <fare.Icon className="h-9 w-9 text-[#3b82f6]" />
+                <fare.Icon className="h-9 w-9 text-slate-500" />
 
                 <h3 className="mt-6 text-[22px] font-extrabold tracking-tight">
                   {fare.title}
                 </h3>
 
-                <p className="mt-3 text-[15px] leading-7 text-paper/70">
+                <p className="mt-3 text-[15px] leading-7 text-slate-500">
                   {fare.text}
                 </p>
 

@@ -392,3 +392,11 @@ export function ChevronDownIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function NavigationIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={1.5} strokeLinejoin="round" aria-hidden="true" {...props}>
+      <polygon points="3 11 22 2 13 21 11 13 3 11" />
+    </svg>
+  );
+}
