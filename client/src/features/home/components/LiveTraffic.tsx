@@ -46,7 +46,7 @@ export default function LiveTraffic() {
           </Link>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-900">
+        <div className="overflow-hidden rounded-lg border border-slate-200 bg-ink">
           <Image
             src={mapPreview}
             alt="Live incident map of Metro Manila"

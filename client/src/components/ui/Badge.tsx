@@ -12,7 +12,7 @@ const tones: Record<BadgeTone, string> = {
   brand: 'bg-slate-100 text-slate-900',
   neutral: 'bg-slate-100 text-slate-600',
   muted: 'text-slate-400',
-  inverse: 'bg-white/90 text-slate-900 backdrop-blur',
+  inverse: 'bg-paper/90 text-ink backdrop-blur',
   success: 'bg-emerald-50 text-emerald-600',
 };
 

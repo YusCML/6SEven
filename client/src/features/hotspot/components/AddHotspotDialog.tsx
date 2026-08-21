@@ -11,7 +11,7 @@ export default function AddHotspotDialog({ onClose }: { onClose: () => void }) {
   const [form, setForm] = useState({ title: '', location: '', category: PICKABLE[0], note: '' });
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 sm:p-8">
+    <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-ink/60 p-4 sm:p-8">
       <div
         role="dialog"
         aria-modal="true"

@@ -39,7 +39,7 @@ export default function HotspotCard({ hotspot }: { hotspot: Hotspot }) {
         <button
           type="button"
           aria-label={`Save ${hotspot.title}`}
-          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-slate-700 backdrop-blur transition hover:bg-white"
+          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-paper/90 text-ink backdrop-blur transition hover:bg-paper"
         >
           <BookmarkIcon className="h-4 w-4" />
         </button>

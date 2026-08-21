@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import PageMeta from '@/components/PageMeta';
 import Alert from '@/components/ui/Alert';
+import useTheme from '@/hooks/useTheme';
+import type { ThemePreference } from '@/providers/ThemeProvider';
 import AccountBreadcrumb from '@/features/account/components/AccountBreadcrumb';
 import AccountNavigation from '@/features/account/components/AccountNavigation';
 import AccountSection from '@/features/account/components/AccountSection';
@@ -13,7 +15,8 @@ const THEMES = [
 ];
 
 export default function Settings() {
-  const [settings, setSettings] = useState({ theme: 'light', publicProfile: true, dataSavingMode: false });
+  const { preference, setPreference } = useTheme();
+  const [settings, setSettings] = useState({ publicProfile: true, dataSavingMode: false });
   const [saved, setSaved] = useState(false);
 
   const update = <K extends keyof typeof settings>(key: K, value: (typeof settings)[K]) => {
@@ -40,8 +43,8 @@ export default function Settings() {
 
               <select
                 aria-label="Theme"
-                value={settings.theme}
-                onChange={(event) => update('theme', event.target.value)}
+                value={preference}
+                onChange={(event) => setPreference(event.target.value as ThemePreference)}
                 className="h-10 w-40 shrink-0 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
               >
                 {THEMES.map(({ value, label }) => (

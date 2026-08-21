@@ -1,12 +1,48 @@
 @import "tailwindcss";
 
 /*
+ * Dark mode is driven by a `.dark` class on <html>, set by ThemeProvider,
+ * rather than by prefers-color-scheme alone — the user can override the OS.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Rather than adding `dark:` to every component, the neutral ramp is inverted
+ * here. `bg-white` becomes near-black, `text-slate-900` becomes near-white, and
+ * every border flips with them, so the whole app follows from one place.
+ * The dark ramp is neutral grey rather than blue-tinted slate.
+ * Accent hues (amber, emerald, orange, red) are deliberately left alone.
+ */
+.dark {
+  --color-white: oklch(0.253 0 0);
+  --color-slate-50: oklch(0.285 0 0);
+  --color-slate-100: oklch(0.318 0 0);
+  --color-slate-200: oklch(0.352 0 0);
+  --color-slate-300: oklch(0.44 0 0);
+  --color-slate-400: oklch(0.58 0 0);
+  --color-slate-500: oklch(0.68 0 0);
+  --color-slate-600: oklch(0.8 0 0);
+  --color-slate-700: oklch(0.88 0 0);
+  --color-slate-800: oklch(0.93 0 0);
+  --color-slate-900: oklch(0.967 0 0);
+  --color-slate-950: oklch(1 0 0);
+}
+
+/*
  * Design tokens.
  *
  * `@theme` values become both CSS variables and Tailwind utilities, so the
  * font is defined once here rather than per component.
  */
 @theme {
+  /*
+   * Fixed ink/paper, deliberately absent from the .dark block above so they
+   * never invert. Anything layered over a photo, or a backdrop that must stay
+   * dark in both themes, uses these instead of white/slate-950.
+   */
+  --color-ink: oklch(0.129 0.042 264.695);
+  --color-paper: oklch(1 0 0);
+
   /*
    * `--font-inter` is set by next/font in _app.tsx. Without this line Tailwind's
    * `font-sans` falls back to the system stack and the webfont is downloaded but
@@ -24,6 +60,13 @@
   body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: var(--color-white);
+    color: var(--color-slate-900);
+  }
+
+  /* Native form controls and scrollbars follow the theme. */
+  html.dark {
+    color-scheme: dark;
   }
 
   /*
