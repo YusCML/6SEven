@@ -7,7 +7,7 @@ import { trafficHighlights } from '../content';
 
 export default function LiveTraffic() {
   return (
-    <section className="mx-auto w-full max-w-[1440px] px-6 pb-20 sm:px-11">
+    <section className="mx-auto w-full max-w-6xl px-6 pb-12">
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
         <div>
           <Badge>Live Updates</Badge>

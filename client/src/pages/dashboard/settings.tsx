@@ -1,35 +1,89 @@
 import { useState } from 'react';
 import PageMeta from '@/components/PageMeta';
+import Alert from '@/components/ui/Alert';
+import AccountBreadcrumb from '@/features/account/components/AccountBreadcrumb';
 import AccountNavigation from '@/features/account/components/AccountNavigation';
 import AccountSection from '@/features/account/components/AccountSection';
 import ToggleSetting from '@/features/account/components/ToggleSetting';
 
+const THEMES = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+  { value: 'system', label: 'Match system' },
+];
+
 export default function Settings() {
-  const [settings, setSettings] = useState({ theme: 'light', twoFactor: false, publicProfile: true, dataSavingMode: false });
+  const [settings, setSettings] = useState({ theme: 'light', publicProfile: true, dataSavingMode: false });
+  const [saved, setSaved] = useState(false);
+
+  const update = <K extends keyof typeof settings>(key: K, value: (typeof settings)[K]) => {
+    setSettings({ ...settings, [key]: value });
+    setSaved(false);
+  };
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10 flex-1 w-full">
+    <div className="mx-auto w-full max-w-6xl px-6 py-10">
       <PageMeta title="Settings" description="Control your RUTA display, data and privacy preferences." />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="space-y-4"><AccountNavigation active="settings" title="Control Panel" /></div>
-        <div className="md:col-span-2 space-y-6">
-          <AccountSection title="System Parameters">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div><h4 className="text-sm font-semibold text-slate-800">Interface Display Mode</h4><p className="text-xs text-slate-500">Choose your ambient desktop workspace visual layer.</p></div>
-                <select value={settings.theme} onChange={(event) => setSettings({ ...settings, theme: event.target.value })} className="border border-slate-200 bg-slate-50 text-sm p-2 rounded w-36">
-                  <option value="light">☀️ Light Theme</option><option value="dark">🌙 Dark Theme</option><option value="system">🖥️ System Defaults</option>
-                </select>
+
+      <AccountBreadcrumb page="Settings" />
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
+        <AccountNavigation active="settings" title="Account" />
+
+        <div className="space-y-6">
+          <AccountSection title="Appearance" description="How RUTA looks on this device.">
+            <div className="flex items-start justify-between gap-6">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">Theme</h3>
+                <p className="mt-0.5 text-xs font-medium text-slate-500">Light, dark, or follow your system.</p>
               </div>
-              <hr className="border-slate-100" />
-              <ToggleSetting title="Low-Data Map Strategy" description="Minimizes vector asset updates while parsing routing maps over weak cellular connections." checked={settings.dataSavingMode} onChange={(dataSavingMode) => setSettings({ ...settings, dataSavingMode })} />
-              <hr className="border-slate-100" />
-              <ToggleSetting title="Public Reliability Standing" description="Allows other metro commuters to view your submitted incident validation metrics." checked={settings.publicProfile} onChange={(publicProfile) => setSettings({ ...settings, publicProfile })} />
-            </div>
-            <div className="mt-8 pt-4 border-t border-slate-100 flex justify-end">
-              <button onClick={() => alert('Settings saved!')} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded shadow-sm transition">Apply Changes</button>
+
+              <select
+                aria-label="Theme"
+                value={settings.theme}
+                onChange={(event) => update('theme', event.target.value)}
+                className="h-10 w-40 shrink-0 rounded-md border border-slate-100 bg-white px-3 text-sm font-semibold text-slate-700"
+              >
+                {THEMES.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
             </div>
           </AccountSection>
+
+          <AccountSection title="Data & Privacy" description="What RUTA loads and what other commuters can see.">
+            <div className="space-y-5">
+              <ToggleSetting
+                title="Data saver"
+                description="Load lighter maps on slow connections."
+                checked={settings.dataSavingMode}
+                onChange={(dataSavingMode) => update('dataSavingMode', dataSavingMode)}
+              />
+
+              <hr className="border-slate-100" />
+
+              <ToggleSetting
+                title="Public profile"
+                description="Let other commuters see the incidents you report."
+                checked={settings.publicProfile}
+                onChange={(publicProfile) => update('publicProfile', publicProfile)}
+              />
+            </div>
+          </AccountSection>
+
+          {saved ? <Alert tone="success">Preferences saved for this session.</Alert> : null}
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => setSaved(true)}
+              className="h-11 rounded-lg bg-blue-600 px-6 text-sm font-bold text-white transition hover:bg-blue-700"
+            >
+              Save Changes
+            </button>
+          </div>
         </div>
       </div>
     </div>

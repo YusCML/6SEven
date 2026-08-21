@@ -1,15 +1,22 @@
-import type { ReactNode } from 'react';
-import Navbar from '@/components/navigation/Navbar';
+import { useState, type ReactNode } from 'react';
+import Sidebar from '@/components/navigation/Sidebar';
+import Topbar from '@/components/navigation/Topbar';
 
 type AppShellProps = {
   children: ReactNode;
 };
 
 export default function AppShell({ children }: AppShellProps) {
+  const [navOpen, setNavOpen] = useState(true);
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-      <Navbar />
-      <main className="flex-grow">{children}</main>
+    <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
+      <Sidebar open={navOpen} onToggle={() => setNavOpen(!navOpen)} />
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <Topbar />
+        <main className="flex-1">{children}</main>
+      </div>
     </div>
   );
 }

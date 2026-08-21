@@ -21,7 +21,7 @@ export default function StatList({ items }: { items: StatListItem[] }) {
       {items.map(({ label, value, icon, tone = 'slate' }) => (
         <li
           key={label}
-          className="flex items-center justify-between gap-4 rounded-lg border border-slate-200 bg-white p-4"
+          className="flex items-center justify-between gap-4 rounded-lg border border-slate-100 bg-white p-4"
         >
           <div className="flex items-center gap-3">
             <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-md ${tones[tone]}`}>{icon}</span>

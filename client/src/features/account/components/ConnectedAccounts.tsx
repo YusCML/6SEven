@@ -44,7 +44,7 @@ export default function ConnectedAccounts() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-slate-200 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-slate-100 p-4">
         <div className="flex items-center gap-4">
           <Image src={googleMark} alt="" aria-hidden width={24} height={24} className="h-6 w-6" />
 
@@ -66,7 +66,7 @@ export default function ConnectedAccounts() {
             type="button"
             onClick={handleUnlink}
             disabled={working}
-            className="h-11 rounded-lg border border-slate-200 px-5 text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="h-11 rounded-lg border border-slate-100 px-5 text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {working ? 'Unlinking…' : 'Unlink'}
           </button>

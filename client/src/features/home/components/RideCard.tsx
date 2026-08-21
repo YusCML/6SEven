@@ -4,7 +4,7 @@ import type { FrequentRide } from '../content';
 
 export default function RideCard({ ride }: { ride: FrequentRide }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
+    <article className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:shadow-md">
       <div className="relative aspect-[5/2]">
         <Image
           src={ride.photo}

@@ -2,14 +2,19 @@ import type { ReactNode } from 'react';
 
 type AccountSectionProps = {
   title: string;
+  description?: string;
   children: ReactNode;
 };
 
-export default function AccountSection({ title, children }: AccountSectionProps) {
+export default function AccountSection({ title, description, children }: AccountSectionProps) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-      <h2 className="text-lg font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">{title}</h2>
-      {children}
-    </div>
+    <section className="rounded-lg border border-slate-100 bg-white">
+      <header className="border-b border-slate-100 px-6 py-5">
+        <h2 className="text-base font-bold text-slate-900">{title}</h2>
+        {description ? <p className="mt-0.5 text-xs font-medium text-slate-500">{description}</p> : null}
+      </header>
+
+      <div className="px-6 py-5">{children}</div>
+    </section>
   );
 }

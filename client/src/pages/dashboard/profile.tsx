@@ -1,9 +1,11 @@
+import Link from 'next/link';
 import PageMeta from '@/components/PageMeta';
-import { AlertTriangleIcon, CheckIcon, MapPinIcon, RouteIcon, ShieldCheckIcon } from '@/components/icons';
+import { AlertTriangleIcon, CheckIcon, MapPinIcon, RouteIcon, ShieldCheckIcon, SlidersIcon } from '@/components/icons';
 import CommuteAnalysis, { type DayTrips } from '@/features/account/components/CommuteAnalysis';
 import ConnectedAccounts from '@/features/account/components/ConnectedAccounts';
 import InformationCard from '@/features/account/components/InformationCard';
-import ProfileBreadcrumb from '@/features/account/components/ProfileBreadcrumb';
+import AccountBreadcrumb from '@/features/account/components/AccountBreadcrumb';
+import ProfilePosts from '@/features/account/components/ProfilePosts';
 import StatList from '@/features/account/components/StatList';
 import useSession from '@/hooks/useSession';
 
@@ -37,7 +39,18 @@ export default function UserProfile() {
     <div className="mx-auto w-full max-w-6xl px-6 py-10">
       <PageMeta title="Profile" description="Manage your RUTA account details and commute activity." />
 
-      <ProfileBreadcrumb />
+      <AccountBreadcrumb
+        page="Profile"
+        action={
+          <Link
+            href="/dashboard/settings"
+            className="flex h-11 items-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-bold text-white transition hover:bg-slate-800"
+          >
+            <SlidersIcon className="h-4 w-4" />
+            Account Settings
+          </Link>
+        }
+      />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
         <section>
@@ -57,6 +70,11 @@ export default function UserProfile() {
           </section>
 
           <section>
+            <h2 className="mb-4 text-lg font-bold text-slate-900">Posts</h2>
+            <ProfilePosts />
+          </section>
+
+          <section>
             <h2 className="mb-4 text-lg font-bold text-slate-900">Saved</h2>
             <StatList items={SAVED} />
           </section>
@@ -68,7 +86,7 @@ export default function UserProfile() {
 
           <section>
             <h2 className="mb-4 text-lg font-bold text-slate-900">Connected Accounts</h2>
-            <div className="rounded-lg border border-slate-200 bg-white p-6">
+            <div className="rounded-lg border border-slate-100 bg-white p-6">
               <ConnectedAccounts />
             </div>
           </section>

@@ -1,9 +1,39 @@
-import { useState, type FormEvent } from 'react';
+import { useId, useState, type FormEvent, type ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { ArrowsUpDownIcon, ChevronRightIcon, MapPinIcon, SearchIcon } from '@/components/icons';
 
-const inputClassName =
-  'h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-base text-slate-900 transition placeholder:text-gray-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20';
+type FieldProps = {
+  label: string;
+  icon: ReactNode;
+  value: string;
+  placeholder: string;
+  onChange: (value: string) => void;
+};
+
+function Field({ label, icon, value, placeholder, onChange }: FieldProps) {
+  const id = useId();
+
+  return (
+    <div className="flex items-center gap-2.5 rounded-lg px-3 py-2 transition hover:bg-slate-50">
+      <span aria-hidden className="shrink-0 text-slate-400">
+        {icon}
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <label htmlFor={id} className="block text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">
+          {label}
+        </label>
+        <input
+          id={id}
+          value={value}
+          placeholder={placeholder}
+          onChange={(event) => onChange(event.target.value)}
+          className="w-full border-0 bg-transparent p-0 text-sm font-bold text-slate-900 placeholder:font-medium placeholder:text-slate-400 focus:outline-none"
+        />
+      </span>
+    </div>
+  );
+}
 
 export default function RoutePlannerCard() {
   const router = useRouter();
@@ -21,49 +51,42 @@ export default function RoutePlannerCard() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-[380px] rounded-2xl bg-white p-5 shadow-2xl">
-      <div className="relative">
-        <span className="pointer-events-none absolute left-4 top-1/2 h-4 w-3 -translate-y-1/2 text-blue-600">
-          <MapPinIcon className="h-4 w-3" />
-        </span>
-        <input
-          aria-label="Origin"
-          value={origin}
-          onChange={(event) => setOrigin(event.target.value)}
-          placeholder="Where from?"
-          className={inputClassName}
-        />
-      </div>
+    <form
+      onSubmit={handleSubmit}
+      className="grid items-center gap-1.5 rounded-xl border border-slate-100 bg-white p-1.5 shadow-[0_18px_38px_-14px_rgb(2_6_23/0.5)] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto]"
+    >
+      <Field
+        label="From"
+        icon={<MapPinIcon className="h-4 w-3" />}
+        value={origin}
+        placeholder="Where from?"
+        onChange={setOrigin}
+      />
 
-      <div className="flex justify-center py-2">
+      <div className="flex items-center justify-center lg:px-1">
         <button
           type="button"
           onClick={swap}
           aria-label="Swap origin and destination"
-          className="grid h-8 w-8 place-items-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/30"
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-100 bg-white text-slate-400 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
         >
-          <ArrowsUpDownIcon className="h-3.5 w-3.5" />
+          <ArrowsUpDownIcon className="h-3.5 w-3.5 lg:rotate-90" />
         </button>
       </div>
 
-      <div className="relative">
-        <span className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400">
-          <SearchIcon className="h-4 w-4" />
-        </span>
-        <input
-          aria-label="Destination"
-          value={destination}
-          onChange={(event) => setDestination(event.target.value)}
-          placeholder="Where to?"
-          className={inputClassName}
-        />
-      </div>
+      <Field
+        label="To"
+        icon={<SearchIcon className="h-4 w-4" />}
+        value={destination}
+        placeholder="Where to?"
+        onChange={setDestination}
+      />
 
       <button
         type="submit"
-        className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-base font-bold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:ring-offset-2"
+        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 text-sm font-bold text-white shadow-[0_10px_22px_-8px_rgb(37_99_235/0.9)] transition hover:bg-blue-700 lg:h-11 lg:w-11 lg:px-0"
       >
-        Find Best Ride
+        <span className="lg:sr-only">Find Best Ride</span>
         <ChevronRightIcon className="h-4 w-4" />
       </button>
     </form>

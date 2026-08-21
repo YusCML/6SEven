@@ -1,7 +1,13 @@
 import Link from 'next/link';
-import { ChevronRightIcon, SlidersIcon } from '@/components/icons';
+import type { ReactNode } from 'react';
+import { ChevronRightIcon } from '@/components/icons';
 
-export default function ProfileBreadcrumb() {
+type AccountBreadcrumbProps = {
+  page: string;
+  action?: ReactNode;
+};
+
+export default function AccountBreadcrumb({ page, action }: AccountBreadcrumbProps) {
   return (
     <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
       <nav aria-label="Breadcrumb">
@@ -15,18 +21,12 @@ export default function ProfileBreadcrumb() {
             <ChevronRightIcon className="h-4 w-4" />
           </li>
           <li aria-current="page" className="text-blue-600">
-            Profile
+            {page}
           </li>
         </ol>
       </nav>
 
-      <Link
-        href="/dashboard/settings"
-        className="flex h-11 items-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-bold text-white transition hover:bg-slate-800"
-      >
-        <SlidersIcon className="h-4 w-4" />
-        Account Settings
-      </Link>
+      {action}
     </div>
   );
 }

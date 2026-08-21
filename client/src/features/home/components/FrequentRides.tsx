@@ -4,7 +4,7 @@ import RideCard from './RideCard';
 
 export default function FrequentRides() {
   return (
-    <section className="mx-auto w-full max-w-[1440px] px-6 py-14 sm:px-11">
+    <section className="mx-auto w-full max-w-6xl px-6 py-10">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="text-2xl font-black tracking-tight text-slate-900">Your Frequent Rides</h2>
@@ -12,7 +12,7 @@ export default function FrequentRides() {
         </div>
         <Link
           href="/routes"
-          className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-50"
+          className="rounded-full border border-slate-100 bg-white px-4 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-50"
         >
           Manage Favorites
         </Link>

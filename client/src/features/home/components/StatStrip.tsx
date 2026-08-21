@@ -11,18 +11,18 @@ export default function StatStrip() {
   return (
     <section
       aria-labelledby="network-status-heading"
-      className="relative z-10 mx-auto -mt-20 w-full max-w-[1440px] px-6 sm:px-11 md:-mt-9 lg:-mt-12"
+      className="mx-auto w-full max-w-6xl px-6 pt-6"
     >
       <h2 id="network-status-heading" className="sr-only">
         Network status
       </h2>
 
-      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-slate-200 shadow-[0_20px_50px_-12px_rgb(2_6_23/0.45)] ring-1 ring-slate-900/5 md:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-slate-100 bg-slate-200 md:grid-cols-4">
         {landingStats.map((stat) => (
           <div key={stat.label} className="flex items-center gap-3 bg-white p-4 lg:gap-3.5 lg:p-5">
             <span
               aria-hidden
-              className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl lg:h-10 lg:w-10 ${toneStyles[stat.tone]}`}
+              className={`grid h-9 w-9 shrink-0 place-items-center rounded-md lg:h-10 lg:w-10 ${toneStyles[stat.tone]}`}
             >
               <stat.Icon className="h-[18px] w-[18px] lg:h-5 lg:w-5" />
             </span>
