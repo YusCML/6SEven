@@ -13,8 +13,14 @@ export class DuplicateEmailError extends DomainError {
   }
 }
 
+export class DuplicateUsernameError extends DomainError {
+  constructor(message = 'That username is already taken.') {
+    super(message);
+  }
+}
+
 export class InvalidCredentialsError extends DomainError {
-  constructor(message = 'Invalid email or password.') {
+  constructor(message = 'Invalid username or password.') {
     super(message);
   }
 }

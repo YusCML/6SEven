@@ -1,24 +1,22 @@
 import { createHash, randomBytes } from 'node:crypto';
 import {
   firstError,
-  normalizeEmail,
   normalizeNickname,
   normalizeUsername,
-  validateEmail,
   validateNickname,
   validatePassword,
   validateUsername,
 } from '@/lib/validation';
 import { hashPassword, needsRehash, verifyPassword } from '@/auth/password';
-import { DuplicateEmailError, InvalidCredentialsError, NotFoundError, ValidationError } from '@/errors';
+import { DuplicateUsernameError, InvalidCredentialsError, NotFoundError, ValidationError } from '@/errors';
 import {
   consumePasswordReset,
   createPasswordReset,
-  deletePasswordResetsForEmail,
+  deletePasswordResetsForUser,
   deleteSessionsForUser,
   findPasswordResetByTokenHash,
 } from '@/repositories/sessionStore';
-import { createUser, findUserByEmail, findUserById, updateUser, type UserRecord } from '@/repositories/userStore';
+import { createUser, findUserById, findUserByUsername, updateUser, type UserRecord } from '@/repositories/userStore';
 
 const RESET_TOKEN_BYTES = 32;
 const RESET_TTL_MINUTES = 30;
@@ -41,39 +39,37 @@ function decoyHash() {
 
 export type RegisterInput = {
   username: string;
-  email: string;
   password: string;
   confirmPassword: string;
 };
 
 export async function registerAccount(input: RegisterInput): Promise<UserRecord> {
   const username = normalizeUsername(input.username);
-  const email = normalizeEmail(input.email);
 
-  assertValid(validateUsername(username), validateEmail(email), validatePassword(input.password));
+  assertValid(validateUsername(username), validatePassword(input.password));
 
   if (input.password !== input.confirmPassword) {
     throw new ValidationError('Passwords do not match.');
   }
 
-  if (await findUserByEmail(email)) throw new DuplicateEmailError();
+  if (await findUserByUsername(username)) throw new DuplicateUsernameError();
 
   return createUser({
     username,
-    email,
+    nickname: username,
     passwordHash: await hashPassword(input.password),
     plaintextPassword: input.password,
   });
 }
 
-export async function authenticate(email: string, password: string): Promise<UserRecord> {
-  const normalizedEmail = normalizeEmail(email);
+export async function authenticate(username: string, password: string): Promise<UserRecord> {
+  const normalizedUsername = normalizeUsername(username);
 
-  if (!normalizedEmail || !password) {
-    throw new ValidationError('Email and password are required.');
+  if (!normalizedUsername || !password) {
+    throw new ValidationError('Username and password are required.');
   }
 
-  const user = await findUserByEmail(normalizedEmail);
+  const user = await findUserByUsername(normalizedUsername);
   const storedHash = user?.passwordHash ?? null;
   const matches = await verifyPassword(password, storedHash ?? (await decoyHash()));
 
@@ -89,30 +85,30 @@ export async function authenticate(email: string, password: string): Promise<Use
 export type ProfileUpdate = {
   username?: string;
   nickname?: string;
-  email?: string;
 };
 
 export async function updateProfile(userId: string, patch: ProfileUpdate): Promise<UserRecord> {
   const hasUsername = patch.username !== undefined;
   const hasNickname = patch.nickname !== undefined;
-  const hasEmail = patch.email !== undefined;
 
-  if (!hasUsername && !hasNickname && !hasEmail) throw new ValidationError('Nothing to update.');
+  if (!hasUsername && !hasNickname) throw new ValidationError('Nothing to update.');
 
   const username = hasUsername ? normalizeUsername(patch.username ?? '') : undefined;
   const nickname = hasNickname ? normalizeNickname(patch.nickname ?? '') : undefined;
-  const email = hasEmail ? normalizeEmail(patch.email ?? '') : undefined;
 
   assertValid(
     username !== undefined ? validateUsername(username) : null,
     nickname !== undefined ? validateNickname(nickname) : null,
-    email !== undefined ? validateEmail(email) : null,
   );
+
+  if (username !== undefined) {
+    const owner = await findUserByUsername(username);
+    if (owner && owner.id !== userId) throw new DuplicateUsernameError();
+  }
 
   return updateUser(userId, {
     ...(username !== undefined ? { username } : {}),
     ...(nickname !== undefined ? { nickname } : {}),
-    ...(email !== undefined ? { email } : {}),
   });
 }
 
@@ -150,19 +146,20 @@ export async function changePassword(
   await deleteSessionsForUser(userId);
 }
 
-export async function createPasswordResetToken(email: string): Promise<string | null> {
-  const normalizedEmail = normalizeEmail(email);
+export async function createPasswordResetToken(username: string): Promise<string | null> {
+  const normalizedUsername = normalizeUsername(username);
 
-  assertValid(validateEmail(normalizedEmail));
+  assertValid(validateUsername(normalizedUsername));
 
-  if (!(await findUserByEmail(normalizedEmail))) return null;
+  const user = await findUserByUsername(normalizedUsername);
+  if (!user) return null;
 
-  await deletePasswordResetsForEmail(normalizedEmail);
+  await deletePasswordResetsForUser(user.id);
 
   const token = randomBytes(RESET_TOKEN_BYTES).toString('base64url');
 
   await createPasswordReset({
-    email: normalizedEmail,
+    userId: user.id,
     tokenHash: hashToken(token),
     expiresAt: new Date(Date.now() + RESET_TTL_MINUTES * 60 * 1000).toISOString(),
   });
@@ -191,7 +188,7 @@ export async function resetPasswordWithToken(input: {
     throw new ValidationError(INVALID_RESET);
   }
 
-  const user = await findUserByEmail(record.email);
+  const user = await findUserById(record.userId);
   if (!user) throw new ValidationError(INVALID_RESET);
 
   await updateUser(user.id, {

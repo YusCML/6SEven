@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ArrowsUpDownIcon, MapPinIcon, SearchIcon } from '@/components/icons';
+import { LockIcon, UserIcon } from '@/components/icons';
 import { errorMessage } from '@/lib/http';
 import * as authApi from '@/services/auth.service';
 import Alert from '@/components/ui/Alert';
@@ -14,7 +14,7 @@ import SocialAuthButtons from './SocialAuthButtons';
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -25,6 +25,7 @@ export default function RegisterForm() {
     setError('');
     setNotice('');
 
+    if (formData.password !== formData.confirmPassword) return setError('Passwords do not match.');
     if (!acceptedTerms) return setError('Please accept the Terms of Service and Privacy Policy to continue.');
 
     setLoading(true);
@@ -53,21 +54,9 @@ export default function RegisterForm() {
           name="username"
           autoComplete="username"
           placeholder="juandelacruz"
-          icon={<ArrowsUpDownIcon className="h-4 w-4" />}
+          icon={<UserIcon className="h-4 w-4" />}
           value={formData.username}
           onChange={(event) => setFormData({ ...formData, username: event.target.value })}
-        />
-
-        <TextField
-          required
-          label="Email Address"
-          type="email"
-          name="email"
-          autoComplete="email"
-          placeholder="name@example.com"
-          icon={<SearchIcon className="h-4 w-4" />}
-          value={formData.email}
-          onChange={(event) => setFormData({ ...formData, email: event.target.value })}
         />
 
         <TextField
@@ -77,9 +66,21 @@ export default function RegisterForm() {
           name="password"
           autoComplete="new-password"
           placeholder="Min. 8 characters"
-          icon={<MapPinIcon className="h-3 w-4" />}
+          icon={<LockIcon className="h-4 w-4" />}
           value={formData.password}
           onChange={(event) => setFormData({ ...formData, password: event.target.value })}
+        />
+
+        <TextField
+          required
+          label="Confirm Password"
+          type="password"
+          name="confirmPassword"
+          autoComplete="new-password"
+          placeholder="Re-enter your password"
+          icon={<LockIcon className="h-4 w-4" />}
+          value={formData.confirmPassword}
+          onChange={(event) => setFormData({ ...formData, confirmPassword: event.target.value })}
         />
 
         <Checkbox checked={acceptedTerms} onChange={setAcceptedTerms} name="acceptedTerms">
@@ -114,7 +115,7 @@ export default function RegisterForm() {
               return;
             }
 
-            setNotice(`${provider} sign-up isn't available yet. Please register with your email.`);
+            setNotice(`${provider} sign-up isn't available yet. Please register with a username.`);
           }}
         />
       </div>

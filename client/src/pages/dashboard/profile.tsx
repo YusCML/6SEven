@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PageMeta from '@/components/PageMeta';
 import AccountNavigation from '@/features/account/components/AccountNavigation';
 import AccountSection from '@/features/account/components/AccountSection';
+import ConnectedAccounts from '@/features/account/components/ConnectedAccounts';
 import ProfileDetailsForm from '@/features/account/components/ProfileDetailsForm';
 import ProfileHeader from '@/features/account/components/ProfileHeader';
 import useSession from '@/hooks/useSession';
@@ -25,6 +26,10 @@ export default function UserProfile() {
         <div className="md:col-span-2 space-y-6">
           <AccountSection title="Profile Details">
             <ProfileDetailsForm />
+          </AccountSection>
+
+          <AccountSection title="Connected Accounts">
+            <ConnectedAccounts />
           </AccountSection>
 
           <AccountSection title="Commute Preferences">

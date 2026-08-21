@@ -1,13 +1,13 @@
 import type { UserModel } from '@/generated/prisma/models';
-import { normalizeEmail, normalizeNickname } from '@/lib/validation';
+import { normalizeEmail, normalizeNickname, normalizeUsername } from '@/lib/validation';
 import { prisma } from '@/db/prisma';
-import { DuplicateEmailError, NotFoundError } from '@/errors';
+import { DomainError, DuplicateEmailError, DuplicateUsernameError, NotFoundError } from '@/errors';
 
 export type UserRecord = {
   id: string;
   username: string;
   nickname: string | null;
-  email: string;
+  email: string | null;
   passwordHash: string | null;
   plaintextPassword: string | null;
   googleId: string | null;
@@ -21,7 +21,8 @@ export type PublicUser = {
   id: string;
   username: string;
   nickname: string | null;
-  email: string;
+  email: string | null;
+  googleLinked: boolean;
   avatarUrl: string | null;
   createdAt: string;
 };
@@ -48,6 +49,7 @@ export function toPublicUser(user: UserRecord): PublicUser {
     username: user.username,
     nickname: user.nickname,
     email: user.email,
+    googleLinked: user.googleId !== null,
     avatarUrl: user.avatarUrl,
     createdAt: user.createdAt,
   };
@@ -57,13 +59,29 @@ function isUniqueViolation(error: unknown): boolean {
   return typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'P2002';
 }
 
+function conflictingField(error: unknown): string {
+  const target = (error as { meta?: { target?: unknown } } | null)?.meta?.target;
+
+  if (Array.isArray(target)) return target.join(',');
+  if (typeof target === 'string') return target;
+
+  return '';
+}
+
+function duplicateErrorFor(error: unknown): DomainError {
+  return conflictingField(error).includes('username') ? new DuplicateUsernameError() : new DuplicateEmailError();
+}
+
 export async function findUserById(id: string): Promise<UserRecord | null> {
   const user = await prisma.user.findUnique({ where: { id } });
   return user ? toRecord(user) : null;
 }
 
 export async function findUserByEmail(email: string): Promise<UserRecord | null> {
-  const user = await prisma.user.findUnique({ where: { email: normalizeEmail(email) } });
+  const normalized = normalizeEmail(email);
+  if (!normalized) return null;
+
+  const user = await prisma.user.findUnique({ where: { email: normalized } });
   return user ? toRecord(user) : null;
 }
 
@@ -75,16 +93,20 @@ export async function findUserByGoogleId(googleId: string): Promise<UserRecord |
 }
 
 export async function findUserByUsername(username: string): Promise<UserRecord | null> {
-  if (!username) return null;
+  const normalized = normalizeUsername(username);
+  if (!normalized) return null;
 
-  const user = await prisma.user.findFirst({ where: { username } });
+  const user = await prisma.user.findFirst({
+    where: { username: { equals: normalized, mode: 'insensitive' } },
+  });
+
   return user ? toRecord(user) : null;
 }
 
 export async function createUser(input: {
   username: string;
   nickname?: string | null;
-  email: string;
+  email?: string | null;
   passwordHash?: string | null;
   plaintextPassword?: string | null;
   googleId?: string | null;
@@ -96,7 +118,7 @@ export async function createUser(input: {
       data: {
         username: input.username,
         nickname: input.nickname ? normalizeNickname(input.nickname) : null,
-        email: normalizeEmail(input.email),
+        email: input.email ? normalizeEmail(input.email) : null,
         passwordHash: input.passwordHash ?? null,
         plaintextPassword: input.plaintextPassword ?? null,
         googleId: input.googleId ?? null,
@@ -107,7 +129,7 @@ export async function createUser(input: {
 
     return toRecord(user);
   } catch (error) {
-    if (isUniqueViolation(error)) throw new DuplicateEmailError();
+    if (isUniqueViolation(error)) throw duplicateErrorFor(error);
     throw error;
   }
 }
@@ -136,7 +158,7 @@ export async function updateUser(
         ...(patch.nickname !== undefined
           ? { nickname: patch.nickname ? normalizeNickname(patch.nickname) : null }
           : {}),
-        ...(patch.email !== undefined ? { email: normalizeEmail(patch.email) } : {}),
+        ...(patch.email !== undefined ? { email: patch.email ? normalizeEmail(patch.email) : null } : {}),
         ...(patch.passwordHash !== undefined ? { passwordHash: patch.passwordHash } : {}),
         ...(patch.plaintextPassword !== undefined ? { plaintextPassword: patch.plaintextPassword } : {}),
         ...(patch.googleId !== undefined ? { googleId: patch.googleId } : {}),
@@ -147,7 +169,7 @@ export async function updateUser(
 
     return toRecord(user);
   } catch (error) {
-    if (isUniqueViolation(error)) throw new DuplicateEmailError();
+    if (isUniqueViolation(error)) throw duplicateErrorFor(error);
     if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'P2025') {
       throw new NotFoundError('User not found.');
     }

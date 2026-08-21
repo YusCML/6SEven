@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { endUserSession, getSession, resolveSession, startUserSession, toSessionPayload } from '@/auth/session';
-import { normalizeEmail } from '@/lib/validation';
+import { normalizeUsername } from '@/lib/validation';
 import { enforceRateLimit, RATE_LIMITS } from '@/middlewares/rateLimit';
 import { handleError, noStore, readBody, readString, serverError, unauthorized } from '@/http/respond';
 import {
@@ -13,7 +13,7 @@ import {
 } from '@/services/authService';
 import { listUsers, toPublicUser } from '@/repositories/userStore';
 
-const GENERIC_RESET_MESSAGE = 'If that email has an account, password reset instructions are on the way.';
+const GENERIC_RESET_MESSAGE = 'If that username has an account, password reset instructions are on the way.';
 
 export async function getSessionController(req: Request, res: Response) {
   noStore(res);
@@ -30,12 +30,11 @@ export async function registerController(req: Request, res: Response) {
 
   if (!enforceRateLimit(req, res, RATE_LIMITS.register)) return;
 
-  const body = readBody<{ username: string; email: string; password: string; confirmPassword: string }>(req);
+  const body = readBody<{ username: string; password: string; confirmPassword: string }>(req);
 
   try {
     const user = await registerAccount({
       username: readString(body.username),
-      email: readString(body.email),
       password: readString(body.password),
       confirmPassword: readString(body.confirmPassword),
     });
@@ -52,13 +51,13 @@ export async function registerController(req: Request, res: Response) {
 export async function loginController(req: Request, res: Response) {
   noStore(res);
 
-  const body = readBody<{ email: string; password: string }>(req);
-  const email = normalizeEmail(readString(body.email));
+  const body = readBody<{ username: string; password: string }>(req);
+  const username = normalizeUsername(readString(body.username));
 
-  if (!enforceRateLimit(req, res, RATE_LIMITS.login, email)) return;
+  if (!enforceRateLimit(req, res, RATE_LIMITS.login, username.toLowerCase())) return;
 
   try {
-    const user = await authenticate(email, readString(body.password));
+    const user = await authenticate(username, readString(body.password));
     const session = await startUserSession(req, res, user.id);
 
     return res.status(200).json({
@@ -103,12 +102,11 @@ export async function patchProfileController(req: Request, res: Response) {
 
     if (!resolved?.user) return unauthorized(res, 'Sign in to update your profile.');
 
-    const body = readBody<{ username: string; nickname: string; email: string }>(req);
+    const body = readBody<{ username: string; nickname: string }>(req);
 
     const user = await updateProfile(resolved.user.id, {
       ...(body.username !== undefined ? { username: readString(body.username) } : {}),
       ...(body.nickname !== undefined ? { nickname: readString(body.nickname) } : {}),
-      ...(body.email !== undefined ? { email: readString(body.email) } : {}),
     });
 
     return res.status(200).json({
@@ -151,13 +149,13 @@ export async function forgotPasswordController(req: Request, res: Response) {
 
   if (!enforceRateLimit(req, res, RATE_LIMITS.forgotPassword)) return;
 
-  const email = readString(readBody<{ email: string }>(req).email);
+  const username = readString(readBody<{ username: string }>(req).username);
 
   try {
-    const token = await createPasswordResetToken(email);
+    const token = await createPasswordResetToken(username);
 
     if (token && process.env.NODE_ENV !== 'production') {
-      console.info(`[auth/forgot-password] reset token for ${email}: ${token}`);
+      console.info(`[auth/forgot-password] reset token for ${username}: ${token}`);
       return res.status(200).json({ message: GENERIC_RESET_MESSAGE, devResetToken: token });
     }
 

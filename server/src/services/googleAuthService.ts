@@ -8,11 +8,12 @@ import {
   validateNickname,
   validateUsername,
 } from '@/lib/validation';
-import { ValidationError } from '@/errors';
+import { NotFoundError, ValidationError } from '@/errors';
 import {
   createUser,
   findUserByEmail,
   findUserByGoogleId,
+  findUserById,
   findUserByUsername,
   updateUser,
   type UserRecord,
@@ -114,4 +115,55 @@ export async function signInWithGoogle(profile: GoogleProfile): Promise<UserReco
     if (raced) return raced;
     throw error;
   }
+}
+
+export async function linkGoogleAccount(userId: string, profile: GoogleProfile): Promise<UserRecord> {
+  if (!profile.googleId || !profile.email) {
+    throw new ValidationError('Google did not return enough information to link your account.');
+  }
+
+  const user = await findUserById(userId);
+  if (!user) throw new NotFoundError('Your account no longer exists.');
+
+  if (user.googleId && user.googleId !== profile.googleId) {
+    throw new ValidationError('This account is already linked to a different Google account. Unlink it first.');
+  }
+
+  const owner = await findUserByGoogleId(profile.googleId);
+  if (owner && owner.id !== userId) {
+    throw new ValidationError('That Google account is already linked to another RUTA account.');
+  }
+
+  const email = normalizeEmail(profile.email);
+  const emailOwner = await findUserByEmail(email);
+
+  if (emailOwner && emailOwner.id !== userId) {
+    throw new ValidationError('Another RUTA account already uses that Google email address.');
+  }
+
+  return updateUser(userId, {
+    googleId: profile.googleId,
+    email,
+    emailVerified: profile.emailVerified,
+    avatarUrl: profile.picture,
+    ...(user.nickname ? {} : { nickname: deriveNickname(profile) }),
+  });
+}
+
+export async function unlinkGoogleAccount(userId: string): Promise<UserRecord> {
+  const user = await findUserById(userId);
+  if (!user) throw new NotFoundError('Your account no longer exists.');
+
+  if (!user.googleId) throw new ValidationError('No Google account is linked to this profile.');
+
+  if (!user.passwordHash) {
+    throw new ValidationError('Set a password before unlinking Google, otherwise you will not be able to sign in.');
+  }
+
+  return updateUser(userId, {
+    googleId: null,
+    email: null,
+    emailVerified: false,
+    avatarUrl: null,
+  });
 }

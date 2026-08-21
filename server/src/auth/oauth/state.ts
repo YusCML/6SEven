@@ -7,10 +7,13 @@ const STATE_TTL_SECONDS = 600;
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+export type OAuthMode = 'signin' | 'link';
+
 export type OAuthStatePayload = {
   state: string;
   verifier: string;
   returnTo: string;
+  mode: OAuthMode;
 };
 
 function isSafeReturnTo(value: unknown): value is string {
@@ -48,6 +51,7 @@ export function readOAuthState(req: Request): OAuthStatePayload | null {
       state: parsed.state,
       verifier: parsed.verifier,
       returnTo: isSafeReturnTo(parsed.returnTo) ? parsed.returnTo : '/dashboard',
+      mode: parsed.mode === 'link' ? 'link' : 'signin',
     };
   } catch {
     return null;

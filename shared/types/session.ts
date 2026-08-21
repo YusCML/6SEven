@@ -2,7 +2,8 @@ export type SessionUser = {
   id: string;
   username: string;
   nickname: string | null;
-  email: string;
+  email: string | null;
+  googleLinked: boolean;
   avatarUrl: string | null;
   createdAt: string;
 };

@@ -1,5 +1,11 @@
 import type { Request, Response } from 'express';
-import { DuplicateEmailError, InvalidCredentialsError, NotFoundError, ValidationError } from '@/errors';
+import {
+  DuplicateEmailError,
+  DuplicateUsernameError,
+  InvalidCredentialsError,
+  NotFoundError,
+  ValidationError,
+} from '@/errors';
 
 export type ApiError = { error: string };
 
@@ -35,6 +41,7 @@ export function serverError(res: Response, error: unknown, context: string) {
 export function handleError(res: Response, error: unknown, context: string) {
   if (error instanceof ValidationError) return badRequest(res, error.message);
   if (error instanceof DuplicateEmailError) return conflict(res, error.message);
+  if (error instanceof DuplicateUsernameError) return conflict(res, error.message);
   if (error instanceof InvalidCredentialsError) return unauthorized(res, error.message);
   if (error instanceof NotFoundError) return unauthorized(res, error.message);
 

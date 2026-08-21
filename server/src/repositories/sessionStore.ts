@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto';
-import { normalizeEmail } from '@/lib/validation';
 
 export type SessionRecord = {
   id: string;
@@ -11,7 +10,7 @@ export type SessionRecord = {
 
 export type PasswordResetRecord = {
   id: string;
-  email: string;
+  userId: string;
   tokenHash: string;
   createdAt: string;
   expiresAt: string;
@@ -84,13 +83,13 @@ export async function deleteExpiredSessions(now = new Date().toISOString()): Pro
 }
 
 export async function createPasswordReset(input: {
-  email: string;
+  userId: string;
   tokenHash: string;
   expiresAt: string;
 }): Promise<PasswordResetRecord> {
   const record: PasswordResetRecord = {
     id: randomUUID(),
-    email: normalizeEmail(input.email),
+    userId: input.userId,
     tokenHash: input.tokenHash,
     createdAt: new Date().toISOString(),
     expiresAt: input.expiresAt,
@@ -116,11 +115,10 @@ export async function consumePasswordReset(id: string): Promise<void> {
   if (record) passwordResets.set(id, { ...record, consumedAt: new Date().toISOString() });
 }
 
-export async function deletePasswordResetsForEmail(email: string): Promise<void> {
+export async function deletePasswordResetsForUser(userId: string): Promise<void> {
   const { passwordResets } = tables();
-  const target = normalizeEmail(email);
 
   for (const [id, record] of passwordResets) {
-    if (record.email === target) passwordResets.delete(id);
+    if (record.userId === userId) passwordResets.delete(id);
   }
 }

@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { MapPinIcon, SearchIcon } from '@/components/icons';
+import { LockIcon, UserIcon } from '@/components/icons';
 import useSession from '@/hooks/useSession';
 import { errorMessage } from '@/lib/http';
 import * as authApi from '@/services/auth.service';
@@ -16,7 +16,7 @@ import SocialAuthButtons from './SocialAuthButtons';
 export default function LoginForm() {
   const router = useRouter();
   const { applySession } = useSession();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
@@ -34,7 +34,7 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      applySession(await authApi.login({ email, password }));
+      applySession(await authApi.login({ username, password }));
       router.push('/dashboard');
     } catch (loginError) {
       setError(errorMessage(loginError, 'Login failed.'));
@@ -51,21 +51,21 @@ export default function LoginForm() {
     >
       {justRegistered ? (
         <Alert tone="success" className="mb-5">
-          Account created. Sign in with your new email and password to continue.
+          Account created. Sign in with your new username and password to continue.
         </Alert>
       ) : null}
 
       <form onSubmit={handleLogin} className="space-y-5">
         <TextField
           required
-          label="Email Address"
-          type="email"
-          name="email"
-          autoComplete="email"
-          placeholder="name@example.com"
-          icon={<SearchIcon className="h-4 w-4" />}
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          label="Username"
+          type="text"
+          name="username"
+          autoComplete="username"
+          placeholder="juandelacruz"
+          icon={<UserIcon className="h-4 w-4" />}
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
         />
 
         <TextField
@@ -75,7 +75,7 @@ export default function LoginForm() {
           name="password"
           autoComplete="current-password"
           placeholder="••••••••"
-          icon={<MapPinIcon className="h-3 w-4" />}
+          icon={<LockIcon className="h-4 w-4" />}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           labelAction={
@@ -109,7 +109,7 @@ export default function LoginForm() {
               return;
             }
 
-            setNotice(`${provider} sign-in isn't available yet. Please use your email and password.`);
+            setNotice(`${provider} sign-in isn't available yet. Please use your username and password.`);
           }}
         />
       </div>

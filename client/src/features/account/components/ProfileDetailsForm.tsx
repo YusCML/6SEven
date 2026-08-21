@@ -9,7 +9,7 @@ import * as accountApi from '@/services/account.service';
 
 export default function ProfileDetailsForm() {
   const { user, isAuthenticated, isLoading, displayName, applySession } = useSession();
-  const [form, setForm] = useState({ nickname: '', username: '', email: '' });
+  const [form, setForm] = useState({ nickname: '', username: '' });
   const [status, setStatus] = useState<{ tone: 'error' | 'success'; message: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [seededFor, setSeededFor] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export default function ProfileDetailsForm() {
 
   if (seededFor !== currentUserId) {
     setSeededFor(currentUserId);
-    setForm({ nickname: user?.nickname ?? '', username: user?.username ?? '', email: user?.email ?? '' });
+    setForm({ nickname: user?.nickname ?? '', username: user?.username ?? '' });
     setStatus(null);
   }
 
@@ -35,7 +35,6 @@ export default function ProfileDetailsForm() {
         setForm({
           nickname: data.user.nickname ?? '',
           username: data.user.username,
-          email: data.user.email,
         });
       }
       setStatus({ tone: 'success', message: 'Profile saved.' });
@@ -55,7 +54,7 @@ export default function ProfileDetailsForm() {
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <TextField disabled readOnly label="Username" type="text" value={displayName} />
-          <TextField disabled readOnly label="Email" type="email" value="" placeholder="Not set for guests" />
+          <TextField disabled readOnly label="Nickname" type="text" value="" placeholder="Not set for guests" />
         </div>
         <Alert tone="info">
           You&apos;re browsing as <strong>{displayName}</strong>. Your session keeps your place around the site —{' '}
@@ -92,14 +91,6 @@ export default function ProfileDetailsForm() {
           placeholder="No spaces"
           value={form.username}
           onChange={(event) => setForm({ ...form, username: event.target.value })}
-        />
-        <TextField
-          required
-          label="Email"
-          type="email"
-          autoComplete="email"
-          value={form.email}
-          onChange={(event) => setForm({ ...form, email: event.target.value })}
         />
       </div>
 

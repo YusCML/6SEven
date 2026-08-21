@@ -11,7 +11,12 @@ import {
   registerController,
   resetPasswordController,
 } from '@/controllers/auth.controller';
-import { googleCallbackController, googleStartController } from '@/controllers/google.controller';
+import {
+  googleCallbackController,
+  googleLinkStartController,
+  googleStartController,
+  googleUnlinkController,
+} from '@/controllers/google.controller';
 
 const router = Router();
 
@@ -31,5 +36,7 @@ router.get('/users', listUsersController);
 
 router.get('/google/start', googleStartController);
 router.get('/google/callback', googleCallbackController);
+router.get('/google/link', googleLinkStartController);
+router.post('/google/unlink', googleUnlinkController);
 
 export default router;

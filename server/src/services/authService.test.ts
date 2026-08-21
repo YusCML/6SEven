@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { UserModel } from '@/generated/prisma/models';
-import { DuplicateEmailError, InvalidCredentialsError, ValidationError } from '@/errors';
+import { DuplicateUsernameError, InvalidCredentialsError, ValidationError } from '@/errors';
 import { createSessionRecord, findSession } from '@/repositories/sessionStore';
-import { findUserByEmail } from '@/repositories/userStore';
+import { findUserByUsername } from '@/repositories/userStore';
 import {
   authenticate,
   changePassword,
@@ -19,7 +19,7 @@ vi.mock('@/db/prisma', async () => {
   return { prisma: { user: createUserDouble(userRows) } };
 });
 
-const VALID = { username: 'juandelacruz', email: 'juan@ruta.ph', password: 'Commuter123', confirmPassword: 'Commuter123' };
+const VALID = { username: 'juandelacruz', password: 'Commuter123', confirmPassword: 'Commuter123' };
 
 beforeEach(() => {
   userRows.clear();
@@ -31,21 +31,29 @@ describe('registerAccount', () => {
     const user = await registerAccount(VALID);
 
     expect(user.username).toBe('juandelacruz');
-    expect(user.email).toBe('juan@ruta.ph');
+    expect(user.email).toBeNull();
     expect(user.passwordHash).not.toContain('Commuter123');
   });
 
-  it('lower-cases the email so casing cannot create a second account', async () => {
-    const user = await registerAccount({ ...VALID, email: 'JUAN@Ruta.PH' });
+  it('seeds the nickname from the username so the account has something to show', async () => {
+    const user = await registerAccount(VALID);
 
-    expect(user.email).toBe('juan@ruta.ph');
-    expect(await findUserByEmail('juan@ruta.ph')).not.toBeNull();
+    expect(user.nickname).toBe('juandelacruz');
   });
 
-  it('rejects a duplicate email', async () => {
+  it('rejects a duplicate username', async () => {
     await registerAccount(VALID);
 
-    await expect(registerAccount({ ...VALID, username: 'someoneelse' })).rejects.toBeInstanceOf(DuplicateEmailError);
+    await expect(registerAccount(VALID)).rejects.toBeInstanceOf(DuplicateUsernameError);
+  });
+
+  it('rejects a duplicate username in different casing', async () => {
+    await registerAccount(VALID);
+
+    await expect(registerAccount({ ...VALID, username: 'JuanDelaCruz' })).rejects.toBeInstanceOf(
+      DuplicateUsernameError,
+    );
+    expect(await findUserByUsername('JUANDELACRUZ')).not.toBeNull();
   });
 
   it('rejects mismatched confirmation', async () => {
@@ -55,7 +63,6 @@ describe('registerAccount', () => {
   const invalidInputs: { label: string; patch: Partial<typeof VALID> }[] = [
     { label: 'username with spaces', patch: { username: 'Juan Dela Cruz' } },
     { label: 'username too short', patch: { username: 'ab' } },
-    { label: 'malformed email', patch: { email: 'not-an-email' } },
     { label: 'weak password', patch: { password: 'short', confirmPassword: 'short' } },
   ];
 
@@ -76,27 +83,27 @@ describe('authenticate', () => {
   });
 
   it('returns the user for correct credentials', async () => {
-    expect((await authenticate('juan@ruta.ph', 'Commuter123')).username).toBe('juandelacruz');
+    expect((await authenticate('juandelacruz', 'Commuter123')).username).toBe('juandelacruz');
   });
 
-  it('accepts a differently-cased email', async () => {
-    expect((await authenticate('JUAN@RUTA.PH', 'Commuter123')).email).toBe('juan@ruta.ph');
+  it('accepts a differently-cased username', async () => {
+    expect((await authenticate('JuanDelaCruz', 'Commuter123')).username).toBe('juandelacruz');
   });
 
   it('rejects the wrong password', async () => {
-    await expect(authenticate('juan@ruta.ph', 'WrongPass123')).rejects.toBeInstanceOf(InvalidCredentialsError);
+    await expect(authenticate('juandelacruz', 'WrongPass123')).rejects.toBeInstanceOf(InvalidCredentialsError);
   });
 
-  it('gives an unknown email the same error as a wrong password — no account enumeration', async () => {
-    const unknown = await authenticate('nobody@ruta.ph', 'Commuter123').catch((error) => error);
-    const wrong = await authenticate('juan@ruta.ph', 'WrongPass123').catch((error) => error);
+  it('gives an unknown username the same error as a wrong password — no account enumeration', async () => {
+    const unknown = await authenticate('nobodyhere', 'Commuter123').catch((error) => error);
+    const wrong = await authenticate('juandelacruz', 'WrongPass123').catch((error) => error);
 
     expect(unknown.message).toBe(wrong.message);
   });
 
   it('requires both fields', async () => {
     await expect(authenticate('', 'Commuter123')).rejects.toBeInstanceOf(ValidationError);
-    await expect(authenticate('juan@ruta.ph', '')).rejects.toBeInstanceOf(ValidationError);
+    await expect(authenticate('juandelacruz', '')).rejects.toBeInstanceOf(ValidationError);
   });
 });
 
@@ -106,7 +113,7 @@ describe('updateProfile', () => {
     const updated = await updateProfile(user.id, { username: 'juan2' });
 
     expect(updated.username).toBe('juan2');
-    expect(updated.email).toBe('juan@ruta.ph');
+    expect(updated.nickname).toBe('juandelacruz');
   });
 
   it('rejects an empty patch', async () => {
@@ -115,11 +122,18 @@ describe('updateProfile', () => {
     await expect(updateProfile(user.id, {})).rejects.toBeInstanceOf(ValidationError);
   });
 
-  it('rejects taking an email another account already uses', async () => {
+  it('rejects taking a username another account already uses', async () => {
     const first = await registerAccount(VALID);
-    await registerAccount({ ...VALID, username: 'second', email: 'second@ruta.ph' });
+    await registerAccount({ ...VALID, username: 'second' });
 
-    await expect(updateProfile(first.id, { email: 'second@ruta.ph' })).rejects.toBeInstanceOf(DuplicateEmailError);
+    await expect(updateProfile(first.id, { username: 'second' })).rejects.toBeInstanceOf(DuplicateUsernameError);
+  });
+
+  it('lets an account keep its own username while changing something else', async () => {
+    const user = await registerAccount(VALID);
+    const updated = await updateProfile(user.id, { username: 'juandelacruz', nickname: 'Juan' });
+
+    expect(updated.nickname).toBe('Juan');
   });
 });
 
@@ -141,8 +155,8 @@ describe('changePassword', () => {
       confirmPassword: 'Newpass123',
     });
 
-    await expect(authenticate('juan@ruta.ph', 'Commuter123')).rejects.toBeInstanceOf(InvalidCredentialsError);
-    expect((await authenticate('juan@ruta.ph', 'Newpass123')).id).toBe(user.id);
+    await expect(authenticate('juandelacruz', 'Commuter123')).rejects.toBeInstanceOf(InvalidCredentialsError);
+    expect((await authenticate('juandelacruz', 'Newpass123')).id).toBe(user.id);
   });
 
   it('revokes every existing session, so a stolen cookie stops working', async () => {
@@ -172,24 +186,24 @@ describe('changePassword', () => {
 });
 
 describe('password reset', () => {
-  it('returns null for an unknown email, so the endpoint cannot confirm accounts', async () => {
-    expect(await createPasswordResetToken('nobody@ruta.ph')).toBeNull();
+  it('returns null for an unknown username, so the endpoint cannot confirm accounts', async () => {
+    expect(await createPasswordResetToken('nobodyhere')).toBeNull();
   });
 
   it('issues a token for a real account and lets it set a new password', async () => {
     await registerAccount(VALID);
-    const token = await createPasswordResetToken('juan@ruta.ph');
+    const token = await createPasswordResetToken('juandelacruz');
 
     expect(token).toBeTruthy();
 
     await resetPasswordWithToken({ token: token!, password: 'Reset12345', confirmPassword: 'Reset12345' });
 
-    expect((await authenticate('juan@ruta.ph', 'Reset12345')).email).toBe('juan@ruta.ph');
+    expect((await authenticate('juandelacruz', 'Reset12345')).username).toBe('juandelacruz');
   });
 
   it('will not accept the same token twice', async () => {
     await registerAccount(VALID);
-    const token = await createPasswordResetToken('juan@ruta.ph');
+    const token = await createPasswordResetToken('juandelacruz');
     await resetPasswordWithToken({ token: token!, password: 'Reset12345', confirmPassword: 'Reset12345' });
 
     await expect(
@@ -199,7 +213,7 @@ describe('password reset', () => {
 
   it('rejects a forged token', async () => {
     await registerAccount(VALID);
-    await createPasswordResetToken('juan@ruta.ph');
+    await createPasswordResetToken('juandelacruz');
 
     await expect(
       resetPasswordWithToken({ token: 'forged', password: 'Reset12345', confirmPassword: 'Reset12345' }),
@@ -208,8 +222,8 @@ describe('password reset', () => {
 
   it('only keeps the newest token — requesting again invalidates the previous one', async () => {
     await registerAccount(VALID);
-    const first = await createPasswordResetToken('juan@ruta.ph');
-    await createPasswordResetToken('juan@ruta.ph');
+    const first = await createPasswordResetToken('juandelacruz');
+    await createPasswordResetToken('juandelacruz');
 
     await expect(
       resetPasswordWithToken({ token: first!, password: 'Reset12345', confirmPassword: 'Reset12345' }),

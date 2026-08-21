@@ -255,19 +255,19 @@ describe('exchangeCodeForProfile', () => {
 });
 
 describe('oauth state cookie', () => {
-  it('round-trips state, verifier and returnTo', () => {
+  it('round-trips state, verifier, returnTo and mode', () => {
     const { res, cookies } = fakeRes();
-    writeOAuthState(res, { state: 'st', verifier: 'vf', returnTo: '/dashboard/profile' });
+    writeOAuthState(res, { state: 'st', verifier: 'vf', returnTo: '/dashboard/profile', mode: 'signin' });
 
     const value = cookies()[0].split(';')[0].split('=')[1];
     const req = { cookies: { ruta_oauth: decodeURIComponent(value) } } as unknown as Request;
 
-    expect(readOAuthState(req)).toEqual({ state: 'st', verifier: 'vf', returnTo: '/dashboard/profile' });
+    expect(readOAuthState(req)).toEqual({ state: 'st', verifier: 'vf', returnTo: '/dashboard/profile', mode: 'signin' });
   });
 
   it('marks the cookie HttpOnly so script cannot read the verifier', () => {
     const { res, cookies } = fakeRes();
-    writeOAuthState(res, { state: 'st', verifier: 'vf', returnTo: '/dashboard' });
+    writeOAuthState(res, { state: 'st', verifier: 'vf', returnTo: '/dashboard', mode: 'signin' });
 
     expect(cookies()[0]).toContain('HttpOnly');
     expect(cookies()[0]).toContain('SameSite=Lax');
