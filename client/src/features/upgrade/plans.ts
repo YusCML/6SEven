@@ -8,7 +8,6 @@ export type Plan = {
   missing?: string[];
 };
 
-// Placeholder pricing. There is no billing integration — this page is UI only.
 export const PLANS: Plan[] = [
   {
     id: 'free',

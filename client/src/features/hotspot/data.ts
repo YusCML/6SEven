@@ -19,9 +19,6 @@ export type Hotspot = {
   location: string;
   category: Exclude<HotspotCategory, 'All'>;
   note: string;
-  // Set to a local import (preferred) or a remote URL string. Only fill this in
-  // where the image really is that place — anything unset draws a generated
-  // cover instead of borrowing an unrelated photo.
   photo?: StaticImageData | string;
   coverHeight: number;
   author: string;
@@ -29,9 +26,6 @@ export type Hotspot = {
   nearestRide: string;
 };
 
-// Placeholder content. Nothing here is persisted — the Hotspot feature is UI
-// only for now, so this stands in for what the API would return. Cards draw a
-// generated cover; drop real photos in @/assets/hotspot and swap in an import.
 export const HOTSPOTS: Hotspot[] = [
   {
     id: 'emperador',

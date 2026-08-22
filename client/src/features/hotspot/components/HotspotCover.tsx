@@ -7,10 +7,6 @@ const palettes = {
   'Study Spot': ['#059669', '#0d9488'],
 } as const;
 
-/*
- * Stand-in cover art. Real photos have not been supplied for these places yet,
- * so each card draws a generated panel instead of borrowing an unrelated image.
- */
 export default function HotspotCover({ hotspot, height }: { hotspot: Hotspot; height: number }) {
   const [from, to] = palettes[hotspot.category];
   const gradientId = `hotspot-${hotspot.id}`;

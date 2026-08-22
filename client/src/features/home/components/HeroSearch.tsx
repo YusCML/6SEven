@@ -8,11 +8,6 @@ export default function HeroSearch() {
 
   return (
     <section className="mx-auto w-full max-w-6xl px-6 pt-8">
-      {/*
-        The photo is 2560x1086 (2.36:1). Keep the frame narrower than that ratio
-        or object-cover trims the building off the top. The scrim runs left to
-        right so the copy stays legible while the facade keeps its brightness.
-      */}
       <div className="relative isolate flex min-h-[24rem] flex-col justify-center overflow-hidden rounded-2xl sm:min-h-[26rem] lg:min-h-[30rem]">
         <Image
           src={heroPhoto}

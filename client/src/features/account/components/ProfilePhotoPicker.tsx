@@ -8,11 +8,6 @@ const MAX_INPUT_BYTES = 8 * 1024 * 1024;
 const OUTPUT_SIZE = 256;
 const OUTPUT_QUALITY = 0.85;
 
-/*
- * Photos are downscaled and re-encoded in the browser before upload. Whatever
- * the user picks, the server only ever receives a square 256px JPEG, which
- * keeps the request well inside the body limit and the column small.
- */
 function toSquareJpeg(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);

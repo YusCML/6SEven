@@ -30,7 +30,6 @@ export default function HotspotPage() {
     <div className="mx-auto w-full max-w-6xl px-6 py-8">
       <PageMeta title="Hotspot" description="Places around Iloilo City shared by fellow commuters." />
 
-      {/* The topbar already renders the page title, so this row is toolbar only. */}
       <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
         <div role="tablist" aria-label="Filter by category" className="flex flex-wrap gap-5">
           {CATEGORIES.map((option) => {

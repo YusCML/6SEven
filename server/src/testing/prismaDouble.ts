@@ -55,9 +55,6 @@ export function createUserDouble(rows: Map<string, UserModel>): UserDouble {
     );
   };
 
-  // The real column is unique and case-sensitive, but the app rejects
-  // case-variant usernames before it gets that far, so the double matches
-  // insensitively to keep the two in step.
   const usernameTaken = (username: string, exceptId?: string) => {
     const clash = byUsername({ equals: username, mode: 'insensitive' });
     return clash !== null && clash.id !== exceptId;

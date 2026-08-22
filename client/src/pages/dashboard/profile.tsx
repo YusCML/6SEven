@@ -9,8 +9,6 @@ import ProfilePosts from '@/features/account/components/ProfilePosts';
 import StatList from '@/features/account/components/StatList';
 import useSession from '@/hooks/useSession';
 
-// Placeholder figures — RUTA does not record trips yet, so nothing here is
-// wired to the database. Swap these for real queries once trip logging exists.
 const WEEK: DayTrips[] = [
   { day: 'Mon', minutes: 0 },
   { day: 'Tue', minutes: 0 },

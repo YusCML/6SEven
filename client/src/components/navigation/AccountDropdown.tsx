@@ -49,7 +49,6 @@ export default function AccountDropdown() {
     };
   }, [open]);
 
-  // The shell never unmounts on navigation, so the menu has to be closed by hand.
   useEffect(() => {
     const close = () => setOpen(false);
     router.events.on('routeChangeStart', close);

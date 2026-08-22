@@ -7,7 +7,6 @@ type AppShellProps = {
 };
 
 export default function AppShell({ children }: AppShellProps) {
-
   const [navOpen, setNavOpen] = useState(false);
 
   return (

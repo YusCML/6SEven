@@ -19,12 +19,6 @@ function notify() {
   listeners.forEach((listener) => listener());
 }
 
-/*
- * The preference lives in localStorage and the system hint in matchMedia, so
- * this reads as an external store rather than component state. Doing it any
- * other way means syncing in an effect, which cascades a second render on every
- * mount and cannot match what the server rendered anyway.
- */
 function subscribe(onChange: () => void) {
   listeners.add(onChange);
 
@@ -48,7 +42,6 @@ function readPreference(): ThemePreference {
   }
 }
 
-// Snapshots must be primitives — returning a fresh object each call loops.
 function getSnapshot(): string {
   const preference = readPreference();
   const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -67,9 +60,7 @@ export default function ThemeProvider({ children }: { children: ReactNode }) {
   const setPreference = useCallback((next: ThemePreference) => {
     try {
       window.localStorage.setItem(THEME_STORAGE_KEY, next);
-    } catch {
-      // private mode — the choice just will not persist
-    }
+    } catch {}
 
     const resolved =
       next === 'system'

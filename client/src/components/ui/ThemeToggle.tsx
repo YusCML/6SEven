@@ -12,11 +12,6 @@ const options = [
   active: string;
 }[];
 
-/*
- * Track and thumb both follow the theme: a black thumb on a light track in light
- * mode, and the inverse in dark mode, so the selected side always carries the
- * strongest contrast on the strip.
- */
 export default function ThemeToggle() {
   const { theme, setPreference } = useTheme();
 

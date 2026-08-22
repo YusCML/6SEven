@@ -14,11 +14,6 @@ export type LandingStat = {
   tone: StatTone;
 };
 
-/*
- * Placeholder figures. These are the four things a commuter checks before
- * leaving, so they stay useful once wired to real data — each has a distinct
- * icon so the row reads at a glance.
- */
 export const landingStats: LandingStat[] = [
   { label: 'Routes Mapped', value: '482', Icon: RouteIcon, tone: 'brand' },
   { label: 'Jeepney Fare', value: '₱13 base', Icon: TicketIcon, tone: 'success' },
