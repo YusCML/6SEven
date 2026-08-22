@@ -7,7 +7,8 @@ type AppShellProps = {
 };
 
 export default function AppShell({ children }: AppShellProps) {
-  const [navOpen, setNavOpen] = useState(true);
+
+  const [navOpen, setNavOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-white font-sans text-slate-900 dark:bg-[oklch(0.205_0_0)]">
