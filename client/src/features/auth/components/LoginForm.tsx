@@ -35,7 +35,7 @@ export default function LoginForm() {
 
     try {
       applySession(await authApi.login({ username, password }));
-      router.push('/dashboard');
+      router.push('/home');
     } catch (loginError) {
       setError(errorMessage(loginError, 'Login failed.'));
     } finally {

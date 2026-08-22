@@ -6,7 +6,7 @@ export default function HomePage() {
     <>
       <PageMeta
         title="Home"
-        description="Navigate the metro seamlessly with real-time updates, incident reports and transit analytics for Filipino commuters."
+        description="Compare jeepney, bus and tricycle routes around Iloilo City — fares, travel time and transfers."
       />
       <LandingPage />
     </>

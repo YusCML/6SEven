@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import RutaWordmark from '@/components/brand/RutaWordmark';
 import {
-  AlertTriangleIcon,
   BookIcon,
   CrownIcon,
   HomeIcon,
@@ -14,7 +13,6 @@ import {
 export const NAV_ITEMS = [
   { href: '/home', label: 'Home', Icon: HomeIcon },
   { href: '/routes', label: 'Routes', Icon: RouteIcon },
-  { href: '/dashboard', label: 'Incidents', Icon: AlertTriangleIcon },
   { href: '/hotspot', label: 'Hotspot', Icon: MapPinIcon },
   { href: '/commuter-guide', label: 'Guide', Icon: BookIcon },
 ] as const;

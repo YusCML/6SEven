@@ -267,7 +267,7 @@ describe('oauth state cookie', () => {
 
   it('marks the cookie HttpOnly so script cannot read the verifier', () => {
     const { res, cookies } = fakeRes();
-    writeOAuthState(res, { state: 'st', verifier: 'vf', returnTo: '/dashboard', mode: 'signin' });
+    writeOAuthState(res, { state: 'st', verifier: 'vf', returnTo: '/home', mode: 'signin' });
 
     expect(cookies()[0]).toContain('HttpOnly');
     expect(cookies()[0]).toContain('SameSite=Lax');
@@ -292,15 +292,15 @@ describe('sanitizeReturnTo', () => {
   });
 
   it('rejects a protocol-relative URL, which would be an open redirect', () => {
-    expect(sanitizeReturnTo('//evil.example.com')).toBe('/dashboard');
+    expect(sanitizeReturnTo('//evil.example.com')).toBe('/home');
   });
 
   it('rejects an absolute URL', () => {
-    expect(sanitizeReturnTo('https://evil.example.com/steal')).toBe('/dashboard');
+    expect(sanitizeReturnTo('https://evil.example.com/steal')).toBe('/home');
   });
 
   it('falls back for non-string input', () => {
-    expect(sanitizeReturnTo(undefined)).toBe('/dashboard');
-    expect(sanitizeReturnTo(['/a', '/b'])).toBe('/dashboard');
+    expect(sanitizeReturnTo(undefined)).toBe('/home');
+    expect(sanitizeReturnTo(['/a', '/b'])).toBe('/home');
   });
 });

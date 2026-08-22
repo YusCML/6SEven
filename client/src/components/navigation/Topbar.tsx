@@ -4,7 +4,6 @@ import AccountMenu from './AccountMenu';
 const TITLES: Record<string, string> = {
   '/home': 'Home',
   '/routes': 'Route Planner',
-  '/dashboard': 'Incidents',
   '/hotspot': 'Hotspot',
   '/commuter-guide': 'Commuter Guide',
   '/about-us': 'About Us',

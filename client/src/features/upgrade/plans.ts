@@ -18,11 +18,11 @@ export const PLANS: Plan[] = [
     yearly: 0,
     features: [
       'Route comparison with fares and travel time',
-      'Live incident feed',
+      'Live route conditions',
       'Browse and save Hotspot places',
       'Three saved routes',
     ],
-    missing: ['Offline route packs', 'Priority incident alerts', 'Fare history'],
+    missing: ['Offline route packs', 'Priority route alerts', 'Fare history'],
   },
   {
     id: 'plus',
@@ -33,7 +33,7 @@ export const PLANS: Plan[] = [
     features: [
       'Unlimited saved routes',
       'Offline route packs for weak signal areas',
-      'Priority incident alerts before they hit the feed',
+      'Priority route alerts before conditions change',
       'Fare history and monthly spend summary',
       'Post unlimited Hotspot places',
       'No ads anywhere in the app',
@@ -48,7 +48,7 @@ export const PERKS = [
   },
   {
     title: 'Know before the queue',
-    body: 'Priority alerts reach you ahead of the public feed, so you can reroute before the terminal fills.',
+    body: 'Alerts reach you before conditions change, so you can reroute before the terminal fills.',
   },
   {
     title: 'Track what you spend',

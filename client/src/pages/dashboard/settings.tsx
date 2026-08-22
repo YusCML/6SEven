@@ -69,7 +69,7 @@ export default function Settings() {
 
               <ToggleSetting
                 title="Public profile"
-                description="Let other commuters see the incidents you report."
+                description="Let other commuters see the places you post."
                 checked={settings.publicProfile}
                 onChange={(publicProfile) => update('publicProfile', publicProfile)}
               />

@@ -1,6 +1,6 @@
 import type { ComponentType, SVGProps } from 'react';
 import type { StaticImageData } from 'next/image';
-import { AlertTriangleIcon, CloudSunIcon, RouteIcon, ShieldCheckIcon } from '@/components/icons';
+import { CloudSunIcon, RouteIcon, ShieldCheckIcon } from '@/components/icons';
 import cpuPhoto from '@/assets/landing/ride-cpu.jpg';
 import jaroPhoto from '@/assets/landing/ride-jaro.jpg';
 import smIloiloPhoto from '@/assets/landing/ride-sm-iloilo.jpg';
@@ -17,7 +17,7 @@ export type LandingStat = {
 export const landingStats: LandingStat[] = [
   { label: 'Active Routes', value: '482', Icon: RouteIcon, tone: 'brand' },
   { label: 'Status', value: 'Normal', Icon: ShieldCheckIcon, tone: 'success' },
-  { label: 'Reports', value: '3 Alerts', Icon: AlertTriangleIcon, tone: 'warning' },
+  { label: 'Avg Fare', value: '₱15', Icon: RouteIcon, tone: 'warning' },
   { label: 'Weather', value: '28°C Clear', Icon: CloudSunIcon, tone: 'accent' },
 ];
 

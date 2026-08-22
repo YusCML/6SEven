@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import PageMeta from '@/components/PageMeta';
-import { AlertTriangleIcon, CheckIcon, MapPinIcon, RouteIcon, ShieldCheckIcon, SlidersIcon } from '@/components/icons';
+import { CheckIcon, MapPinIcon, RouteIcon, ShieldCheckIcon, SlidersIcon } from '@/components/icons';
 import CommuteAnalysis, { type DayTrips } from '@/features/account/components/CommuteAnalysis';
 import ConnectedAccounts from '@/features/account/components/ConnectedAccounts';
 import InformationCard from '@/features/account/components/InformationCard';
@@ -29,7 +29,6 @@ const SAVED = [
 
 const ACTIVITY = [
   { label: 'Trips Completed', value: 0, icon: <CheckIcon className="h-4 w-4" />, tone: 'green' as const },
-  { label: 'Incidents Reported', value: 0, icon: <AlertTriangleIcon className="h-4 w-4" />, tone: 'red' as const },
 ];
 
 export default function UserProfile() {

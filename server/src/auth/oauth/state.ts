@@ -50,7 +50,7 @@ export function readOAuthState(req: Request): OAuthStatePayload | null {
     return {
       state: parsed.state,
       verifier: parsed.verifier,
-      returnTo: isSafeReturnTo(parsed.returnTo) ? parsed.returnTo : '/dashboard',
+      returnTo: isSafeReturnTo(parsed.returnTo) ? parsed.returnTo : '/home',
       mode: parsed.mode === 'link' ? 'link' : 'signin',
     };
   } catch {
@@ -72,6 +72,6 @@ export function clearOAuthState(res: Response) {
   );
 }
 
-export function sanitizeReturnTo(value: unknown, fallback = '/dashboard'): string {
+export function sanitizeReturnTo(value: unknown, fallback = '/home'): string {
   return isSafeReturnTo(value) ? value : fallback;
 }

@@ -24,7 +24,7 @@ const teamMembers = [
 const footerGroups = [
   {
     title: "RUTA",
-    links: ["About Us", "Features", "Community", "Incident Report"],
+    links: ["About Us", "Features", "Community", "Hotspot"],
   },
   { title: "Company", links: ["About Us", "Careers", "Contact"] },
   { title: "Help", links: ["Safety tips", "Privacy policy", "Terms of service"] },
