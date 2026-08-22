@@ -1,6 +1,6 @@
 import type { ComponentType, SVGProps } from 'react';
 import type { StaticImageData } from 'next/image';
-import { CloudSunIcon, RouteIcon, ShieldCheckIcon } from '@/components/icons';
+import { ClockIcon, CloudSunIcon, RouteIcon, TicketIcon } from '@/components/icons';
 import cpuPhoto from '@/assets/landing/ride-cpu.jpg';
 import jaroPhoto from '@/assets/landing/ride-jaro.jpg';
 import smIloiloPhoto from '@/assets/landing/ride-sm-iloilo.jpg';
@@ -14,10 +14,15 @@ export type LandingStat = {
   tone: StatTone;
 };
 
+/*
+ * Placeholder figures. These are the four things a commuter checks before
+ * leaving, so they stay useful once wired to real data — each has a distinct
+ * icon so the row reads at a glance.
+ */
 export const landingStats: LandingStat[] = [
-  { label: 'Active Routes', value: '482', Icon: RouteIcon, tone: 'brand' },
-  { label: 'Status', value: 'Normal', Icon: ShieldCheckIcon, tone: 'success' },
-  { label: 'Avg Fare', value: '₱15', Icon: RouteIcon, tone: 'warning' },
+  { label: 'Routes Mapped', value: '482', Icon: RouteIcon, tone: 'brand' },
+  { label: 'Jeepney Fare', value: '₱13 base', Icon: TicketIcon, tone: 'success' },
+  { label: 'Peak Hours', value: '7–9 AM', Icon: ClockIcon, tone: 'warning' },
   { label: 'Weather', value: '28°C Clear', Icon: CloudSunIcon, tone: 'accent' },
 ];
 
