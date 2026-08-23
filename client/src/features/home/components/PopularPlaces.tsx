@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { BookmarkIcon, MapPinIcon } from '@/components/icons';
+import { CommentIcon, HeartIcon, MapPinIcon } from '@/components/icons';
 import { HOTSPOTS } from '@/features/hotspot/data';
 
 const FEATURED = [...HOTSPOTS].sort((a, b) => b.saves - a.saves).slice(0, 5);
@@ -47,9 +47,15 @@ export default function PopularPlaces() {
                 </span>
               </span>
 
-              <span className="flex shrink-0 items-center gap-1.5 text-xs font-bold text-slate-400">
-                <BookmarkIcon className="h-3.5 w-3.5" />
-                {hotspot.saves}
+              <span className="flex shrink-0 items-center gap-3 text-xs font-bold text-slate-400">
+                <span className="flex items-center gap-1.5">
+                  <HeartIcon className="h-3.5 w-3.5" />
+                  {hotspot.likes}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CommentIcon className="h-3.5 w-3.5" />
+                  {hotspot.comments}
+                </span>
               </span>
             </Link>
           </li>

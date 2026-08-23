@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Avatar from '@/components/ui/Avatar';
 import Badge from '@/components/ui/Badge';
-import { BookmarkIcon, MapPinIcon } from '@/components/icons';
+import { BookmarkIcon, CommentIcon, HeartIcon, MapPinIcon } from '@/components/icons';
 import HotspotCover from './HotspotCover';
 import type { Hotspot } from '../data';
 
@@ -60,9 +60,19 @@ export default function HotspotCard({ hotspot }: { hotspot: Hotspot }) {
             <span className="text-xs font-bold text-slate-700">{hotspot.author}</span>
           </span>
 
-          <span className="flex items-center gap-1 text-xs font-semibold text-slate-400">
-            <BookmarkIcon className="h-3.5 w-3.5" />
-            {hotspot.saves}
+          <span className="flex items-center gap-3 text-xs font-semibold text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <HeartIcon className="h-3.5 w-3.5" />
+              {hotspot.likes}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CommentIcon className="h-3.5 w-3.5" />
+              {hotspot.comments}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <BookmarkIcon className="h-3.5 w-3.5" />
+              {hotspot.saves}
+            </span>
           </span>
         </div>
       </div>

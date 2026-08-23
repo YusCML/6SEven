@@ -23,6 +23,8 @@ export type Hotspot = {
   coverHeight: number;
   author: string;
   saves: number;
+  likes: number;
+  comments: number;
   nearestRide: string;
 };
 
@@ -37,6 +39,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 260,
     author: 'shi',
     saves: 128,
+    likes: 342,
+    comments: 18,
     nearestRide: 'Mandurriao jeepney',
   },
   {
@@ -49,6 +53,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 200,
     author: 'nherf',
     saves: 96,
+    likes: 204,
+    comments: 11,
     nearestRide: 'Ungka–SM route',
   },
   {
@@ -61,6 +67,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 240,
     author: 'denver',
     saves: 74,
+    likes: 188,
+    comments: 9,
     nearestRide: 'Jaro CPU jeepney',
   },
   {
@@ -73,6 +81,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 180,
     author: 'novie',
     saves: 61,
+    likes: 147,
+    comments: 23,
     nearestRide: 'Jaro CPU jeepney',
   },
   {
@@ -85,6 +95,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 300,
     author: 'bryan',
     saves: 152,
+    likes: 401,
+    comments: 27,
     nearestRide: 'Diversion loop',
   },
   {
@@ -97,6 +109,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 210,
     author: 'joe',
     saves: 43,
+    likes: 96,
+    comments: 5,
     nearestRide: 'Northbound vans',
   },
   {
@@ -109,6 +123,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 270,
     author: 'zephaniah',
     saves: 210,
+    likes: 528,
+    comments: 44,
     nearestRide: 'La Paz jeepney',
   },
   {
@@ -121,6 +137,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 190,
     author: 'shi',
     saves: 88,
+    likes: 219,
+    comments: 14,
     nearestRide: 'Molo jeepney',
   },
   {
@@ -133,6 +151,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 230,
     author: 'nherf',
     saves: 37,
+    likes: 83,
+    comments: 6,
     nearestRide: 'City Proper loop',
   },
   {
@@ -145,6 +165,8 @@ export const HOTSPOTS: Hotspot[] = [
     coverHeight: 250,
     author: 'denver',
     saves: 55,
+    likes: 112,
+    comments: 8,
     nearestRide: 'Pavia route',
   },
 ];
