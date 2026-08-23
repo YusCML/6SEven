@@ -7,53 +7,81 @@ const transportOptions = [
   {
     Icon: RouteIcon,
     title: "Getting Started",
-    text: "New to RUTA? Learn the basics of riding with us.",
+    text: "New to Iloilo routes? Start with how to read a jeepney signboard.",
     tone: "bg-slate-100 text-slate-900",
   },
   {
     Icon: TicketIcon,
     title: "Fare Info",
-    text: "Pricing passes, and contactless payment options.",
+    text: "Current jeepney, tricycle and taxi rates, plus who gets a discount.",
     tone: "bg-emerald-50 text-emerald-600",
   },
   {
     Icon: ShieldCheckIcon,
     title: "Safety Tips",
-    text: "How we keep you safe during your journey.",
+    text: "Practical habits for terminals, night rides and rainy season.",
     tone: "bg-amber-50 text-amber-600",
   },
   {
     Icon: MapIcon,
     title: "Route Maps",
-    text: "Detailed system maps and station directories.",
+    text: "Which route code goes where, and where the main terminals are.",
     tone: "bg-violet-50 text-violet-600",
   },
+];
+
+const hotlines = [
+  { label: "National Emergency", number: "911" },
+  { label: "Iloilo City Police", number: "(033) 337 3801" },
+  { label: "City Disaster Office", number: "(033) 336 8888" },
+  { label: "LTFRB Region VI", number: "(033) 320 4747" },
+  { label: "Iloilo City Hall Trunkline", number: "(033) 337 1122" },
 ];
 
 const fares = [
   {
     Icon: TapPhoneIcon,
-    title: "Tap & Go",
-    fare: "$2.50",
-    label: "per ride",
-    text: "The easiest way to pay. Simply tap your contactless credit card or mobile wallet at any reader.",
+    title: "Jeepney",
+    fare: "₱13",
+    label: "first 4 km",
+    text: "The backbone of the city. Add roughly ₱1.80 per kilometre after the first four. Cash only — bring small bills.",
+  },
+  {
+    Icon: EBusIcon,
+    title: "Modern PUV",
+    fare: "₱15",
+    label: "first 4 km",
+    text: "Air-conditioned e-jeepneys on the modernised routes. Slightly higher base fare, fixed stops, and you board at the rear.",
+  },
+  {
+    Icon: BusIcon,
+    title: "Provincial Bus",
+    fare: "₱50+",
+    label: "varies by town",
+    text: "Leaves from Tagbak and Molo terminals for towns outside the city. Fare depends on distance; pay the conductor on board.",
   },
   {
     Icon: RutaPassIcon,
-    title: "RUTA Pass",
-    fare: "$75.00",
-    label: "monthly",
-    text: "For frequent riders. Purchase a digital or physical RUTA pass for unlimited rides within zones.",
+    title: "Tricycle",
+    fare: "₱25",
+    label: "short trip",
+    text: "Best for short hops inside a district or the last stretch home. Agree on the fare before boarding, especially off the usual loop.",
+  },
+  {
+    Icon: TaxiIcon,
+    title: "Taxi",
+    fare: "₱45",
+    label: "flagdown",
+    text: "Metered after flagdown. Ride-hailing apps cover the city too and usually quote the fare upfront.",
   },
   {
     Icon: StudentFareIcon,
-    title: "Reduced Fares",
-    fare: "$1.25",
-    label: "per ride",
-    text: "Available for students, seniors (65+), and persons with disabilities upon verification.",
+    title: "Discounted",
+    fare: "20% off",
+    label: "students, seniors, PWD",
+    text: "Mandated by law for students, senior citizens (60+) and persons with disabilities. Carry a valid ID and present it as you board.",
   },
 ];
-
 export default function CommuterGuide() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-4 font-sans text-slate-900 sm:px-6 sm:py-6">
@@ -112,18 +140,28 @@ export default function CommuterGuide() {
             <div className="mt-5 space-y-5">
               <GuideStep
                 number="1"
-                title="Plan Your Trip"
-                text="Use our real-time trip planner or mobile app to find the quickest route to your destination. Enter your starting point and goal to see available transport options."
+                title="Read the signboard"
+                text="Jeepneys show their route code and end points on the windshield — for example Jaro–CPU or Ungka–SM. The code tells you the corridor it follows, not every street it passes, so check the plan in RUTA if you are unsure."
               />
               <GuideStep
                 number="2"
-                title="Arrive Early"
-                text="We recommend arriving at your stop or station at least 5 minutes before the scheduled departure. Real-time updates are available on every platform display."
+                title="Wait where they actually stop"
+                text="Most stops are informal. Wait near a corner, terminal or an existing queue rather than mid-block, and raise a hand as the jeepney approaches so the driver sees you in time."
               />
               <GuideStep
                 number="3"
-                title="Boarding & Exiting"
-                text="Please allow passengers to exit before boarding. Once inside, move to the center of the vehicle to make room for others. Tap off when exiting to ensure correct fare calculation."
+                title="Pay and pass it forward"
+                text="Board, sit, then hand your fare toward the driver — passengers pass it along for you. Say your destination when you pay so the driver can work out the distance, and say bayad po when handing money over."
+              />
+              <GuideStep
+                number="4"
+                title="Signal before your stop"
+                text="Say para when you want to get off, or knock once on the handrail. Do it about a block early; drivers cannot stop instantly in traffic."
+              />
+              <GuideStep
+                number="5"
+                title="Plan transfers ahead"
+                text="Few routes cross the city end to end. Expect one transfer between districts, and budget the second fare — RUTA shows both legs and the combined cost before you leave."
               />
             </div>
           </div>
@@ -137,7 +175,7 @@ export default function CommuterGuide() {
 
         <section className="rounded-2xl border border-slate-200 bg-slate-100 p-7 text-slate-900 sm:p-9">
           <h2 className="text-3xl font-extrabold tracking-tight">
-            Simple, Fair Fares
+            What a Ride Costs
           </h2>
 
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -213,48 +251,60 @@ export default function CommuterGuide() {
         <section className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
           <div className="grid gap-7 md:grid-cols-[1.1fr_2fr]">
             <div>
-              <h2 className="text-xl font-bold">Your Safety is Our Priority</h2>
+              <h2 className="text-xl font-bold">Riding Safely</h2>
 
               <div className="mt-4 flex gap-3 rounded-lg bg-amber-50 p-4 text-sm leading-6 text-amber-800">
                 <AlertIcon className="mt-0.5 h-5 w-5 shrink-0" />
                 <p>
-                  We maintain a fleet-wide surveillance system and 24/7
-                  security dispatch to ensure every journey is safe.
+                  RUTA plans routes — it does not operate vehicles or terminals.
+                  These are habits that help on Iloilo roads, not guarantees.
                 </p>
               </div>
 
-              <div className="mt-5 flex items-center gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-900">
-                  <PhoneIcon className="h-4 w-4" />
-                </div>
+              <ul className="mt-5 space-y-3">
+                {hotlines.map((line) => (
+                  <li key={line.label} className="flex items-center gap-3">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-900">
+                      <PhoneIcon className="h-4 w-4" />
+                    </span>
 
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
-                    Emergency Line
-                  </p>
-                  <p className="mt-0.5 text-lg font-extrabold tracking-tight text-slate-900">
-                    1-800-RUTA-SEC
-                  </p>
-                </div>
-              </div>
+                    <span className="min-w-0">
+                      <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                        {line.label}
+                      </span>
+                      <span className="block text-sm font-extrabold tracking-tight text-slate-900">
+                        {line.number}
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
               <Safety
-                title="CCTV Monitoring"
-                text="All stations and vehicles are equipped with high-definition cameras monitored 24/7."
+                title="Keep your phone out of sight"
+                text="Snatching happens most at open windows and while boarding. Check directions before you get on, not mid-ride."
               />
               <Safety
-                title="Well-Lit Areas"
-                text="We maintain high-intensity lighting in all boarding zones and walkway areas."
+                title="Sit where you can get out"
+                text="Near the door is easier to leave from at night, and you can hand your fare forward without turning your back to the aisle."
               />
               <Safety
-                title="Trained Police"
-                text="Uniformed and plainclothes officers patrol our network at all times."
+                title="Carry small bills"
+                text="Counting a large note in public draws attention, and drivers often cannot break ₱500 during a busy run."
               />
               <Safety
-                title="Passenger Assistance"
-                text="Yellow call boxes are located on every platform for immediate assistance."
+                title="Rainy season routes flood"
+                text="Low sections near the river and along Diversion can become impassable in heavy rain. Allow extra time or reroute."
+              />
+              <Safety
+                title="Agree tricycle fares first"
+                text="Settle the price before boarding for any trip outside the usual loop, so there is no dispute when you arrive."
+              />
+              <Safety
+                title="Note the plate number"
+                text="If something feels wrong, the body number is painted on the side and rear. It is what any report will ask for first."
               />
             </div>
           </div>
@@ -420,5 +470,45 @@ function StudentFareIcon({ className }: IconProps) {
       <path d="M7 10.3V15c2.4 2.1 7.6 2.1 10 0v-4.7" />
       <path d="M20 10v5" />
     </IconFrame>
+  );
+}
+
+function EBusIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M4 17V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v11" />
+      <path d="M4 11h16" />
+      <path d="M6 17v2" />
+      <path d="M18 17v2" />
+      <circle cx="8" cy="14.5" r="1" />
+      <circle cx="16" cy="14.5" r="1" />
+      <path d="m13 6-2 3h2l-2 3" />
+    </svg>
+  );
+}
+
+function BusIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M3 17V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10" />
+      <path d="M3 12h18" />
+      <path d="M6 17v2" />
+      <path d="M18 17v2" />
+      <circle cx="7" cy="14.5" r="1" />
+      <circle cx="17" cy="14.5" r="1" />
+    </svg>
+  );
+}
+
+function TaxiIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M9 3h6" />
+      <path d="M12 3v3" />
+      <path d="M5 17V13l2-5h10l2 5v4" />
+      <path d="M5 13h14" />
+      <path d="M7 17v2" />
+      <path d="M17 17v2" />
+    </svg>
   );
 }
