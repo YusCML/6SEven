@@ -22,18 +22,14 @@ export default function RideCard({ ride }: { ride: FrequentRide }) {
         ) : null}
       </div>
 
-      <div className="p-5">
-        <p className="flex items-center gap-1.5">
-          <Badge tone="muted">{ride.from}</Badge>
-          <span aria-hidden className="text-[10px] text-slate-300">
-            →
-          </span>
-          <Badge tone="muted">{ride.to}</Badge>
+      <div className="p-4">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+          {ride.from} → {ride.to}
         </p>
 
-        <h3 className="mt-2 text-lg font-bold text-slate-900">{ride.title}</h3>
+        <h3 className="mt-1 text-base font-bold text-slate-900">{ride.title}</h3>
 
-        <div className="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+        <div className="mt-3 flex items-center justify-between gap-3">
           <div className="flex flex-wrap gap-2">
             {ride.tags.map((tag) => (
               <Badge key={tag.label} tone={tag.tone}>
@@ -41,7 +37,7 @@ export default function RideCard({ ride }: { ride: FrequentRide }) {
               </Badge>
             ))}
           </div>
-          <span className="shrink-0 text-sm font-bold text-slate-500">{ride.duration}</span>
+          <span className="shrink-0 text-xs font-bold text-slate-500">{ride.duration}</span>
         </div>
       </div>
     </article>

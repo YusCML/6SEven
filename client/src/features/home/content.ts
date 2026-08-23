@@ -43,10 +43,10 @@ export const frequentRides: FrequentRide[] = [
     from: 'Home',
     to: 'Campus',
     title: 'Central Philippine University',
-    duration: '~45 mins',
+    duration: '~25 mins',
     tags: [
       { label: 'Jeepney', tone: 'brand' },
-      { label: 'LRT-2', tone: 'neutral' },
+      { label: 'Jaro–CPU', tone: 'neutral' },
     ],
     photo: cpuPhoto,
     favorite: true,
@@ -56,8 +56,8 @@ export const frequentRides: FrequentRide[] = [
     from: 'Boarding House',
     to: 'Plaza',
     title: 'Jaro Plaza',
-    duration: '~30 mins',
-    tags: [{ label: 'UV Express', tone: 'brand' }],
+    duration: '~15 mins',
+    tags: [{ label: 'Jeepney', tone: 'brand' }],
     photo: jaroPhoto,
   },
   {
@@ -65,10 +65,10 @@ export const frequentRides: FrequentRide[] = [
     from: 'Home',
     to: 'Mall',
     title: 'SM City Iloilo',
-    duration: '~55 mins',
+    duration: '~30 mins',
     tags: [
-      { label: 'P2P Bus', tone: 'brand' },
-      { label: 'MRT-3', tone: 'neutral' },
+      { label: 'Jeepney', tone: 'brand' },
+      { label: 'Ungka–SM', tone: 'neutral' },
     ],
     photo: smIloiloPhoto,
   },
@@ -89,3 +89,21 @@ export const trafficHighlights: TrafficHighlight[] = [
     description: 'Never overpay again. Accurate fare computation based on LTFRB matrix.',
   },
 ];
+
+export type FareRow = {
+  mode: string;
+  amount: number;
+  note: string;
+};
+
+export const fareGuide: FareRow[] = [
+  { mode: 'Jeepney', amount: 13, note: 'First 4 km, +₱1.80 per km' },
+  { mode: 'Tricycle', amount: 25, note: 'Short hops within a district' },
+  { mode: 'Taxi', amount: 45, note: 'Flagdown, then metered' },
+];
+
+export const fareDiscount = {
+  label: 'Students, seniors & PWD',
+  value: '20% off',
+  note: 'Present a valid ID when boarding.',
+};
