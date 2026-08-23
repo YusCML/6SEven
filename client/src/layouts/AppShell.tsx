@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import Sidebar from '@/components/navigation/Sidebar';
 import Topbar from '@/components/navigation/Topbar';
+import ScrollToTop from '@/components/ui/ScrollToTop';
 
 type AppShellProps = {
   children: ReactNode;
@@ -17,6 +18,8 @@ export default function AppShell({ children }: AppShellProps) {
         <Topbar />
         <main className="flex-1">{children}</main>
       </div>
+
+      <ScrollToTop />
     </div>
   );
 }
