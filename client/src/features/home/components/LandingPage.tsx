@@ -2,6 +2,7 @@ import FareGuide from './FareGuide';
 import FrequentRides from './FrequentRides';
 import HeroSearch from './HeroSearch';
 import PopularPlaces from './PopularPlaces';
+import SiteFooter from '@/components/navigation/SiteFooter';
 import StatStrip from './StatStrip';
 
 export default function LandingPage() {
@@ -15,6 +16,8 @@ export default function LandingPage() {
         <PopularPlaces />
         <FareGuide />
       </div>
+
+      <SiteFooter />
     </>
   );
 }
