@@ -13,7 +13,7 @@ const transportOptions = [
     text: "New to RUTA? Learn the basics of riding with us.",
     tone: "bg-blue-50 text-blue-600",
   },
-  {
+  { 
     Icon: TicketIcon,
     title: "Fare Info",
     text: "Pricing passes, and contactless payment options.",
