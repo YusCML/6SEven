@@ -5,6 +5,9 @@ const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN ?? "http://localhost:4000"
 const nextConfig: NextConfig = {
   reactCompiler: true,
   reactStrictMode: true,
+  turbopack: {
+    root: process.cwd(),
+  },
 
   images: {
     qualities: [75, 85],

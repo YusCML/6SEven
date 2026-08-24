@@ -7,6 +7,7 @@ import novie from "@/assets/team/novie.jpg";
 import nherf from "@/assets/team/nherf.jpg";
 import skyline from "@/assets/aboutUs/skyline.jpg";
 import transit from "@/assets/aboutUs/rapidTransit.jpg";
+import RutaLogo from "@/components/brand/RutaLogo";
 
 const teamMembers = [
   { name: "Bryan Del Rosario", role: "Project Manager", image: bryan },
@@ -26,8 +27,14 @@ const footerGroups = [
     title: "RUTA",
     links: ["About Us", "Features", "Community", "Hotspot"],
   },
-  { title: "Company", links: ["About Us", "Careers", "Contact"] },
-  { title: "Help", links: ["Safety tips", "Privacy policy", "Terms of service"] },
+  {
+    title: "Company",
+    links: ["About Us", "Careers", "Contact"],
+  },
+  {
+    title: "Help",
+    links: ["Safety tips", "Privacy policy", "Terms of service"],
+  },
 ];
 
 export default function AboutUs() {
@@ -79,8 +86,8 @@ export default function AboutUs() {
             Our mission is to provide every Filipino with real-time, accurate
             transit data that makes commuting predictable, efficient, and
             dignified. By leveraging community-sourced incident reporting and
-            advanced route planning, we&apos;re putting the power back in the hands
-            of the commuter.
+            advanced route planning, we&apos;re putting the power back in the
+            hands of the commuter.
           </p>
 
           <div className="mt-7 grid grid-cols-2 gap-5 border-t border-slate-100 pt-5">
@@ -111,6 +118,7 @@ export default function AboutUs() {
             src={transit}
             alt="Modern public transit interior"
             fill
+            unoptimized
             className="object-cover"
           />
         </div>
@@ -191,6 +199,7 @@ export default function AboutUs() {
 
             <label className="mt-4 block text-xs font-semibold">
               Full name
+
               <input
                 className="mt-1 w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-slate-900"
                 placeholder="Juan Dela Cruz"
@@ -199,6 +208,7 @@ export default function AboutUs() {
 
             <label className="mt-3 block text-xs font-semibold">
               Email address
+
               <input
                 type="email"
                 className="mt-1 w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-slate-900"
@@ -208,6 +218,7 @@ export default function AboutUs() {
 
             <label className="mt-3 block text-xs font-semibold">
               Message
+
               <textarea
                 className="mt-1 min-h-20 w-full resize-none rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-slate-900"
                 placeholder="How can we help?"
@@ -291,11 +302,9 @@ export default function AboutUs() {
       <footer className="border-t border-slate-100">
         <div className="mx-auto grid max-w-5xl gap-10 px-6 py-12 md:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
-            <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900">
-              <span className="grid h-5 w-5 place-items-center rounded bg-slate-900 text-[10px] text-white">
-                R
-              </span>
-              RUTA
+            {/* Actual RUTA Logo */}
+            <div className="flex items-center">
+              <RutaLogo />
             </div>
 
             <p className="mt-3 max-w-xs text-xs leading-5 text-slate-500">
@@ -334,7 +343,9 @@ export default function AboutUs() {
   );
 }
 
-type IconProps = { className?: string };
+type IconProps = {
+  className?: string;
+};
 
 function IconFrame({
   children,
