@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { jsPDF } from "jspdf";
+
 import commuterHero from "@/assets/commuterPage/modern_bus.jpg";
 import commuterPlanningRoute from "@/assets/commuterPage/commuter_planning_route.jpg";
 import busRouteMap from "@/assets/commuterPage/busRouteMap.jpg";
@@ -55,15 +58,116 @@ const fares = [
 ];
 
 export default function CommuterGuide() {
+  const [selectedMap, setSelectedMap] = useState<"rail" | "bus" | null>(
+    null
+  );
+
+  const downloadMapsAsPDF = async () => {
+    try {
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const addMapToPDF = async (
+        imageSrc: string,
+        title: string,
+        isFirstPage: boolean
+      ) => {
+        if (!isFirstPage) {
+          pdf.addPage();
+        }
+
+        const image = new Image();
+
+        await new Promise<void>((resolve, reject) => {
+          image.onload = () => resolve();
+          image.onerror = () => reject(new Error("Unable to load map image."));
+          image.src = imageSrc;
+        });
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+
+        if (!context) {
+          throw new Error("Unable to create canvas.");
+        }
+
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+
+        context.drawImage(image, 0, 0);
+
+        const imageData = canvas.toDataURL("image/jpeg", 0.95);
+
+        pdf.setFontSize(18);
+        pdf.setFont("helvetica", "bold");
+        pdf.text(title, 15, 15);
+
+        const margin = 10;
+        const titleSpace = 15;
+
+        const availableWidth = pageWidth - margin * 2;
+        const availableHeight =
+          pageHeight - margin * 2 - titleSpace;
+
+        const imageRatio = canvas.width / canvas.height;
+
+        let imageWidth = availableWidth;
+        let imageHeight = imageWidth / imageRatio;
+
+        if (imageHeight > availableHeight) {
+          imageHeight = availableHeight;
+          imageWidth = imageHeight * imageRatio;
+        }
+
+        const x = (pageWidth - imageWidth) / 2;
+        const y = margin + titleSpace;
+
+        pdf.addImage(
+          imageData,
+          "JPEG",
+          x,
+          y,
+          imageWidth,
+          imageHeight
+        );
+      };
+
+      await addMapToPDF(
+        railwayMap.src,
+        "System Rail Map",
+        true
+      );
+
+      await addMapToPDF(
+        busRouteMap.src,
+        "Metro Bus Network",
+        false
+      );
+
+      pdf.save("RUTA-Network-Maps.pdf");
+    } catch (error) {
+      console.error("Error creating PDF:", error);
+      alert("Unable to download the maps. Please try again.");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-4 font-sans text-slate-900 sm:px-6 sm:py-6">
       <div className="mx-auto max-w-6xl space-y-8">
+        {/* Hero Section */}
         <section className="relative min-h-64 overflow-hidden rounded-2xl bg-slate-900 shadow-sm">
           <img
             src={commuterHero.src}
             alt="Bus at the terminal"
             className="absolute inset-0 h-full w-full object-cover opacity-75"
           />
+
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/25 to-transparent" />
 
           <div className="relative flex min-h-64 max-w-md flex-col justify-center p-7 text-white sm:p-10">
@@ -82,6 +186,7 @@ export default function CommuterGuide() {
           </div>
         </section>
 
+        {/* Transport Options */}
         <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {transportOptions.map((item) => (
             <article
@@ -94,7 +199,9 @@ export default function CommuterGuide() {
                 <item.Icon className="h-5 w-5" />
               </span>
 
-              <h2 className="mt-4 text-base font-bold">{item.title}</h2>
+              <h2 className="mt-4 text-base font-bold">
+                {item.title}
+              </h2>
 
               <p className="mt-2 text-sm leading-5 text-slate-500">
                 {item.text}
@@ -103,6 +210,7 @@ export default function CommuterGuide() {
           ))}
         </section>
 
+        {/* Getting Started */}
         <section className="grid items-center gap-8 lg:grid-cols-[1.1fr_.9fr]">
           <div>
             <p className="mb-3 border-l-4 border-blue-600 pl-2 text-sm font-bold uppercase tracking-wider text-blue-700">
@@ -115,11 +223,13 @@ export default function CommuterGuide() {
                 title="Plan Your Trip"
                 text="Use our real-time trip planner or mobile app to find the quickest route to your destination. Enter your starting point and goal to see available transport options."
               />
+
               <GuideStep
                 number="2"
                 title="Arrive Early"
                 text="We recommend arriving at your stop or station at least 5 minutes before the scheduled departure. Real-time updates are available on every platform display."
               />
+
               <GuideStep
                 number="3"
                 title="Boarding & Exiting"
@@ -135,6 +245,7 @@ export default function CommuterGuide() {
           />
         </section>
 
+        {/* Fares */}
         <section className="rounded-2xl bg-[#10182b] p-7 text-white shadow-sm sm:p-9">
           <h2 className="text-3xl font-extrabold tracking-tight">
             Simple, Fair Fares
@@ -164,47 +275,79 @@ export default function CommuterGuide() {
                   <span className="text-[27px] font-extrabold tracking-tight">
                     {fare.fare}
                   </span>
-                  <span className="text-sm text-slate-400">{fare.label}</span>
+
+                  <span className="text-sm text-slate-400">
+                    {fare.label}
+                  </span>
                 </div>
               </article>
             ))}
           </div>
         </section>
 
+        {/* Network Maps */}
         <section>
-          <div className="mb-5 flex items-end justify-between gap-4">
+          <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-2xl font-bold">Network Maps</h2>
+              <h2 className="text-2xl font-bold">
+                Network Maps
+              </h2>
+
               <p className="mt-1 text-sm text-slate-500">
                 Explore our interconnected rail and bus networks across the
                 city.
               </p>
             </div>
 
-            <button className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold shadow-sm">
+            <button
+              onClick={downloadMapsAsPDF}
+              className="inline-flex w-fit items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold shadow-sm transition hover:bg-slate-50 active:scale-95"
+            >
               <DownloadIcon className="h-4 w-4" />
               Download PDF Maps
             </button>
           </div>
 
           <div className="grid gap-5 md:grid-cols-2">
-            <figure className="relative overflow-hidden rounded-lg">
+            {/* System Rail Map */}
+            <figure
+              className="group relative cursor-pointer overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-slate-100"
+              onClick={() => setSelectedMap("rail")}
+            >
               <img
                 src={railwayMap.src}
                 alt="System rail map"
-                className="h-60 w-full object-cover"
+                className="h-auto max-h-[500px] w-full object-contain transition duration-300 group-hover:scale-[1.02]"
               />
+
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-900/0 transition duration-300 group-hover:bg-slate-900/20">
+                <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-800 opacity-0 shadow-lg transition duration-300 group-hover:opacity-100">
+                  View Map
+                </span>
+              </div>
+
               <figcaption className="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1.5 text-xs font-bold shadow">
                 System Rail Map
               </figcaption>
             </figure>
 
-            <figure className="relative overflow-hidden rounded-lg">
+            {/* Metro Bus Network */}
+            <figure
+              className="group relative cursor-pointer overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-slate-100"
+              onClick={() => setSelectedMap("bus")}
+            >
               <img
                 src={busRouteMap.src}
                 alt="Metro bus network map"
-                className="h-60 w-full object-cover"
+                className="h-auto max-h-[500px] w-full object-contain transition duration-300 group-hover:scale-[1.02]"
               />
+
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-900/0 transition duration-300 group-hover:bg-slate-900/20">
+                <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-800 opacity-0 shadow-lg transition duration-300 group-hover:opacity-100">
+                  View Map
+                </span>
+              </div>
+
               <figcaption className="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1.5 text-xs font-bold shadow">
                 Metro Bus Network
               </figcaption>
@@ -212,13 +355,17 @@ export default function CommuterGuide() {
           </div>
         </section>
 
+        {/* Safety */}
         <section className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
           <div className="grid gap-7 md:grid-cols-[1.1fr_2fr]">
             <div>
-              <h2 className="text-xl font-bold">Your Safety is Our Priority</h2>
+              <h2 className="text-xl font-bold">
+                Your Safety is Our Priority
+              </h2>
 
               <div className="mt-4 flex gap-3 rounded-lg bg-amber-50 p-4 text-sm leading-6 text-amber-800">
                 <AlertIcon className="mt-0.5 h-5 w-5 shrink-0" />
+
                 <p>
                   We maintain a fleet-wide surveillance system and 24/7
                   security dispatch to ensure every journey is safe.
@@ -234,6 +381,7 @@ export default function CommuterGuide() {
                   <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
                     Emergency Line
                   </p>
+
                   <p className="mt-0.5 text-lg font-extrabold tracking-tight text-slate-900">
                     1-800-RUTA-SEC
                   </p>
@@ -246,14 +394,17 @@ export default function CommuterGuide() {
                 title="CCTV Monitoring"
                 text="All stations and vehicles are equipped with high-definition cameras monitored 24/7."
               />
+
               <Safety
                 title="Well-Lit Areas"
                 text="We maintain high-intensity lighting in all boarding zones and walkway areas."
               />
+
               <Safety
                 title="Trained Police"
                 text="Uniformed and plainclothes officers patrol our network at all times."
               />
+
               <Safety
                 title="Passenger Assistance"
                 text="Yellow call boxes are located on every platform for immediate assistance."
@@ -262,19 +413,59 @@ export default function CommuterGuide() {
           </div>
         </section>
 
+        {/* Footer */}
         <footer className="border-t border-slate-200 py-8 text-center">
-          <p className="text-sm text-slate-400">Was this guide helpful?</p>
+          <p className="text-sm text-slate-400">
+            Was this guide helpful?
+          </p>
 
           <div className="mt-3 flex justify-center gap-3">
             <button className="rounded-md border border-slate-200 bg-white px-4 py-2 text-sm">
               Yes, it was
             </button>
+
             <button className="rounded-md border border-slate-200 bg-white px-4 py-2 text-sm">
               Needs more info
             </button>
           </div>
         </footer>
       </div>
+
+      {/* Large Map Viewer */}
+      {selectedMap && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setSelectedMap(null)}
+        >
+          <div
+            className="relative flex max-h-[95vh] max-w-7xl items-center justify-center overflow-auto rounded-xl bg-white p-3 shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedMap(null)}
+              className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-white text-2xl font-bold text-slate-700 shadow-md transition hover:bg-slate-100"
+              aria-label="Close map"
+            >
+              ×
+            </button>
+
+            <img
+              src={
+                selectedMap === "rail"
+                  ? railwayMap.src
+                  : busRouteMap.src
+              }
+              alt={
+                selectedMap === "rail"
+                  ? "System rail map"
+                  : "Metro bus network map"
+              }
+              className="max-h-[90vh] w-auto max-w-full object-contain"
+            />
+          </div>
+        </div>
+      )}
     </main>
   );
 }
@@ -295,26 +486,42 @@ function GuideStep({
       </span>
 
       <div>
-        <h3 className="text-base font-bold">{title}</h3>
-        <p className="mt-1 text-sm leading-6 text-slate-500">{text}</p>
+        <h3 className="text-base font-bold">
+          {title}
+        </h3>
+
+        <p className="mt-1 text-sm leading-6 text-slate-500">
+          {text}
+        </p>
       </div>
     </div>
   );
 }
 
-function Safety({ title, text }: { title: string; text: string }) {
+function Safety({
+  title,
+  text,
+}: {
+  title: string;
+  text: string;
+}) {
   return (
     <div>
       <h3 className="flex items-center gap-2 text-sm font-bold text-slate-800">
         <ShieldCheckIcon className="h-5 w-5 text-blue-600" />
         {title}
       </h3>
-      <p className="mt-1 text-sm leading-6 text-slate-500">{text}</p>
+
+      <p className="mt-1 text-sm leading-6 text-slate-500">
+        {text}
+      </p>
     </div>
   );
 }
 
-type IconProps = { className?: string };
+type IconProps = {
+  className?: string;
+};
 
 function IconFrame({
   children,
