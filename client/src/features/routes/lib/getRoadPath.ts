@@ -1,11 +1,11 @@
 export async function getRoadPath(
   waypoints: [number, number][]
 ): Promise<[number, number][]> {
+  if (waypoints.length < 2) return waypoints;
+
   try {
     const coords = waypoints.map(([lat, lng]) => `${lng},${lat}`).join(';');
     const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
-
-    console.log('[OSRM] Fetching:', url);
 
     const res = await fetch(url);
 
@@ -15,7 +15,6 @@ export async function getRoadPath(
     }
 
     const data = await res.json();
-    console.log('[OSRM] Response:', data);
 
     if (data.code !== 'Ok' || !data.routes?.length) {
       console.error('[OSRM] No route found:', data.code, data.message);

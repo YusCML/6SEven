@@ -32,40 +32,52 @@ model User {
   @@map("users")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
-}
-
 model Route {
-  id          String    @id @default(cuid())
-  routeNumber Int       @unique
-  title       String
-  duration    String
+  id          String @id @default(uuid()) @db.Uuid
+
+  routeNumber Int @unique
+
+  title String
+
+  duration String
+
   description String
-  color       String
-  fare        String
-  distance    String
-  category    String
-  path        Json      // [[lat, lng], [lat, lng], ...]
-  segments    Segment[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+
+  color String
+
+  fare String
+
+  distance String
+
+  category String
+
+  path Json
+
+  segments Segment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("routes")
 }
 
 model Segment {
-  id       String  @id @default(cuid())
-  mode     String
-  from     String
-  to       String
+  id String @id @default(uuid()) @db.Uuid
+
+  mode String
+
+  from String
+
+  to String
+
   duration String
+
   distance String?
-  order    Int
-  route    Route   @relation(fields: [routeId], references: [id], onDelete: Cascade)
-  routeId  String
+
+  order Int
+
+  route   Route  @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  routeId String @db.Uuid
+
+  @@map("route_segments")
 }

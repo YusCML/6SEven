@@ -2,6 +2,7 @@ import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import authRoutes from '@/routes/auth.routes';
+import routeRoutes from '@/routes/routes.routes';
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
@@ -14,6 +15,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/routes', routeRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not found.' });

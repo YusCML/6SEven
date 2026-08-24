@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import 'dotenv/config';
+import { prisma } from '@/db/prisma';
 
 const routes = [
   {
@@ -379,23 +378,28 @@ const routes = [
 
 async function main() {
   console.log(`Seeding ${routes.length} routes...`);
-  for (const r of routes) {
-    const { segments, ...routeData } = r;
+
+  for (const { segments, ...routeData } of routes) {
     await prisma.route.upsert({
-      where: { routeNumber: r.routeNumber },
-      update: {},
+      where: { routeNumber: routeData.routeNumber },
+      update: {
+        ...routeData,
+        segments: { deleteMany: {}, create: segments },
+      },
       create: {
         ...routeData,
         segments: { create: segments },
       },
     });
   }
-  console.log('Done.');
+
+  const total = await prisma.route.count();
+  console.log(`Done. ${total} routes in the database.`);
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
+  .catch((error) => {
+    console.error(error);
     process.exit(1);
   })
   .finally(async () => {

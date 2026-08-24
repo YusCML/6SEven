@@ -23,29 +23,28 @@ interface RouteMapProps {
 export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
   const [resolvedPaths, setResolvedPaths] = useState<Record<string, [number, number][]>>({});
 
+  const selectedRoute = routes.find((route) => route.id === selectedRouteId);
+
   useEffect(() => {
+    if (!selectedRoute || resolvedPaths[selectedRoute.id]) return;
+
     let cancelled = false;
 
-    async function resolveAll() {
-      const entries = await Promise.all(
-        routes.map(async (route) => {
-          const path = await getRoadPath(route.path);
-          return [route.id, path] as const;
-        })
-      );
+    async function resolveSelected(route: RouteData) {
+      const path = await getRoadPath(route.path);
       if (!cancelled) {
-        setResolvedPaths(Object.fromEntries(entries));
+        setResolvedPaths((current) => ({ ...current, [route.id]: path }));
       }
     }
 
-    resolveAll();
+    resolveSelected(selectedRoute);
+
     return () => {
       cancelled = true;
     };
-  }, [routes]);
+  }, [selectedRoute, resolvedPaths]);
 
-  const selectedRoute = routes.find((r) => r.id === selectedRouteId);
-  const selectedPath = resolvedPaths[selectedRouteId] ?? selectedRoute?.path ?? [];
+  const selectedPath = (selectedRoute && resolvedPaths[selectedRoute.id]) ?? selectedRoute?.path ?? [];
 
   return (
     <MapContainer center={ILOILO_CENTER} zoom={13} scrollWheelZoom className="h-full w-full">
@@ -57,6 +56,9 @@ export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
       {routes.map((route) => {
         const isSelected = route.id === selectedRouteId;
         const path = resolvedPaths[route.id] ?? route.path;
+
+        if (path.length === 0) return null;
+
         return (
           <Polyline
             key={route.id}

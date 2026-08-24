@@ -1,35 +1,36 @@
 import { useEffect, useState } from 'react';
+import { errorMessage, getJson } from '@/lib/http';
 import type { RouteData } from '@/types/route';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+type RoutesState = {
+  routes: RouteData[];
+  loading: boolean;
+  error: string | null;
+};
 
-export function useRoutes() {
-  const [routes, setRoutes] = useState<RouteData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export function useRoutes(): RoutesState {
+  const [state, setState] = useState<RoutesState>({ routes: [], loading: true, error: null });
 
   useEffect(() => {
     let cancelled = false;
 
-    async function fetchRoutes() {
+    async function loadRoutes() {
       try {
-        setLoading(true);
-        const res = await fetch(`${API_URL}/api/routes`);
-        if (!res.ok) throw new Error(`API error: ${res.status}`);
-        const data = await res.json();
-        if (!cancelled) setRoutes(data);
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load routes');
-      } finally {
-        if (!cancelled) setLoading(false);
+        const routes = await getJson<RouteData[]>('/api/routes');
+        if (!cancelled) setState({ routes, loading: false, error: null });
+      } catch (error) {
+        if (!cancelled) {
+          setState({ routes: [], loading: false, error: errorMessage(error, 'Failed to load routes.') });
+        }
       }
     }
 
-    fetchRoutes();
+    loadRoutes();
+
     return () => {
       cancelled = true;
     };
   }, []);
 
-  return { routes, loading, error };
+  return state;
 }

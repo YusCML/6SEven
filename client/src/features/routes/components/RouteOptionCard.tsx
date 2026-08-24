@@ -1,10 +1,15 @@
-import type { RouteData } from '@/types/route';
+import type { RouteCategory, RouteData } from '@/types/route';
 
 interface RouteOptionCardProps {
   route: RouteData;
   selected?: boolean;
   onClick?: () => void;
 }
+
+const CATEGORY_LABELS: Record<RouteCategory, string> = {
+  recommended: '⚡ Recommended',
+  loop: '🔁 Loop',
+};
 
 const getModeIcon = (mode: string) => {
   const icons: Record<string, string> = {
@@ -26,12 +31,12 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
-          {route.category && (
-            <span className="inline-block px-2 py-1 text-xs font-bold rounded-full mb-1 bg-slate-100 text-slate-900">
-              {route.category === 'recommended' && '⚡ Recommended'}
-            </span>
-          )}
-          <h3 className="font-bold text-slate-900 text-sm">{route.title}</h3>
+          <span className="inline-block px-2 py-1 text-xs font-bold rounded-full mb-1 bg-slate-100 text-slate-900">
+            {CATEGORY_LABELS[route.category]}
+          </span>
+          <h3 className="font-bold text-slate-900 text-sm">
+            <span className="text-slate-400">#{route.routeNumber}</span> {route.title}
+          </h3>
         </div>
         <div className="ml-2 text-right">
           <div className="text-lg font-black text-slate-900">{route.duration}</div>

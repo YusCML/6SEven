@@ -1,5 +1,7 @@
+export type RouteCategory = 'recommended' | 'loop';
+
 export interface JourneySegment {
-  mode: string; // "Jeepney", "Tricycle", "MRT", "Walk", etc.
+  mode: string;
   from: string;
   to: string;
   duration: string;
@@ -8,6 +10,7 @@ export interface JourneySegment {
 
 export interface RouteData {
   id: string;
+  routeNumber: number;
   title: string;
   duration: string;
   description: string;
@@ -15,6 +18,6 @@ export interface RouteData {
   path: [number, number][];
   fare: string;
   distance: string;
-  category?: 'recommended';
+  category: RouteCategory;
   segments: JourneySegment[];
 }

@@ -1,29 +1,37 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import PageMeta from '@/components/PageMeta';
 import TextField from '@/components/ui/TextField';
 import MapLegend from '@/features/routes/components/MapLegend';
 import RouteOptionCard from '@/features/routes/components/RouteOptionCard';
 import { useRoutes } from '@/hooks/useRoutes';
+import type { RouteCategory } from '@/types/route';
 
 const RouteMap = dynamic(() => import('@/features/routes/components/RouteMap'), {
   ssr: false,
   loading: () => <p className="text-slate-400 font-mono text-sm">Loading map…</p>,
 });
 
-type FilterTab = 'recommended';
+type FilterTab = 'all' | RouteCategory;
+
+const FILTER_TABS: { id: FilterTab; label: string }[] = [
+  { id: 'all', label: 'All Routes' },
+  { id: 'recommended', label: '⚡ Recommended' },
+  { id: 'loop', label: '🔁 Loop' },
+];
 
 export default function RouteExplorer() {
   const { routes, loading, error } = useRoutes();
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
-  const [filterTab, setFilterTab] = useState<FilterTab>('recommended');
+  const [filterTab, setFilterTab] = useState<FilterTab>('all');
 
-  const activeId = selectedRouteId ?? routes[0]?.id ?? null;
-  const filteredRoutes = filterTab === 'recommended' ? routes : routes.filter((r) => r.category === filterTab);
-  const selectedRoute = routes.find((r) => r.id === activeId);
+  const filteredRoutes = useMemo(
+    () => (filterTab === 'all' ? routes : routes.filter((route) => route.category === filterTab)),
+    [routes, filterTab],
+  );
 
-  if (loading) return <div className="p-6 text-slate-400">Loading routes…</div>;
-  if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
+  const activeId =
+    filteredRoutes.find((route) => route.id === selectedRouteId)?.id ?? filteredRoutes[0]?.id ?? null;
 
   return (
     <div className="h-[calc(100vh-73px)] flex flex-col md:flex-row overflow-hidden">
@@ -37,10 +45,37 @@ export default function RouteExplorer() {
         </div>
 
         <div className="px-6 pt-4 pb-2">
-          <h3 className="font-bold text-sm text-slate-900 mb-3">Recommended Routes</h3>
+          <h3 className="font-bold text-sm text-slate-900 mb-3">
+            {loading ? 'Loading routes…' : `${filteredRoutes.length} Routes`}
+          </h3>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {FILTER_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setFilterTab(tab.id)}
+                className={`px-3 py-1.5 text-xs font-bold rounded-full transition ${
+                  filterTab === tab.id
+                    ? 'bg-slate-900 text-white'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6">
+          {error && (
+            <p className="py-4 text-sm text-red-600">
+              Could not load routes: {error}
+            </p>
+          )}
+
+          {!loading && !error && filteredRoutes.length === 0 && (
+            <p className="py-4 text-sm text-slate-500">No routes in this category yet.</p>
+          )}
+
           <div className="space-y-3 pb-4">
             {filteredRoutes.map((route) => (
               <RouteOptionCard
@@ -55,7 +90,7 @@ export default function RouteExplorer() {
       </div>
       <div className="flex-grow bg-slate-100 relative">
         <MapLegend />
-        {activeId && <RouteMap routes={routes} selectedRouteId={activeId} />}
+        {activeId && <RouteMap routes={filteredRoutes} selectedRouteId={activeId} />}
       </div>
     </div>
   );
