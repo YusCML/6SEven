@@ -15,7 +15,7 @@ export type LandingStat = {
 };
 
 export const landingStats: LandingStat[] = [
-  { label: 'Routes Mapped', value: '482', Icon: RouteIcon, tone: 'brand' },
+  { label: 'Routes Mapped', value: '25', Icon: RouteIcon, tone: 'brand' },
   { label: 'Jeepney Fare', value: '₱13 base', Icon: TicketIcon, tone: 'success' },
   { label: 'Peak Hours', value: '7–9 AM', Icon: ClockIcon, tone: 'warning' },
   { label: 'Weather', value: '28°C Clear', Icon: CloudSunIcon, tone: 'accent' },

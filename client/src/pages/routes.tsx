@@ -4,62 +4,26 @@ import PageMeta from '@/components/PageMeta';
 import TextField from '@/components/ui/TextField';
 import MapLegend from '@/features/routes/components/MapLegend';
 import RouteOptionCard from '@/features/routes/components/RouteOptionCard';
-import type { RouteData } from '@/types/route';
+import { useRoutes } from '@/hooks/useRoutes';
 
 const RouteMap = dynamic(() => import('@/features/routes/components/RouteMap'), {
   ssr: false,
   loading: () => <p className="text-slate-400 font-mono text-sm">Loading map…</p>,
 });
 
-const ROUTES: RouteData[] = [
-  {
-    id: 'jaro-business-park',
-    title: 'Jaro - Iloilo Business Park',
-    duration: '22 mins',
-    description: 'Via Diversion Road, light traffic most hours.',
-    color: '#16a34a',
-    fare: '₱12.00',
-    distance: '1.2 km',
-    category: 'recommended',
-    path: [
-      [10.7307, 122.5634],
-      [10.7265, 122.5580],
-      [10.7238, 122.5510],
-      [10.7215, 122.5445],
-    ],
-    segments: [
-      { mode: 'Jeepney', from: 'Jaro Terminal', to: 'Diversion Rd', duration: '12 mins' },
-      { mode: 'Tricycle', from: 'Diversion Rd', to: 'Business Park', duration: '5 mins', distance: '0.4 km' },
-    ],
-  },
-  {
-    id: 'smcity-robinsons',
-    title: 'SM City Iloilo - Robinsons Place',
-    duration: '30 mins',
-    description: 'Via General Luna St, moderate traffic near downtown.',
-    color: '#f59e0b',
-    fare: '₱18.00',
-    distance: '2.1 km',
-    category: 'recommended',
-    path: [
-      [10.6994, 122.5645],
-      [10.6978, 122.5680],
-      [10.6963, 122.5726],
-    ],
-    segments: [
-      { mode: 'Jeepney', from: 'Main Terminal', to: 'SM City', duration: '22 mins' },
-    ],
-  },
-];
-
-type FilterTab = 'recommended' ;
+type FilterTab = 'recommended';
 
 export default function RouteExplorer() {
-  const [selectedRouteId, setSelectedRouteId] = useState(ROUTES[0].id);
+  const { routes, loading, error } = useRoutes();
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
   const [filterTab, setFilterTab] = useState<FilterTab>('recommended');
 
-  const filteredRoutes = filterTab === 'recommended' ? ROUTES : ROUTES.filter((r) => r.category === filterTab);
-  const selectedRoute = ROUTES.find((r) => r.id === selectedRouteId);
+  const activeId = selectedRouteId ?? routes[0]?.id ?? null;
+  const filteredRoutes = filterTab === 'recommended' ? routes : routes.filter((r) => r.category === filterTab);
+  const selectedRoute = routes.find((r) => r.id === activeId);
+
+  if (loading) return <div className="p-6 text-slate-400">Loading routes…</div>;
+  if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
 
   return (
     <div className="h-[calc(100vh-73px)] flex flex-col md:flex-row overflow-hidden">
@@ -74,21 +38,6 @@ export default function RouteExplorer() {
 
         <div className="px-6 pt-4 pb-2">
           <h3 className="font-bold text-sm text-slate-900 mb-3">Recommended Routes</h3>
-          <div className="flex gap-2 mb-4">
-            {(['recommended'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setFilterTab(tab)}
-                className={`px-3 py-1.5 text-xs font-bold rounded-full transition ${
-                  filterTab === tab
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                {tab === 'recommended' && 'Recommended'}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6">
@@ -97,36 +46,16 @@ export default function RouteExplorer() {
               <RouteOptionCard
                 key={route.id}
                 route={route}
-                selected={route.id === selectedRouteId}
+                selected={route.id === activeId}
                 onClick={() => setSelectedRouteId(route.id)}
               />
             ))}
           </div>
         </div>
-
-        {selectedRoute && (
-          <div className="border-t border-slate-200 p-4 bg-slate-50">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-600">🟠</span>
-                <span className="text-xs text-slate-600">15 others are currently on this route</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-amber-600">⚠️</span>
-                <span className="text-xs text-amber-600 font-medium">Busy Alert: Carry Umbrella</span>
-              </div>
-              <button className="px-3 py-1.5 text-xs font-bold bg-slate-900 text-white rounded-lg hover:bg-slate-800">
-                Share Trip
-              </button>
-            </div>
-          </div>
-        )}
       </div>
       <div className="flex-grow bg-slate-100 relative">
         <MapLegend />
-        <RouteMap routes={ROUTES} selectedRouteId={selectedRouteId} />
+        {activeId && <RouteMap routes={routes} selectedRouteId={activeId} />}
       </div>
     </div>
   );
