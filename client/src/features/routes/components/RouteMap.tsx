@@ -53,24 +53,17 @@ export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {routes.map((route) => {
-        const isSelected = route.id === selectedRouteId;
-        const path = resolvedPaths[route.id] ?? route.path;
-
-        if (path.length === 0) return null;
-
-        return (
-          <Polyline
-            key={route.id}
-            positions={path}
-            pathOptions={{
-              color: route.color,
-              weight: isSelected ? 6 : 3,
-              opacity: isSelected ? 1 : 0.35,
-            }}
-          />
-        );
-      })}
+      {selectedRoute && selectedPath.length > 0 && (
+        <Polyline
+          key={selectedRoute.id}
+          positions={selectedPath}
+          pathOptions={{
+            color: selectedRoute.color,
+            weight: 6,
+            opacity: 1,
+          }}
+        />
+      )}
 
       {selectedRoute && selectedPath.length > 0 && (
         <>
