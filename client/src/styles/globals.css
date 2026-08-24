@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  --color-white: oklch(0.253 0 0);
+  --color-slate-50: oklch(0.285 0 0);
+  --color-slate-100: oklch(0.318 0 0);
+  --color-slate-200: oklch(0.352 0 0);
+  --color-slate-300: oklch(0.44 0 0);
+  --color-slate-400: oklch(0.58 0 0);
+  --color-slate-500: oklch(0.68 0 0);
+  --color-slate-600: oklch(0.8 0 0);
+  --color-slate-700: oklch(0.88 0 0);
+  --color-slate-800: oklch(0.93 0 0);
+  --color-slate-900: oklch(0.967 0 0);
+  --color-slate-950: oklch(1 0 0);
+}
+
+@theme {
+  --color-ink: oklch(0.129 0.042 264.695);
+  --color-paper: oklch(1 0 0);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--color-white);
+    color: var(--color-slate-900);
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-slate-900);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-slate-900);
+    color: white;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Scrollbars: thin thumb, no stepper arrows. Deliberately outside @layer so
+   nothing can reorder these below the browser defaults. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-300) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-slate-300);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-slate-400);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment,
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement,
+::-webkit-scrollbar-corner {
+  display: none;
+  width: 0;
+  height: 0;
+}
