@@ -38,7 +38,7 @@ function failure(res: Response, message: string, mode: OAuthMode = 'signin') {
     : redirectWith(res, '/auth/login', { error: message });
 }
 
-async function beginOAuth(req: Request, res: Response, mode: OAuthMode, returnTo: string) {
+async function beginOAuth(res: Response, mode: OAuthMode, returnTo: string) {
   try {
     const config = readGoogleConfig();
     const { verifier, challenge } = createPkcePair();
@@ -57,7 +57,7 @@ async function beginOAuth(req: Request, res: Response, mode: OAuthMode, returnTo
 export async function googleStartController(req: Request, res: Response) {
   noStore(res);
 
-  return beginOAuth(req, res, 'signin', sanitizeReturnTo(req.query.returnTo));
+  return beginOAuth(res, 'signin', sanitizeReturnTo(req.query.returnTo));
 }
 
 export async function googleLinkStartController(req: Request, res: Response) {
@@ -67,7 +67,7 @@ export async function googleLinkStartController(req: Request, res: Response) {
 
   if (!resolved?.user) return unauthorized(res, 'Sign in before linking a Google account.');
 
-  return beginOAuth(req, res, 'link', LINK_RETURN_TO);
+  return beginOAuth(res, 'link', LINK_RETURN_TO);
 }
 
 export async function googleCallbackController(req: Request, res: Response) {

@@ -1,21 +1,12 @@
 import { createHash, randomBytes } from 'node:crypto';
 import type { Request, Response } from 'express';
-import {
-  createSessionRecord,
-  deleteSession,
-  deleteSessionsForUser,
-  findSession,
-  type SessionRecord,
-} from '@/repositories/sessionStore';
+import { createSessionRecord, deleteSession, findSession, type SessionRecord } from '@/repositories/sessionStore';
 import { findUserById, toPublicUser, type UserRecord } from '@/repositories/userStore';
 import type { SessionPayload } from '@shared/types/session';
 
-export const SESSION_COOKIE_NAME = 'ruta_session';
-
+const SESSION_COOKIE_NAME = 'ruta_session';
 const TOKEN_BYTES = 32;
-const AUTH_SESSION_DAYS = 30;
-const GUEST_SESSION_DAYS = 30;
-const DAY_IN_SECONDS = 60 * 60 * 24;
+const SESSION_MS = 30 * 24 * 60 * 60 * 1000;
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -28,22 +19,9 @@ function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex');
 }
 
-function expiryFromNow(days: number): string {
-  return new Date(Date.now() + days * DAY_IN_SECONDS * 1000).toISOString();
-}
-
-function writeSessionCookie(res: Response, token: string, expiresAt: string) {
-  res.cookie(SESSION_COOKIE_NAME, token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: isProduction,
-    path: '/',
-    maxAge: Math.max(0, Date.parse(expiresAt) - Date.now()),
-  });
-}
-
 function readToken(req: Request): string | null {
   const token = req.cookies?.[SESSION_COOKIE_NAME];
+
   return token && token.trim() ? token : null;
 }
 
@@ -62,68 +40,56 @@ async function loadSession(req: Request): Promise<SessionRecord | null> {
   return session;
 }
 
-async function issueSession(
-  res: Response,
-  input: { userId: string | null; guestName: string | null; days: number },
-): Promise<SessionRecord> {
+async function issueSession(res: Response, userId: string | null): Promise<SessionRecord> {
   const token = randomBytes(TOKEN_BYTES).toString('base64url');
-  const expiresAt = expiryFromNow(input.days);
+  const expiresAt = new Date(Date.now() + SESSION_MS).toISOString();
 
-  const session = await createSessionRecord({
-    id: hashToken(token),
-    userId: input.userId,
-    guestName: input.guestName,
-    expiresAt,
+  const session = await createSessionRecord({ id: hashToken(token), userId, expiresAt });
+
+  res.cookie(SESSION_COOKIE_NAME, token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: isProduction,
+    path: '/',
+    maxAge: SESSION_MS,
   });
 
-  writeSessionCookie(res, token, expiresAt);
   return session;
 }
 
-export async function resolveSession(req: Request, res: Response): Promise<ResolvedSession> {
-  const existing = await loadSession(req);
+async function replaceSession(req: Request, res: Response, userId: string | null): Promise<SessionRecord> {
+  const previous = await loadSession(req);
+  if (previous) await deleteSession(previous.id);
 
-  if (existing) {
-    if (!existing.userId) return { session: existing, user: null };
-
-    const user = await findUserById(existing.userId);
-
-    if (user) return { session: existing, user };
-
-    await deleteSession(existing.id);
-  }
-
-  const session = await issueSession(res, { userId: null, guestName: null, days: GUEST_SESSION_DAYS });
-
-  return { session, user: null };
+  return issueSession(res, userId);
 }
 
 export async function getSession(req: Request): Promise<ResolvedSession | null> {
   const session = await loadSession(req);
   if (!session) return null;
-
   if (!session.userId) return { session, user: null };
 
   const user = await findUserById(session.userId);
-  return user ? { session, user } : null;
+  if (user) return { session, user };
+
+  await deleteSession(session.id);
+
+  return null;
 }
 
-export async function startUserSession(
-  req: Request,
-  res: Response,
-  userId: string,
-): Promise<SessionRecord> {
-  const previous = await loadSession(req);
-  if (previous) await deleteSession(previous.id);
+export async function resolveSession(req: Request, res: Response): Promise<ResolvedSession> {
+  const existing = await getSession(req);
+  if (existing) return existing;
 
-  return issueSession(res, { userId, guestName: null, days: AUTH_SESSION_DAYS });
+  return { session: await issueSession(res, null), user: null };
 }
 
-export async function endUserSession(req: Request, res: Response): Promise<SessionRecord> {
-  const previous = await loadSession(req);
-  if (previous) await deleteSession(previous.id);
+export function startUserSession(req: Request, res: Response, userId: string): Promise<SessionRecord> {
+  return replaceSession(req, res, userId);
+}
 
-  return issueSession(res, { userId: null, guestName: null, days: GUEST_SESSION_DAYS });
+export function endUserSession(req: Request, res: Response): Promise<SessionRecord> {
+  return replaceSession(req, res, null);
 }
 
 export function toSessionPayload({ session, user }: ResolvedSession): SessionPayload {
@@ -139,7 +105,7 @@ export function toSessionPayload({ session, user }: ResolvedSession): SessionPay
   return {
     status: 'guest',
     user: null,
-    guest: { name: session.guestName ?? 'Guest' },
+    guest: { name: 'Guest' },
     expiresAt: session.expiresAt,
   };
 }

@@ -7,31 +7,29 @@ import {
   ValidationError,
 } from '@/errors';
 
-export type ApiError = { error: string };
-
 export function noStore(res: Response) {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
 }
 
 export function badRequest(res: Response, message: string) {
-  return res.status(400).json({ error: message } satisfies ApiError);
+  return res.status(400).json({ error: message });
 }
 
 export function unauthorized(res: Response, message = 'You must be signed in to do that.') {
-  return res.status(401).json({ error: message } satisfies ApiError);
+  return res.status(401).json({ error: message });
 }
 
 export function notFound(res: Response, message = 'Not found.') {
-  return res.status(404).json({ error: message } satisfies ApiError);
+  return res.status(404).json({ error: message });
 }
 
 export function conflict(res: Response, message: string) {
-  return res.status(409).json({ error: message } satisfies ApiError);
+  return res.status(409).json({ error: message });
 }
 
 export function serverError(res: Response, error: unknown, context: string) {
   console.error(`[${context}]`, error);
-  return res.status(500).json({ error: 'Something went wrong. Please try again.' } satisfies ApiError);
+  return res.status(500).json({ error: 'Something went wrong. Please try again.' });
 }
 
 export function handleError(res: Response, error: unknown, context: string) {

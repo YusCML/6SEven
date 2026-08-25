@@ -55,21 +55,21 @@ export function toPublicUser(user: UserRecord): PublicUser {
   };
 }
 
+function prismaCode(error: unknown): string {
+  if (typeof error !== 'object' || error === null || !('code' in error)) return '';
+
+  return (error as { code?: string }).code ?? '';
+}
+
 function isUniqueViolation(error: unknown): boolean {
-  return typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'P2002';
+  return prismaCode(error) === 'P2002';
 }
 
-function conflictingField(error: unknown): string {
-  const target = (error as { meta?: { target?: unknown } } | null)?.meta?.target;
-
-  if (Array.isArray(target)) return target.join(',');
-  if (typeof target === 'string') return target;
-
-  return '';
-}
 
 function duplicateErrorFor(error: unknown): DomainError {
-  return conflictingField(error).includes('username') ? new DuplicateUsernameError() : new DuplicateEmailError();
+  const target = String((error as { meta?: { target?: unknown } })?.meta?.target ?? '');
+
+  return target.includes('username') ? new DuplicateUsernameError() : new DuplicateEmailError();
 }
 
 export async function findUserById(id: string): Promise<UserRecord | null> {
@@ -170,9 +170,7 @@ export async function updateUser(
     return toRecord(user);
   } catch (error) {
     if (isUniqueViolation(error)) throw duplicateErrorFor(error);
-    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'P2025') {
-      throw new NotFoundError('User not found.');
-    }
+    if (prismaCode(error) === 'P2025') throw new NotFoundError('User not found.');
     throw error;
   }
 }

@@ -75,10 +75,7 @@ export function validateAvatarDataUrl(dataUrl: string): string | null {
     return 'Profile pictures must be a PNG, JPEG or WebP image.';
   }
 
-  const padding = base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0;
-  const bytes = (base64.length * 3) / 4 - padding;
-
-  if (bytes > AVATAR_MAX_BYTES) {
+  if (Buffer.from(base64, 'base64').length > AVATAR_MAX_BYTES) {
     return `That image is too large. Keep it under ${Math.round(AVATAR_MAX_BYTES / 1024)}KB.`;
   }
 

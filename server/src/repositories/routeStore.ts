@@ -74,11 +74,9 @@ export function toRecord(route: RouteWithSegments): RouteRecord {
   };
 }
 
-const withSegments = { segments: { orderBy: { order: 'asc' } } } as const;
-
 export async function listRoutes(): Promise<RouteRecord[]> {
   const routes = await prisma.route.findMany({
-    include: withSegments,
+    include: { segments: { orderBy: { order: 'asc' } } },
     orderBy: { routeNumber: 'asc' },
   });
 
@@ -86,12 +84,12 @@ export async function listRoutes(): Promise<RouteRecord[]> {
 }
 
 async function findRouteById(id: string): Promise<RouteRecord | null> {
-  const route = await prisma.route.findUnique({ where: { id }, include: withSegments });
+  const route = await prisma.route.findUnique({ where: { id }, include: { segments: { orderBy: { order: 'asc' } } } });
   return route ? toRecord(route) : null;
 }
 
 async function findRouteByNumber(routeNumber: number): Promise<RouteRecord | null> {
-  const route = await prisma.route.findUnique({ where: { routeNumber }, include: withSegments });
+  const route = await prisma.route.findUnique({ where: { routeNumber }, include: { segments: { orderBy: { order: 'asc' } } } });
   return route ? toRecord(route) : null;
 }
 
