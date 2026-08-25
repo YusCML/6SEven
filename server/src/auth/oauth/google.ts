@@ -20,10 +20,6 @@ export type GoogleConfig = {
   redirectUri: string;
 };
 
-export function isGoogleConfigured(): boolean {
-  return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REDIRECT_URI);
-}
-
 export function readGoogleConfig(): GoogleConfig {
   const clientId = process.env.GOOGLE_CLIENT_ID ?? '';
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET ?? '';

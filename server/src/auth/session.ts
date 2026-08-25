@@ -50,20 +50,6 @@ function writeSessionCookie(res: Response, token: string, expiresAt: string) {
   );
 }
 
-export function clearSessionCookie(res: Response) {
-  appendCookie(
-    res,
-    serializeCookie(SESSION_COOKIE_NAME, '', {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: isProduction,
-      path: '/',
-      maxAge: 0,
-      expires: new Date(0),
-    }),
-  );
-}
-
 function readToken(req: Request): string | null {
   const token = req.cookies?.[SESSION_COOKIE_NAME];
   return token && token.trim() ? token : null;

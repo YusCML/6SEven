@@ -62,6 +62,7 @@ processes, communicating over HTTP.
 | Tool | Version | Why |
 | --- | --- | --- |
 | Express | 5.1 | HTTP server and routing |
+| bcrypt | 6.0 | Password hashing |
 | Prisma | 7.9 | ORM and schema management |
 | `@prisma/adapter-pg` | 7.9 | Postgres driver adapter |
 | Neon Postgres | — | Serverless database |
@@ -72,10 +73,10 @@ processes, communicating over HTTP.
 
 ### Notably absent
 
-No authentication library. Sessions, password hashing and the Google OAuth flow
-are built on Node's own `crypto` module — scrypt for passwords, SHA-256 for
-session tokens, PKCE for OAuth. There is no `next-auth`, no `passport`, no
-`bcrypt`, and no `jsonwebtoken`.
+No authentication library. Passwords are hashed with `bcrypt`; sessions and the
+Google OAuth flow are built on Node's own `crypto` module. There is no
+`next-auth`, no `passport`, and no `jsonwebtoken` — the sign-in, session and
+OAuth code is all written by hand.
 
 ---
 
@@ -277,9 +278,10 @@ Sessions are cookie-based. The browser holds a random 32-byte token; only its
 SHA-256 is stored, so a database dump cannot be replayed as a login. The cookie
 is `HttpOnly`, `SameSite=Lax`, and `Secure` outside development.
 
-Passwords use scrypt with a random salt per password, and comparisons are
-constant-time. Signing in and out both issue a brand-new token, so a fixated
-cookie cannot survive a privilege change.
+Passwords are hashed with `bcrypt`, which generates a random salt for every
+password and stores it inside the hash, so two people with the same password
+still get different hashes. Signing in and out both issue a brand-new token, so
+a fixated cookie cannot survive a privilege change.
 
 Google sign-in uses the OAuth 2.0 authorization-code flow with PKCE. The `state`
 parameter is compared in constant time to block CSRF, and the ID token's `iss`,

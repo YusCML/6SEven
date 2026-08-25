@@ -39,12 +39,12 @@ function isCoordinate(value: unknown): value is [number, number] {
   );
 }
 
-export function toCoordinates(value: unknown): [number, number][] {
+function toCoordinates(value: unknown): [number, number][] {
   if (!Array.isArray(value)) return [];
   return value.filter(isCoordinate);
 }
 
-export function toCategory(value: string): RouteCategory {
+function toCategory(value: string): RouteCategory {
   return value === 'loop' ? 'loop' : 'recommended';
 }
 
@@ -85,12 +85,12 @@ export async function listRoutes(): Promise<RouteRecord[]> {
   return routes.map(toRecord);
 }
 
-export async function findRouteById(id: string): Promise<RouteRecord | null> {
+async function findRouteById(id: string): Promise<RouteRecord | null> {
   const route = await prisma.route.findUnique({ where: { id }, include: withSegments });
   return route ? toRecord(route) : null;
 }
 
-export async function findRouteByNumber(routeNumber: number): Promise<RouteRecord | null> {
+async function findRouteByNumber(routeNumber: number): Promise<RouteRecord | null> {
   const route = await prisma.route.findUnique({ where: { routeNumber }, include: withSegments });
   return route ? toRecord(route) : null;
 }

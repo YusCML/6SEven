@@ -31,8 +31,7 @@ function assertValid(...errors: (string | null)[]) {
   if (error) throw new ValidationError(error);
 }
 
-const DECOY_HASH =
-  'scrypt$16384$8$1$rUUB0+fHSaC1gDNZD3f2lA==$PePLZwDmXdRuXxIJkuhtGQ/dp4V4VavondfiUh0LeTI5pUfKufmhF1HSyRyva3UGMJPSlIL0xtaCyIVoeUt+NA==';
+const DECOY_HASH = '$2b$10$EOdk2DgMo/Z8pPO/V5S.DeYwgh16b6zd9Zzm14owp0lBUeKEtL3Ge';
 
 export type RegisterInput = {
   username: string;

@@ -8,7 +8,7 @@ describe('hashPassword', () => {
     expect(hash).not.toContain('Commuter123');
   });
 
-  it('produces a different hash every time, because each one uses a new salt', async () => {
+  it('produces a different hash every time, because bcrypt adds a new salt to each one', async () => {
     const first = await hashPassword('Commuter123');
     const second = await hashPassword('Commuter123');
 
