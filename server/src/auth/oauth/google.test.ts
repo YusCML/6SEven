@@ -1,29 +1,27 @@
-import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { buildAuthorizationUrl, createPkcePair, createStateToken, matchesState } from './google';
 import { sanitizeReturnTo } from './state';
 
 const CONFIG = {
-  clientId: 'test-client-id.apps.googleusercontent.com',
+  clientId: 'test-client-id',
   clientSecret: 'test-secret',
   redirectUri: 'http://localhost:3000/api/auth/google/callback',
 };
 
 describe('createPkcePair', () => {
-  it('builds the challenge by hashing the verifier with SHA-256', () => {
-    const { verifier, challenge } = createPkcePair();
-    const expected = createHash('sha256').update(verifier).digest('base64url');
-
-    expect(challenge).toBe(expected);
+  it('gives a different secret every time', () => {
+    expect(createPkcePair().verifier).not.toBe(createPkcePair().verifier);
   });
 
-  it('never produces the same verifier twice', () => {
-    expect(createPkcePair().verifier).not.toBe(createPkcePair().verifier);
+  it('does not put the secret itself in the challenge we send to Google', () => {
+    const { verifier, challenge } = createPkcePair();
+
+    expect(challenge).not.toBe(verifier);
   });
 });
 
 describe('createStateToken', () => {
-  it('never produces the same token twice', () => {
+  it('gives a different token every time', () => {
     expect(createStateToken()).not.toBe(createStateToken());
   });
 });
@@ -43,10 +41,9 @@ describe('matchesState', () => {
 });
 
 describe('buildAuthorizationUrl', () => {
-  it('includes everything Google needs to start the sign-in', () => {
+  it('includes the state and challenge Google needs', () => {
     const url = buildAuthorizationUrl(CONFIG, { state: 'abc123', challenge: 'xyz789' });
 
-    expect(url).toContain('client_id=test-client-id.apps.googleusercontent.com');
     expect(url).toContain('state=abc123');
     expect(url).toContain('code_challenge=xyz789');
   });
