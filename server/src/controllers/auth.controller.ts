@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express';
 import { endUserSession, getSession, resolveSession, startUserSession, toSessionPayload } from '@/auth/session';
-import { normalizeUsername } from '@/lib/validation';
 import { handleError, noStore, readBody, readString, unauthorized } from '@/http/respond';
 import {
   authenticate,
@@ -24,7 +23,6 @@ export async function getSessionController(req: Request, res: Response) {
 export async function registerController(req: Request, res: Response) {
   noStore(res);
 
-
   const body = readBody<{ username: string; password: string; confirmPassword: string }>(req);
 
   try {
@@ -47,11 +45,9 @@ export async function loginController(req: Request, res: Response) {
   noStore(res);
 
   const body = readBody<{ username: string; password: string }>(req);
-  const username = normalizeUsername(readString(body.username));
-
 
   try {
-    const user = await authenticate(username, readString(body.password));
+    const user = await authenticate(readString(body.username), readString(body.password));
     const session = await startUserSession(req, res, user.id);
 
     return res.status(200).json({
@@ -105,7 +101,6 @@ export async function patchProfileController(req: Request, res: Response) {
 export async function changePasswordController(req: Request, res: Response) {
   noStore(res);
 
-
   try {
     const resolved = await getSession(req);
 
@@ -129,7 +124,6 @@ export async function changePasswordController(req: Request, res: Response) {
 
 export async function putProfilePhotoController(req: Request, res: Response) {
   noStore(res);
-
 
   try {
     const resolved = await getSession(req);

@@ -20,9 +20,7 @@ const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? 'http://localhost:3000';
 const LINK_RETURN_TO = '/dashboard/profile';
 
 function queryValue(value: unknown): string {
-  if (typeof value === 'string') return value;
-  if (Array.isArray(value) && typeof value[0] === 'string') return value[0];
-  return '';
+  return typeof value === 'string' ? value : '';
 }
 
 function redirectWith(res: Response, returnTo: string, params: Record<string, string>) {
