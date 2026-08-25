@@ -1,18 +1,22 @@
 export const PASSWORD_MIN_LENGTH = 8;
-export const PASSWORD_MAX_LENGTH = 128;
-export const USERNAME_MIN_LENGTH = 3;
+const PASSWORD_MAX_LENGTH = 128;
+const USERNAME_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 24;
-export const NICKNAME_MAX_LENGTH = 40;
+const NICKNAME_MAX_LENGTH = 40;
 
 const USERNAME_PATTERN = /^[a-zA-Z0-9](?:[a-zA-Z0-9_.]*[a-zA-Z0-9])?$/;
 const NICKNAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9 .'-]*$/;
 
-export function normalizeEmail(email: string) {
+export function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
-export function normalizeUsername(username: string) {
+export function normalizeUsername(username: string): string {
   return username.trim();
+}
+
+export function normalizeNickname(nickname: string): string {
+  return nickname.trim().replace(/\s+/g, ' ');
 }
 
 export function validateUsername(username: string): string | null {
@@ -26,10 +30,6 @@ export function validateUsername(username: string): string | null {
   }
 
   return null;
-}
-
-export function normalizeNickname(nickname: string) {
-  return nickname.trim().replace(/\s+/g, ' ');
 }
 
 export function validateNickname(nickname: string): string | null {
@@ -58,7 +58,7 @@ export function firstError(...errors: (string | null)[]): string | null {
   return errors.find((error) => error !== null) ?? null;
 }
 
-export const AVATAR_MAX_BYTES = 512 * 1024;
+const AVATAR_MAX_BYTES = 512 * 1024;
 
 const AVATAR_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 const DATA_URL_PATTERN = /^data:([a-z]+\/[a-z0-9+.-]+);base64,([A-Za-z0-9+/]+={0,2})$/;

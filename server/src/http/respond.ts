@@ -47,14 +47,6 @@ export function handleError(res: Response, error: unknown, context: string) {
 export function readBody<T extends Record<string, unknown>>(req: Request): Partial<T> {
   const body = req.body;
 
-  if (typeof body === 'string') {
-    try {
-      return JSON.parse(body) as Partial<T>;
-    } catch {
-      return {};
-    }
-  }
-
   if (body && typeof body === 'object' && !Array.isArray(body)) return body as Partial<T>;
 
   return {};

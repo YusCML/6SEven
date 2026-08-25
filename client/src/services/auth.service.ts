@@ -28,10 +28,3 @@ export function logout(): Promise<SessionPayload> {
   return postJson<SessionPayload>('/api/auth/logout');
 }
 
-export function requestPasswordReset(username: string): Promise<{ message: string }> {
-  return postJson('/api/auth/forgot-password', { username });
-}
-
-export function resetPassword(input: { token: string; password: string }): Promise<{ message: string }> {
-  return postJson('/api/auth/reset-password', { ...input, confirmPassword: input.password });
-}

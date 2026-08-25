@@ -1,5 +1,4 @@
 import type { Request, Response } from 'express';
-import { appendCookie, serializeCookie } from '@/auth/cookies';
 
 export const OAUTH_STATE_COOKIE_NAME = 'ruta_oauth';
 
@@ -23,17 +22,13 @@ function isSafeReturnTo(value: unknown): value is string {
 export function writeOAuthState(res: Response, payload: OAuthStatePayload) {
   const encoded = Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
 
-  appendCookie(
-    res,
-    serializeCookie(OAUTH_STATE_COOKIE_NAME, encoded, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: isProduction,
-      path: '/',
-      maxAge: STATE_TTL_SECONDS,
-      expires: new Date(Date.now() + STATE_TTL_SECONDS * 1000),
-    }),
-  );
+  res.cookie(OAUTH_STATE_COOKIE_NAME, encoded, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: isProduction,
+    path: '/',
+    maxAge: STATE_TTL_SECONDS * 1000,
+  });
 }
 
 export function readOAuthState(req: Request): OAuthStatePayload | null {
@@ -59,17 +54,12 @@ export function readOAuthState(req: Request): OAuthStatePayload | null {
 }
 
 export function clearOAuthState(res: Response) {
-  appendCookie(
-    res,
-    serializeCookie(OAUTH_STATE_COOKIE_NAME, '', {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: isProduction,
-      path: '/',
-      maxAge: 0,
-      expires: new Date(0),
-    }),
-  );
+  res.clearCookie(OAUTH_STATE_COOKIE_NAME, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: isProduction,
+    path: '/',
+  });
 }
 
 export function sanitizeReturnTo(value: unknown, fallback = '/home'): string {

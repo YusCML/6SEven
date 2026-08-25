@@ -1,20 +1,15 @@
 import type { Request, Response } from 'express';
 import { endUserSession, getSession, resolveSession, startUserSession, toSessionPayload } from '@/auth/session';
 import { normalizeUsername } from '@/lib/validation';
-import { enforceRateLimit, RATE_LIMITS } from '@/middlewares/rateLimit';
 import { handleError, noStore, readBody, readString, unauthorized } from '@/http/respond';
 import {
   authenticate,
   changePassword,
-  createPasswordResetToken,
   registerAccount,
-  resetPasswordWithToken,
   setProfilePhoto,
   updateProfile,
 } from '@/services/authService';
-import { listUsers, toPublicUser } from '@/repositories/userStore';
-
-const GENERIC_RESET_MESSAGE = 'If that username has an account, password reset instructions are on the way.';
+import { toPublicUser } from '@/repositories/userStore';
 
 export async function getSessionController(req: Request, res: Response) {
   noStore(res);
@@ -29,7 +24,6 @@ export async function getSessionController(req: Request, res: Response) {
 export async function registerController(req: Request, res: Response) {
   noStore(res);
 
-  if (!enforceRateLimit(req, res, RATE_LIMITS.register)) return;
 
   const body = readBody<{ username: string; password: string; confirmPassword: string }>(req);
 
@@ -55,7 +49,6 @@ export async function loginController(req: Request, res: Response) {
   const body = readBody<{ username: string; password: string }>(req);
   const username = normalizeUsername(readString(body.username));
 
-  if (!enforceRateLimit(req, res, RATE_LIMITS.login, username.toLowerCase())) return;
 
   try {
     const user = await authenticate(username, readString(body.password));
@@ -82,16 +75,6 @@ export async function logoutController(req: Request, res: Response) {
     });
   } catch (error) {
     return handleError(res, error, 'auth/logout');
-  }
-}
-
-export async function getProfileController(req: Request, res: Response) {
-  noStore(res);
-
-  try {
-    return res.status(200).json(toSessionPayload(await resolveSession(req, res)));
-  } catch (error) {
-    return handleError(res, error, 'auth/profile');
   }
 }
 
@@ -122,7 +105,6 @@ export async function patchProfileController(req: Request, res: Response) {
 export async function changePasswordController(req: Request, res: Response) {
   noStore(res);
 
-  if (!enforceRateLimit(req, res, RATE_LIMITS.changePassword)) return;
 
   try {
     const resolved = await getSession(req);
@@ -145,66 +127,9 @@ export async function changePasswordController(req: Request, res: Response) {
   }
 }
 
-export async function forgotPasswordController(req: Request, res: Response) {
-  noStore(res);
-
-  if (!enforceRateLimit(req, res, RATE_LIMITS.forgotPassword)) return;
-
-  const username = readString(readBody<{ username: string }>(req).username);
-
-  try {
-    const token = await createPasswordResetToken(username);
-
-    if (token && process.env.NODE_ENV !== 'production') {
-      console.info(`[auth/forgot-password] reset token for ${username}: ${token}`);
-      return res.status(200).json({ message: GENERIC_RESET_MESSAGE, devResetToken: token });
-    }
-
-    return res.status(200).json({ message: GENERIC_RESET_MESSAGE });
-  } catch (error) {
-    return handleError(res, error, 'auth/forgot-password');
-  }
-}
-
-export async function resetPasswordController(req: Request, res: Response) {
-  noStore(res);
-
-  if (!enforceRateLimit(req, res, RATE_LIMITS.resetPassword)) return;
-
-  const body = readBody<{ token: string; password: string; confirmPassword: string }>(req);
-
-  try {
-    await resetPasswordWithToken({
-      token: readString(body.token),
-      password: readString(body.password),
-      confirmPassword: readString(body.confirmPassword),
-    });
-
-    return res.status(200).json({ message: 'Password updated. You can now sign in.' });
-  } catch (error) {
-    return handleError(res, error, 'auth/reset-password');
-  }
-}
-
-export async function listUsersController(_req: Request, res: Response) {
-  noStore(res);
-
-  if (process.env.NODE_ENV === 'production') {
-    return res.status(404).json({ error: 'Not found.' });
-  }
-
-  try {
-    const users = await listUsers();
-    return res.status(200).json({ users: users.map(toPublicUser) });
-  } catch (error) {
-    return handleError(res, error, 'auth/users');
-  }
-}
-
 export async function putProfilePhotoController(req: Request, res: Response) {
   noStore(res);
 
-  if (!enforceRateLimit(req, res, RATE_LIMITS.changePassword)) return;
 
   try {
     const resolved = await getSession(req);

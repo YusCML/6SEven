@@ -1,76 +1,38 @@
 import { randomInt } from 'node:crypto';
 import type { GoogleProfile } from '@/auth/oauth/google';
-import { generateGuestName } from '@/auth/guest';
-import {
-  normalizeEmail,
-  normalizeNickname,
-  USERNAME_MAX_LENGTH,
-  validateNickname,
-  validateUsername,
-} from '@/lib/validation';
+import { normalizeEmail, normalizeNickname, USERNAME_MAX_LENGTH, validateNickname } from '@/lib/validation';
 import { NotFoundError, ValidationError } from '@/errors';
 import {
   createUser,
   findUserByEmail,
   findUserByGoogleId,
   findUserById,
-  findUserByUsername,
   updateUser,
   type UserRecord,
 } from '@/repositories/userStore';
 
 const SUFFIX_MIN = 1000;
 const SUFFIX_MAX = 9999;
-const USERNAME_ATTEMPTS = 5;
 
-function firstWordOf(value: string): string {
-  return value.trim().split(/\s+/)[0] ?? '';
-}
+function deriveUsername(profile: GoogleProfile): string {
+  const source = profile.givenName || profile.name || profile.email.split('@')[0] || '';
+  const base = source.normalize('NFKD').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, USERNAME_MAX_LENGTH - 5);
 
-function usernameBase(profile: GoogleProfile): string {
-  const source = firstWordOf(profile.givenName) || firstWordOf(profile.name) || (profile.email.split('@')[0] ?? '');
-  const cleaned = source
-    .normalize('NFKD')
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '');
-
-  return cleaned.slice(0, USERNAME_MAX_LENGTH - 5) || 'ruta';
-}
-
-async function deriveUsername(profile: GoogleProfile): Promise<string> {
-  const base = usernameBase(profile);
-
-  for (let attempt = 0; attempt < USERNAME_ATTEMPTS; attempt += 1) {
-    const candidate = `${base}${randomInt(SUFFIX_MIN, SUFFIX_MAX + 1)}`;
-
-    if (validateUsername(candidate) !== null) break;
-    if (!(await findUserByUsername(candidate))) return candidate;
-  }
-
-  return generateGuestName().toLowerCase();
+  return `${base || 'ruta'}${randomInt(SUFFIX_MIN, SUFFIX_MAX + 1)}`;
 }
 
 function deriveNickname(profile: GoogleProfile): string {
-  const candidates = [profile.givenName, profile.name, profile.email.split('@')[0] ?? ''];
+  const candidate = normalizeNickname(profile.givenName || profile.name || profile.email.split('@')[0] || '');
 
-  for (const candidate of candidates) {
-    const cleaned = normalizeNickname(candidate);
-    if (cleaned && validateNickname(cleaned) === null) return cleaned;
-  }
-
-  return 'Commuter';
+  return validateNickname(candidate) === null ? candidate : 'Commuter';
 }
 
 async function refreshProfile(user: UserRecord, profile: GoogleProfile): Promise<UserRecord> {
-  const patch: Parameters<typeof updateUser>[1] = {};
-
-  if (user.avatarUrl !== profile.picture) patch.avatarUrl = profile.picture;
-  if (profile.emailVerified && !user.emailVerified) patch.emailVerified = true;
-  if (!user.nickname) patch.nickname = deriveNickname(profile);
-
-  if (Object.keys(patch).length === 0) return user;
-
-  return updateUser(user.id, patch);
+  return updateUser(user.id, {
+    avatarUrl: profile.picture,
+    emailVerified: user.emailVerified || profile.emailVerified,
+    nickname: user.nickname ?? deriveNickname(profile),
+  });
 }
 
 export async function signInWithGoogle(profile: GoogleProfile): Promise<UserRecord> {
@@ -102,7 +64,7 @@ export async function signInWithGoogle(profile: GoogleProfile): Promise<UserReco
 
   try {
     return await createUser({
-      username: await deriveUsername(profile),
+      username: deriveUsername(profile),
       nickname: deriveNickname(profile),
       email,
       passwordHash: null,

@@ -9,8 +9,6 @@ import {
 } from '@/repositories/sessionStore';
 import { findUserById, toPublicUser, type UserRecord } from '@/repositories/userStore';
 import type { SessionPayload } from '@shared/types/session';
-import { appendCookie, serializeCookie } from './cookies';
-import { generateGuestName } from './guest';
 
 export const SESSION_COOKIE_NAME = 'ruta_session';
 
@@ -35,19 +33,13 @@ function expiryFromNow(days: number): string {
 }
 
 function writeSessionCookie(res: Response, token: string, expiresAt: string) {
-  const maxAge = Math.max(0, Math.floor((Date.parse(expiresAt) - Date.now()) / 1000));
-
-  appendCookie(
-    res,
-    serializeCookie(SESSION_COOKIE_NAME, token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: isProduction,
-      path: '/',
-      maxAge,
-      expires: new Date(expiresAt),
-    }),
-  );
+  res.cookie(SESSION_COOKIE_NAME, token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: isProduction,
+    path: '/',
+    maxAge: Math.max(0, Date.parse(expiresAt) - Date.now()),
+  });
 }
 
 function readToken(req: Request): string | null {
@@ -101,11 +93,7 @@ export async function resolveSession(req: Request, res: Response): Promise<Resol
     await deleteSession(existing.id);
   }
 
-  const session = await issueSession(res, {
-    userId: null,
-    guestName: generateGuestName(),
-    days: GUEST_SESSION_DAYS,
-  });
+  const session = await issueSession(res, { userId: null, guestName: null, days: GUEST_SESSION_DAYS });
 
   return { session, user: null };
 }
@@ -135,7 +123,7 @@ export async function endUserSession(req: Request, res: Response): Promise<Sessi
   const previous = await loadSession(req);
   if (previous) await deleteSession(previous.id);
 
-  return issueSession(res, { userId: null, guestName: generateGuestName(), days: GUEST_SESSION_DAYS });
+  return issueSession(res, { userId: null, guestName: null, days: GUEST_SESSION_DAYS });
 }
 
 export function toSessionPayload({ session, user }: ResolvedSession): SessionPayload {

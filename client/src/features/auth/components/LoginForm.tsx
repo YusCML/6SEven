@@ -78,15 +78,10 @@ export default function LoginForm() {
           icon={<LockIcon className="h-4 w-4" />}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          labelAction={
-            <Link href="/auth/forgot-password" className="text-xs font-bold text-slate-900 hover:underline">
-              Forgot password?
-            </Link>
-          }
         />
 
         <Checkbox checked={rememberMe} onChange={setRememberMe} name="rememberMe">
-          Remember me for 30 days
+          Remember me
         </Checkbox>
 
         {visibleError ? <Alert tone="error">{visibleError}</Alert> : null}

@@ -1,9 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { firstError, normalizeUsername, validatePassword, validateUsername } from './validation';
+import { firstError, normalizeNickname, normalizeUsername, validatePassword, validateUsername } from './validation';
 
 describe('normalizeUsername', () => {
   it('removes surrounding spaces', () => {
     expect(normalizeUsername('  juandelacruz  ')).toBe('juandelacruz');
+  });
+});
+
+describe('normalizeNickname', () => {
+  it('trims and collapses repeated spaces', () => {
+    expect(normalizeNickname('  Juan   Dela   Cruz  ')).toBe('Juan Dela Cruz');
   });
 });
 

@@ -8,18 +8,8 @@ export type SessionRecord = {
   expiresAt: string;
 };
 
-export type PasswordResetRecord = {
-  id: string;
-  userId: string;
-  tokenHash: string;
-  createdAt: string;
-  expiresAt: string;
-  consumedAt: string | null;
-};
-
 type Tables = {
   sessions: Map<string, SessionRecord>;
-  passwordResets: Map<string, PasswordResetRecord>;
 };
 
 declare global {
@@ -27,10 +17,7 @@ declare global {
 }
 
 function tables(): Tables {
-  globalThis.__rutaSessionTables ??= {
-    sessions: new Map(),
-    passwordResets: new Map(),
-  };
+  globalThis.__rutaSessionTables ??= { sessions: new Map() };
 
   return globalThis.__rutaSessionTables;
 }
@@ -71,46 +58,5 @@ export async function deleteSessionsForUser(userId: string): Promise<void> {
 
   for (const [id, session] of sessions) {
     if (session.userId === userId) sessions.delete(id);
-  }
-}
-
-export async function createPasswordReset(input: {
-  userId: string;
-  tokenHash: string;
-  expiresAt: string;
-}): Promise<PasswordResetRecord> {
-  const record: PasswordResetRecord = {
-    id: randomUUID(),
-    userId: input.userId,
-    tokenHash: input.tokenHash,
-    createdAt: new Date().toISOString(),
-    expiresAt: input.expiresAt,
-    consumedAt: null,
-  };
-
-  tables().passwordResets.set(record.id, record);
-  return clone(record);
-}
-
-export async function findPasswordResetByTokenHash(tokenHash: string): Promise<PasswordResetRecord | null> {
-  for (const record of tables().passwordResets.values()) {
-    if (record.tokenHash === tokenHash) return clone(record);
-  }
-
-  return null;
-}
-
-export async function consumePasswordReset(id: string): Promise<void> {
-  const { passwordResets } = tables();
-  const record = passwordResets.get(id);
-
-  if (record) passwordResets.set(id, { ...record, consumedAt: new Date().toISOString() });
-}
-
-export async function deletePasswordResetsForUser(userId: string): Promise<void> {
-  const { passwordResets } = tables();
-
-  for (const [id, record] of passwordResets) {
-    if (record.userId === userId) passwordResets.delete(id);
   }
 }

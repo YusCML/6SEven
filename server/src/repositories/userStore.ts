@@ -176,8 +176,3 @@ export async function updateUser(
     throw error;
   }
 }
-
-export async function listUsers(): Promise<UserRecord[]> {
-  const users = await prisma.user.findMany({ orderBy: { createdAt: 'asc' } });
-  return users.map(toRecord);
-}

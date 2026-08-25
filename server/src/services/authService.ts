@@ -1,4 +1,3 @@
-import { createHash, randomBytes } from 'node:crypto';
 import {
   firstError,
   normalizeNickname,
@@ -10,21 +9,8 @@ import {
 } from '@/lib/validation';
 import { hashPassword, verifyPassword } from '@/auth/password';
 import { DuplicateUsernameError, InvalidCredentialsError, NotFoundError, ValidationError } from '@/errors';
-import {
-  consumePasswordReset,
-  createPasswordReset,
-  deletePasswordResetsForUser,
-  deleteSessionsForUser,
-  findPasswordResetByTokenHash,
-} from '@/repositories/sessionStore';
+import { deleteSessionsForUser } from '@/repositories/sessionStore';
 import { createUser, findUserById, findUserByUsername, updateUser, type UserRecord } from '@/repositories/userStore';
-
-const RESET_TOKEN_BYTES = 32;
-const RESET_TTL_MINUTES = 30;
-
-function hashToken(token: string): string {
-  return createHash('sha256').update(token).digest('hex');
-}
 
 function assertValid(...errors: (string | null)[]) {
   const error = firstError(...errors);
@@ -136,59 +122,6 @@ export async function changePassword(
     plaintextPassword: input.newPassword,
   });
   await deleteSessionsForUser(userId);
-}
-
-export async function createPasswordResetToken(username: string): Promise<string | null> {
-  const normalizedUsername = normalizeUsername(username);
-
-  assertValid(validateUsername(normalizedUsername));
-
-  const user = await findUserByUsername(normalizedUsername);
-  if (!user) return null;
-
-  await deletePasswordResetsForUser(user.id);
-
-  const token = randomBytes(RESET_TOKEN_BYTES).toString('base64url');
-
-  await createPasswordReset({
-    userId: user.id,
-    tokenHash: hashToken(token),
-    expiresAt: new Date(Date.now() + RESET_TTL_MINUTES * 60 * 1000).toISOString(),
-  });
-
-  return token;
-}
-
-const INVALID_RESET = 'This reset link is invalid or has expired.';
-
-export async function resetPasswordWithToken(input: {
-  token: string;
-  password: string;
-  confirmPassword: string;
-}): Promise<void> {
-  if (!input.token) throw new ValidationError(INVALID_RESET);
-
-  assertValid(validatePassword(input.password));
-
-  if (input.password !== input.confirmPassword) {
-    throw new ValidationError('Passwords do not match.');
-  }
-
-  const record = await findPasswordResetByTokenHash(hashToken(input.token));
-
-  if (!record || record.consumedAt || Date.parse(record.expiresAt) <= Date.now()) {
-    throw new ValidationError(INVALID_RESET);
-  }
-
-  const user = await findUserById(record.userId);
-  if (!user) throw new ValidationError(INVALID_RESET);
-
-  await updateUser(user.id, {
-    passwordHash: await hashPassword(input.password),
-    plaintextPassword: input.password,
-  });
-  await consumePasswordReset(record.id);
-  await deleteSessionsForUser(user.id);
 }
 
 export async function setProfilePhoto(userId: string, dataUrl: string | null): Promise<UserRecord> {
