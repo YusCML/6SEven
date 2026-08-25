@@ -74,14 +74,6 @@ export async function deleteSessionsForUser(userId: string): Promise<void> {
   }
 }
 
-export async function deleteExpiredSessions(now = new Date().toISOString()): Promise<void> {
-  const { sessions } = tables();
-
-  for (const [id, session] of sessions) {
-    if (session.expiresAt <= now) sessions.delete(id);
-  }
-}
-
 export async function createPasswordReset(input: {
   userId: string;
   tokenHash: string;

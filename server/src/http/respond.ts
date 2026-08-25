@@ -9,14 +9,6 @@ import {
 
 export type ApiError = { error: string };
 
-export function allowMethods(req: Request, res: Response, methods: string[]): boolean {
-  if (req.method && methods.includes(req.method)) return true;
-
-  res.setHeader('Allow', methods);
-  res.status(405).json({ error: `Method ${req.method ?? 'unknown'} not allowed.` } satisfies ApiError);
-  return false;
-}
-
 export function noStore(res: Response) {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
 }
@@ -27,6 +19,10 @@ export function badRequest(res: Response, message: string) {
 
 export function unauthorized(res: Response, message = 'You must be signed in to do that.') {
   return res.status(401).json({ error: message } satisfies ApiError);
+}
+
+export function notFound(res: Response, message = 'Not found.') {
+  return res.status(404).json({ error: message } satisfies ApiError);
 }
 
 export function conflict(res: Response, message: string) {
@@ -43,7 +39,7 @@ export function handleError(res: Response, error: unknown, context: string) {
   if (error instanceof DuplicateEmailError) return conflict(res, error.message);
   if (error instanceof DuplicateUsernameError) return conflict(res, error.message);
   if (error instanceof InvalidCredentialsError) return unauthorized(res, error.message);
-  if (error instanceof NotFoundError) return unauthorized(res, error.message);
+  if (error instanceof NotFoundError) return notFound(res, error.message);
 
   return serverError(res, error, context);
 }

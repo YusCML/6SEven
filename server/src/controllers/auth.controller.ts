@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { endUserSession, getSession, resolveSession, startUserSession, toSessionPayload } from '@/auth/session';
 import { normalizeUsername } from '@/lib/validation';
 import { enforceRateLimit, RATE_LIMITS } from '@/middlewares/rateLimit';
-import { handleError, noStore, readBody, readString, serverError, unauthorized } from '@/http/respond';
+import { handleError, noStore, readBody, readString, unauthorized } from '@/http/respond';
 import {
   authenticate,
   changePassword,
@@ -22,7 +22,7 @@ export async function getSessionController(req: Request, res: Response) {
   try {
     return res.status(200).json(toSessionPayload(await resolveSession(req, res)));
   } catch (error) {
-    return serverError(res, error, 'auth/session');
+    return handleError(res, error, 'auth/session');
   }
 }
 
@@ -81,7 +81,7 @@ export async function logoutController(req: Request, res: Response) {
       ...toSessionPayload({ session, user: null }),
     });
   } catch (error) {
-    return serverError(res, error, 'auth/logout');
+    return handleError(res, error, 'auth/logout');
   }
 }
 
@@ -91,7 +91,7 @@ export async function getProfileController(req: Request, res: Response) {
   try {
     return res.status(200).json(toSessionPayload(await resolveSession(req, res)));
   } catch (error) {
-    return serverError(res, error, 'auth/profile');
+    return handleError(res, error, 'auth/profile');
   }
 }
 
@@ -197,7 +197,7 @@ export async function listUsersController(_req: Request, res: Response) {
     const users = await listUsers();
     return res.status(200).json({ users: users.map(toPublicUser) });
   } catch (error) {
-    return serverError(res, error, 'auth/users');
+    return handleError(res, error, 'auth/users');
   }
 }
 

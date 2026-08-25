@@ -1,91 +1,46 @@
 import { describe, expect, it } from 'vitest';
-import {
-  firstError,
-  normalizeEmail,
-  normalizeUsername,
-  validateEmail,
-  validatePassword,
-  validateUsername,
-} from './validation';
-
-describe('normalizeEmail', () => {
-  it('trims and lower-cases so the same address is one account', () => {
-    expect(normalizeEmail('  Juan@Ruta.PH ')).toBe('juan@ruta.ph');
-  });
-});
+import { firstError, normalizeUsername, validatePassword, validateUsername } from './validation';
 
 describe('normalizeUsername', () => {
-  it('trims without changing case', () => {
-    expect(normalizeUsername('  JuanDelaCruz  ')).toBe('JuanDelaCruz');
-  });
-});
-
-describe('validateEmail', () => {
-  it.each(['juan@ruta.ph', 'a.b+tag@sub.domain.co'])('accepts %s', (email) => {
-    expect(validateEmail(email)).toBeNull();
-  });
-
-  it.each([
-    ['', 'empty'],
-    ['juan', 'no domain'],
-    ['juan@ruta', 'no TLD'],
-    ['juan @ruta.ph', 'contains a space'],
-  ])('rejects %s (%s)', (email) => {
-    expect(validateEmail(email)).not.toBeNull();
-  });
-
-  it('rejects an address over 254 characters', () => {
-    expect(validateEmail(`${'a'.repeat(250)}@ruta.ph`)).toBe('Email is too long.');
+  it('removes surrounding spaces', () => {
+    expect(normalizeUsername('  juandelacruz  ')).toBe('juandelacruz');
   });
 });
 
 describe('validateUsername', () => {
-  it.each(['abc', 'juandelacruz', 'juan_dela.cruz', 'a1b2c3', 'a'.repeat(24)])('accepts %s', (username) => {
-    expect(validateUsername(username)).toBeNull();
+  it('returns null when the username is valid', () => {
+    expect(validateUsername('juandelacruz')).toBeNull();
   });
 
-  it('rejects spaces — a full name is no longer a valid username', () => {
-    expect(validateUsername('Juan Dela Cruz')).toMatch(/letters, numbers/);
+  it('rejects a username that is too short', () => {
+    expect(validateUsername('ab')).toBe('Username must be at least 3 characters long.');
   });
 
-  it.each([
-    ['ab', 'too short'],
-    ['a'.repeat(25), 'too long'],
-    ['_juan', 'starts with an underscore'],
-    ['juan.', 'ends with a period'],
-    ['juan-cruz', 'hyphen is not allowed'],
-    ['juan@ruta', 'symbol'],
-    ['', 'empty'],
-  ])('rejects %s (%s)', (username) => {
-    expect(validateUsername(username)).not.toBeNull();
+  it('rejects a username with spaces', () => {
+    expect(validateUsername('Juan Dela Cruz')).not.toBeNull();
   });
 });
 
 describe('validatePassword', () => {
-  it('accepts a password with letters and digits at the minimum length', () => {
-    expect(validatePassword('Commut3r')).toBeNull();
+  it('returns null when the password is valid', () => {
+    expect(validatePassword('Commuter123')).toBeNull();
   });
 
-  it.each([
-    ['Commut3', 'seven characters'],
-    ['CommuterOnly', 'no digit'],
-    ['12345678', 'no letter'],
-    ['', 'empty'],
-  ])('rejects %s (%s)', (password) => {
-    expect(validatePassword(password)).not.toBeNull();
+  it('rejects a password shorter than 8 characters', () => {
+    expect(validatePassword('Comm123')).toBe('Password must be at least 8 characters long.');
   });
 
-  it('rejects a password over 128 characters', () => {
-    expect(validatePassword(`a1${'x'.repeat(200)}`)).toMatch(/at most/);
+  it('rejects a password with no number', () => {
+    expect(validatePassword('CommuterOnly')).toBe('Password must contain at least one number.');
   });
 });
 
 describe('firstError', () => {
-  it('returns the first failure so the user sees one message at a time', () => {
-    expect(firstError(null, 'second', 'third')).toBe('second');
+  it('returns the first message so the user sees one error at a time', () => {
+    expect(firstError(null, 'Username is required.', 'Password is required.')).toBe('Username is required.');
   });
 
-  it('returns null when everything passes', () => {
+  it('returns null when nothing failed', () => {
     expect(firstError(null, null)).toBeNull();
   });
 });

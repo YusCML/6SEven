@@ -8,7 +8,7 @@ import {
   validatePassword,
   validateUsername,
 } from '@/lib/validation';
-import { hashPassword, needsRehash, verifyPassword } from '@/auth/password';
+import { hashPassword, verifyPassword } from '@/auth/password';
 import { DuplicateUsernameError, InvalidCredentialsError, NotFoundError, ValidationError } from '@/errors';
 import {
   consumePasswordReset,
@@ -31,12 +31,8 @@ function assertValid(...errors: (string | null)[]) {
   if (error) throw new ValidationError(error);
 }
 
-let decoyHashPromise: Promise<string> | null = null;
-
-function decoyHash() {
-  decoyHashPromise ??= hashPassword('ruta-decoy-password');
-  return decoyHashPromise;
-}
+const DECOY_HASH =
+  'scrypt$16384$8$1$rUUB0+fHSaC1gDNZD3f2lA==$PePLZwDmXdRuXxIJkuhtGQ/dp4V4VavondfiUh0LeTI5pUfKufmhF1HSyRyva3UGMJPSlIL0xtaCyIVoeUt+NA==';
 
 export type RegisterInput = {
   username: string;
@@ -72,13 +68,9 @@ export async function authenticate(username: string, password: string): Promise<
 
   const user = await findUserByUsername(normalizedUsername);
   const storedHash = user?.passwordHash ?? null;
-  const matches = await verifyPassword(password, storedHash ?? (await decoyHash()));
+  const matches = await verifyPassword(password, storedHash ?? DECOY_HASH);
 
   if (!user || !storedHash || !matches) throw new InvalidCredentialsError();
-
-  if (needsRehash(storedHash)) {
-    return updateUser(user.id, { passwordHash: await hashPassword(password) });
-  }
 
   return user;
 }

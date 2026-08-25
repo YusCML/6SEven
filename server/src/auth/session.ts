@@ -134,11 +134,6 @@ export async function getSession(req: Request): Promise<ResolvedSession | null> 
   return user ? { session, user } : null;
 }
 
-export async function getAuthenticatedUser(req: Request): Promise<UserRecord | null> {
-  const resolved = await getSession(req);
-  return resolved?.user ?? null;
-}
-
 export async function startUserSession(
   req: Request,
   res: Response,
@@ -155,10 +150,6 @@ export async function endUserSession(req: Request, res: Response): Promise<Sessi
   if (previous) await deleteSession(previous.id);
 
   return issueSession(res, { userId: null, guestName: generateGuestName(), days: GUEST_SESSION_DAYS });
-}
-
-export async function revokeAllUserSessions(userId: string) {
-  await deleteSessionsForUser(userId);
 }
 
 export function toSessionPayload({ session, user }: ResolvedSession): SessionPayload {

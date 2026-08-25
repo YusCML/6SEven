@@ -1,60 +1,50 @@
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto';
-import { promisify } from 'node:util';
-
-const scrypt = promisify(scryptCallback) as (
-  password: string | Buffer,
-  salt: string | Buffer,
-  keylen: number,
-  options: { N: number; r: number; p: number; maxmem: number },
-) => Promise<Buffer>;
 
 const ALGORITHM = 'scrypt';
 const SALT_BYTES = 16;
 const KEY_BYTES = 64;
-const PARAMS = { N: 16_384, r: 8, p: 1 };
-const MAX_MEM = 64 * 1024 * 1024;
+const COST = 16_384;
+const BLOCK_SIZE = 8;
+const PARALLELISM = 1;
+const MAX_MEMORY = 64 * 1024 * 1024;
 
-function prepare(password: string) {
-  return Buffer.from(password.normalize('NFKC'), 'utf8');
+function scrypt(password: string, salt: Buffer, keyLength: number, cost: number, blockSize: number, parallelism: number): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const options = { N: cost, r: blockSize, p: parallelism, maxmem: MAX_MEMORY };
+
+    scryptCallback(password.normalize('NFKC'), salt, keyLength, options, (error, key) => {
+      if (error) reject(error);
+      else resolve(key);
+    });
+  });
 }
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(SALT_BYTES);
-  const derived = await scrypt(prepare(password), salt, KEY_BYTES, { ...PARAMS, maxmem: MAX_MEM });
+  const key = await scrypt(password, salt, KEY_BYTES, COST, BLOCK_SIZE, PARALLELISM);
 
-  return [ALGORITHM, PARAMS.N, PARAMS.r, PARAMS.p, salt.toString('base64'), derived.toString('base64')].join('$');
+  return [ALGORITHM, COST, BLOCK_SIZE, PARALLELISM, salt.toString('base64'), key.toString('base64')].join('$');
 }
 
 export async function verifyPassword(password: string, storedHash: string): Promise<boolean> {
   const parts = storedHash.split('$');
 
-  if (parts.length !== 6 || parts[0] !== ALGORITHM) return false;
+  if (parts.length !== 6) return false;
+  if (parts[0] !== ALGORITHM) return false;
 
-  const [, rawN, rawR, rawP, saltBase64, keyBase64] = parts;
-  const N = Number.parseInt(rawN, 10);
-  const r = Number.parseInt(rawR, 10);
-  const p = Number.parseInt(rawP, 10);
+  const cost = Number(parts[1]);
+  const blockSize = Number(parts[2]);
+  const parallelism = Number(parts[3]);
+  const salt = Buffer.from(parts[4], 'base64');
+  const expected = Buffer.from(parts[5], 'base64');
 
-  if (!Number.isFinite(N) || !Number.isFinite(r) || !Number.isFinite(p)) return false;
-
-  const salt = Buffer.from(saltBase64, 'base64');
-  const expected = Buffer.from(keyBase64, 'base64');
-
+  if (!Number.isFinite(cost) || !Number.isFinite(blockSize) || !Number.isFinite(parallelism)) return false;
   if (salt.length === 0 || expected.length === 0) return false;
 
   try {
-    const derived = await scrypt(prepare(password), salt, expected.length, { N, r, p, maxmem: MAX_MEM });
-    return timingSafeEqual(derived, expected);
+    const key = await scrypt(password, salt, expected.length, cost, blockSize, parallelism);
+    return timingSafeEqual(key, expected);
   } catch {
     return false;
   }
-}
-
-export function needsRehash(storedHash: string): boolean {
-  const parts = storedHash.split('$');
-
-  if (parts.length !== 6 || parts[0] !== ALGORITHM) return true;
-
-  const [, rawN, rawR, rawP] = parts;
-  return Number(rawN) < PARAMS.N || Number(rawR) < PARAMS.r || Number(rawP) < PARAMS.p;
 }

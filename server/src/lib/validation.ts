@@ -4,7 +4,6 @@ export const USERNAME_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 24;
 export const NICKNAME_MAX_LENGTH = 40;
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_PATTERN = /^[a-zA-Z0-9](?:[a-zA-Z0-9_.]*[a-zA-Z0-9])?$/;
 const NICKNAME_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9 .'-]*$/;
 
@@ -14,16 +13,6 @@ export function normalizeEmail(email: string) {
 
 export function normalizeUsername(username: string) {
   return username.trim();
-}
-
-export function validateEmail(email: string): string | null {
-  const normalized = normalizeEmail(email);
-
-  if (!normalized) return 'Email is required.';
-  if (normalized.length > 254) return 'Email is too long.';
-  if (!EMAIL_PATTERN.test(normalized)) return 'Enter a valid email address.';
-
-  return null;
 }
 
 export function validateUsername(username: string): string | null {

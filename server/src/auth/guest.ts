@@ -13,7 +13,3 @@ export function generateGuestName(): string {
 
   return `${GUEST_NAME_PREFIX}${suffix}`;
 }
-
-export function isGuestName(name: string): boolean {
-  return new RegExp(`^${GUEST_NAME_PREFIX}[${SUFFIX_ALPHABET}]{${GUEST_SUFFIX_LENGTH}}$`).test(name);
-}

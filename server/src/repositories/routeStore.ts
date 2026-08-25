@@ -95,11 +95,19 @@ export async function findRouteByNumber(routeNumber: number): Promise<RouteRecor
   return route ? toRecord(route) : null;
 }
 
-export async function getRoute(idOrNumber: string): Promise<RouteRecord> {
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function findRoute(idOrNumber: string): Promise<RouteRecord | null> {
   const asNumber = Number(idOrNumber);
-  const route = Number.isInteger(asNumber)
-    ? await findRouteByNumber(asNumber)
-    : await findRouteById(idOrNumber);
+
+  if (Number.isInteger(asNumber)) return findRouteByNumber(asNumber);
+  if (UUID_PATTERN.test(idOrNumber)) return findRouteById(idOrNumber);
+
+  return null;
+}
+
+export async function getRoute(idOrNumber: string): Promise<RouteRecord> {
+  const route = await findRoute(idOrNumber);
 
   if (!route) throw new NotFoundError('Route not found.');
 
