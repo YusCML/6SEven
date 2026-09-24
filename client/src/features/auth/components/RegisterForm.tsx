@@ -53,7 +53,7 @@ export default function RegisterForm() {
           type="text"
           name="username"
           autoComplete="username"
-          placeholder="juandelacruz"
+          placeholder="Username"
           icon={<UserIcon className="h-4 w-4" />}
           value={formData.username}
           onChange={(event) => setFormData({ ...formData, username: event.target.value })}

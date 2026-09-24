@@ -1,11 +1,13 @@
 type AuthStatusStripProps = {
-  status: string;
+  status?: string;
   stacked?: boolean;
 };
 
 const COPYRIGHT = '© 2024 RUTA. Ingat sa biyahe!';
 
 export default function AuthStatusStrip({ status, stacked = false }: AuthStatusStripProps) {
+  if (!status) return <p className="text-center text-xs text-slate-400">{COPYRIGHT}</p>;
+
   const statusLine = (
     <span className="flex items-center gap-2">
       <span className="h-2 w-2 rounded-full bg-green-500" />
