@@ -7,7 +7,7 @@ import TripOptionCard from '@/features/routes/components/TripOptionCard';
 import TripPlanner, { type PinTarget } from '@/features/routes/components/TripPlanner';
 import type { LatLng } from '@/features/routes/lib/geo';
 import { pinProblem } from '@/features/routes/lib/iloiloArea';
-import { nearestLandmark, type Pin } from '@/features/routes/lib/landmarks';
+import { coordinatesLabel, nearestLandmark, type Pin } from '@/features/routes/lib/landmarks';
 import { routeView, type RouteMode } from '@/features/routes/lib/routeView';
 import { buildNetwork, planTrips, type TripOption } from '@/features/routes/lib/tripPlanner';
 import { useRoutes } from '@/hooks/useRoutes';
@@ -50,7 +50,8 @@ export default function RouteExplorer() {
     [network, originPoint, destinationPoint],
   );
 
-  const activeRoute = routes.find((route) => route.id === selectedRouteId) ?? routes[0] ?? null;
+  // no route line until the user picks one, so the map stays calm and where they left it
+  const activeRoute = routes.find((route) => route.id === selectedRouteId) ?? null;
   const trip = showTrip && options ? (options[tripIndex] ?? null) : null;
 
   useEffect(() => {
@@ -78,10 +79,11 @@ export default function RouteExplorer() {
     setNotice(null);
     setTripIndex(0);
     setShowTrip(true);
-    setPin(target)({ position: point, label: nearestLandmark(routes, point) });
+    const landmark = nearestLandmark(routes, point);
+    setPin(target)({ position: point, label: landmark ?? 'Finding the place name…' });
 
-    reverseGeocode(point).then((name) => {
-      if (!name) return;
+    reverseGeocode(point).then(({ label, district }) => {
+      const name = label ?? landmark ?? (district ? `${district} area` : coordinatesLabel(point));
       // the pin may have been swapped or moved meanwhile: name whichever pin still sits on this point
       const relabel = (current: Pin | null) => (current && current.position === point ? { ...current, label: name } : current);
       setOrigin(relabel);
@@ -103,8 +105,10 @@ export default function RouteExplorer() {
   }
 
   function handleClear() {
+    // drop the pins and every line, but leave the map where the user had it
     setOrigin(null);
     setDestination(null);
+    setSelectedRouteId(null);
     setPicking('origin');
     setNotice(null);
     setTripIndex(0);

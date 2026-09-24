@@ -6,8 +6,8 @@ export type Pin = {
   label: string;
 };
 
-/** "Near <official stop>" for a point, used until (or instead of) a street address comes back. */
-export function nearestLandmark(routes: RouteData[], point: LatLng, withinMeters = 500): string {
+/** "Near <official stop>" for a point, or null if no stop is within reach. */
+export function nearestLandmark(routes: RouteData[], point: LatLng, withinMeters = 1000): string | null {
   const best = routes
     .flatMap((route) => route.stops)
     .filter((stop) => !stop.name.startsWith('U-turn'))
@@ -15,5 +15,7 @@ export function nearestLandmark(routes: RouteData[], point: LatLng, withinMeters
       const meters = distanceMeters(stop.position, point);
       return meters <= withinMeters && (!acc || meters < acc.meters) ? { name: stop.name, meters } : acc;
     }, null);
-  return best ? `Near ${best.name}` : `${point[0].toFixed(5)}, ${point[1].toFixed(5)}`;
+  return best ? `Near ${best.name}` : null;
 }
+
+export const coordinatesLabel = ([lat, lng]: LatLng) => `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
