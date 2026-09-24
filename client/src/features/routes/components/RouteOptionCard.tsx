@@ -7,16 +7,8 @@ interface RouteOptionCardProps {
 }
 
 const CATEGORY_LABELS: Record<RouteCategory, string> = {
-  recommended: '⚡ Recommended',
-  loop: '🔁 Loop',
-};
-
-const getModeIcon = (mode: string) => {
-  const icons: Record<string, string> = {
-    Jeepney: '🚐',
-    Tricycle: '🛺',
-  };
-  return icons[mode] || '🚌';
+  recommended: 'Recommended',
+  loop: 'Loop',
 };
 
 export default function RouteOptionCard({ route, selected, onClick }: RouteOptionCardProps) {
@@ -49,7 +41,7 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
             key={idx}
             className="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded"
           >
-            {getModeIcon(segment.mode)} {segment.mode}
+            {segment.mode}
           </span>
         ))}
       </div>
