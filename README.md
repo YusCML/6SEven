@@ -33,6 +33,68 @@ actually move around Iloilo City — jeepney codes, tricycle hops, transfer poin
 
 ---
 
+## Route data and sources
+
+The Routes page lists the 25 official jeepney loops of Iloilo City's Enhanced
+Local Public Transport Route Plan (ELPTRP). The data lives in
+`server/prisma/data/routes.json` and is loaded by the seed script.
+
+- **Street sequence.** Each route follows the official street-by-street list
+  published by the city's traffic office (ICTMU) and transcribed in the
+  [Iloilo City jeepney route guide](https://shemaegomez.com/iloilo-city-jeepney-routes/).
+- **Map geometry.** Each path is drawn on real roads from
+  [OpenStreetMap](https://www.openstreetmap.org/copyright), snapped with
+  [OSRM](https://project-osrm.org/), and respects one-way streets. The Drilon
+  Bridge crossing follows [SunStar's report on the bridge](https://www.sunstar.com.ph/more-articles/new-p140-m-bridge-up-at-iloilo-river-).
+- **Fares.** Fares use the traditional jeepney rate: ₱13 for the first 4 km, then
+  ₱1.80 per km, rounded to 25 centavos. Students, seniors and PWDs get 20% off.
+  The ₱14 increase approved in March 2026
+  [was suspended](https://newsinfo.inquirer.net/2197784/marcos-orders-suspension-of-fare-hike),
+  which the [Iloilo 2026 transport guide](https://iloilodirectory.com/complete-transportation-guide-to-iloilo-city-for-commuters-and-tourists-2026/)
+  confirms.
+- **Times.** Travel times are estimates at an average of 16 km/h, stops
+  included.
+- **Stops.** The numbered markers on the map are the landmarks in each official
+  list, placed on the route in riding order. They use
+  [OpenStreetMap](https://www.openstreetmap.org/copyright) places and the
+  guide's Google My Maps placemarks.
+- **Jeep names.** Each card also shows the older names commuters still use for
+  the jeep, from the guide's
+  [old and new route names](https://shemaegomez.com/iloilo-city-jeepneys-names/).
+  Routes 18 to 24 are new in the 2024 plan and have no older name.
+
+Every route is a loop. **Loop** shows the whole trip out and back. **One way**
+shows the terminal to the far end, with that ride's distance, time and fare.
+
+Two routes can't follow the official path exactly because OpenStreetMap is
+missing a road. So-oc Road is cut at C. Aquino Avenue (route 20), and there is
+no Sto. Domingo Street link near Tatoy's (route 17).
+
+### Trip planner
+
+Pin a starting point and a destination on the map. You can drag pins, and Swap
+flips them. The planner then lists the ways to get there. Each option says
+which jeeps to take, where to board, where to get off and change, and the fare
+for each ride and in total. Rides are drawn in the route's color, and walking is
+a dashed trail.
+
+- It rides only in each loop's direction of travel. It walks as far as needed
+  to the first jeep and from the last one, up to 20 miles, and up to 300 m
+  between jeeps. It assumes about 4 minutes of waiting per jeep, and counts
+  each change of jeep as about 5 minutes more so that fewer rides rank higher.
+- A pin must be on land, meaning within about 600 m of an
+  [OpenStreetMap](https://www.openstreetmap.org/copyright) road or a jeep route,
+  which keeps pins off the sea and Guimaras. It must also be within 20 miles of
+  a jeep route.
+- Place names come from
+  [Nominatim reverse geocoding](https://nominatim.org/release-docs/latest/api/Reverse/).
+  Walking trails come from the
+  [OpenStreetMap foot router](https://routing.openstreetmap.de/). If either
+  service is down, the app falls back to the nearest official stop and a
+  straight dashed line.
+
+---
+
 ## The team
 
 **Group 5** · Software Development III
@@ -141,6 +203,12 @@ in.
 cd server && npx prisma db push
 ```
 
+Then load the 25 official jeepney routes:
+
+```bash
+cd server && npm run prisma:seed
+```
+
 ### 4. Run it
 
 You need **two terminals** — the API and the frontend are separate processes.
@@ -170,7 +238,7 @@ same-origin and means the Google redirect URI never has to change.
 | Page | Path | What's there |
 | --- | --- | --- |
 | Home | `/home` | Route search, frequent rides, live traffic, service stats |
-| Routes | `/routes` | Interactive map, route comparison, fare and segment breakdown |
+| Routes | `/routes` | Trip planner (pin origin and destination), the 25 official jeep routes, stops and fares |
 | Dashboard | `/dashboard` | Incident reporting overview and commuter live feed |
 | Commuter Guide | `/commuter-guide` | Tips for planning, fares and travel etiquette |
 | About | `/about-us` | The project and the team behind it |
@@ -237,6 +305,7 @@ Backend code never lives in `client/`. Anything genuinely needed by both goes in
 | `server` | `npm test` | Vitest suite (131 tests) |
 | `server` | `npm run typecheck` | tsc, no emit |
 | `server` | `npm run prisma:push` | Sync schema to the database |
+| `server` | `npm run prisma:seed` | Load the 25 official jeepney routes |
 | `client` | `npm run dev` | Next dev server |
 | `client` | `npm run build` | Production build |
 | `client` | `npm start` | Serve the production build |

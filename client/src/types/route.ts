@@ -8,6 +8,11 @@ export interface JourneySegment {
   distance?: string;
 }
 
+export interface RouteStop {
+  name: string;
+  position: [number, number];
+}
+
 export interface RouteData {
   id: string;
   routeNumber: number;
@@ -16,6 +21,9 @@ export interface RouteData {
   description: string;
   color: string;
   path: [number, number][];
+  turnIndex: number;
+  localNames: string[];
+  stops: RouteStop[];
   fare: string;
   distance: string;
   category: RouteCategory;

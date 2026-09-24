@@ -1,17 +1,15 @@
-import type { RouteCategory, RouteData } from '@/types/route';
+import type { RouteData } from '@/types/route';
+import type { RouteMode, RouteView } from '@/features/routes/lib/routeView';
 
 interface RouteOptionCardProps {
   route: RouteData;
+  view: RouteView;
+  mode: RouteMode;
   selected?: boolean;
   onClick?: () => void;
 }
 
-const CATEGORY_LABELS: Record<RouteCategory, string> = {
-  recommended: 'Recommended',
-  loop: 'Loop',
-};
-
-export default function RouteOptionCard({ route, selected, onClick }: RouteOptionCardProps) {
+export default function RouteOptionCard({ route, view, mode, selected, onClick }: RouteOptionCardProps) {
   return (
     <div
       onClick={onClick}
@@ -24,54 +22,39 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
           <span className="inline-block px-2 py-1 text-xs font-bold rounded-full mb-1 bg-slate-100 text-slate-900">
-            {CATEGORY_LABELS[route.category]}
+            {mode === 'loop' ? 'Loop' : 'One way'}
           </span>
           <h3 className="font-bold text-slate-900 text-sm">
             <span className="text-slate-400">#{route.routeNumber}</span> {route.title}
           </h3>
+          <p className="mt-1 text-xs font-semibold text-slate-600">
+            {route.localNames.length > 0
+              ? `Also known as ${route.localNames.join(' · ')}`
+              : 'New route under the 2024 route plan'}
+          </p>
+          <p className="mt-1 text-xs text-slate-500">{route.description}</p>
         </div>
         <div className="ml-2 text-right">
-          <div className="text-lg font-black text-slate-900">{route.duration}</div>
+          <div className="text-lg font-black text-slate-900">{view.duration}</div>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 mb-3">
-        {route.segments.map((segment, idx) => (
-          <span
-            key={idx}
-            className="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-700 text-xs font-medium rounded"
-          >
-            {segment.mode}
-          </span>
-        ))}
-      </div>
+      <p className="mb-3 text-xs font-semibold text-slate-700">
+        {view.terminal} → {view.farEnd}
+        {mode === 'loop' ? ` → back to ${view.terminal}` : ''}
+      </p>
 
-      <div className="flex items-center justify-between mb-3 py-2 border-t border-b border-slate-100">
+      <div className="flex items-center justify-between py-2 border-t border-slate-100">
         <div>
-          <div className="text-xs text-slate-400 uppercase tracking-wide">Total Fare</div>
-          <div className="font-black text-slate-900">{route.fare}</div>
-        </div>
-        <div>
-          <div className="text-xs text-slate-400 uppercase tracking-wide">Distance</div>
-          <div className="font-black text-slate-900">{route.distance}</div>
-        </div>
-      </div>
-
-      <div className="space-y-2 mb-3">
-        {route.segments.map((segment, idx) => (
-          <div key={idx} className="flex gap-2 text-xs">
-            <span className="font-semibold text-slate-900 min-w-12">{idx + 1}.</span>
-            <div className="flex-1">
-              <div className="font-medium text-slate-900">
-                {segment.mode} {segment.distance && `(${segment.distance})`}
-              </div>
-              <div className="text-slate-500">
-                {segment.from} → {segment.to}
-              </div>
-              <div className="text-slate-400">~{segment.duration}</div>
-            </div>
+          <div className="text-xs text-slate-400 uppercase tracking-wide">
+            {mode === 'loop' ? 'Fare per ride' : 'Fare'}
           </div>
-        ))}
+          <div className="font-black text-slate-900">{view.fare}</div>
+        </div>
+        <div className="text-right">
+          <div className="text-xs text-slate-400 uppercase tracking-wide">Distance</div>
+          <div className="font-black text-slate-900">{view.distance}</div>
+        </div>
       </div>
     </div>
   );
