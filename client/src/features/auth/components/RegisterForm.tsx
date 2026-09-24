@@ -17,13 +17,11 @@ export default function RegisterForm() {
   const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
-    setNotice('');
 
     if (formData.password !== formData.confirmPassword) return setError('Passwords do not match.');
     if (!acceptedTerms) return setError('Please accept the Terms of Service and Privacy Policy to continue.');
@@ -96,7 +94,6 @@ export default function RegisterForm() {
         </Checkbox>
 
         {error ? <Alert tone="error">{error}</Alert> : null}
-        {notice ? <Alert tone="info">{notice}</Alert> : null}
 
         <PrimaryButton withChevron type="submit" loading={loading} loadingLabel="Creating Account…">
           Create Account
@@ -104,20 +101,7 @@ export default function RegisterForm() {
       </form>
 
       <div className="mt-8">
-        <SocialAuthButtons
-          label="Or sign up with"
-          onSelect={(provider) => {
-            setError('');
-            setNotice('');
-
-            if (provider === 'Google') {
-              window.location.href = '/api/auth/google/start';
-              return;
-            }
-
-            setNotice(`${provider} sign-up isn't available yet. Please register with a username.`);
-          }}
-        />
+        <SocialAuthButtons label="Or sign up with" />
       </div>
 
       <p className="mt-8 text-center text-sm font-medium text-slate-500">

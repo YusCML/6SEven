@@ -20,7 +20,6 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
 
   const justRegistered = router.query.registered === '1';
@@ -30,7 +29,6 @@ export default function LoginForm() {
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
-    setNotice('');
     setLoading(true);
 
     try {
@@ -85,7 +83,6 @@ export default function LoginForm() {
         </Checkbox>
 
         {visibleError ? <Alert tone="error">{visibleError}</Alert> : null}
-        {notice ? <Alert tone="info">{notice}</Alert> : null}
 
         <PrimaryButton withChevron type="submit" loading={loading} loadingLabel="Signing In…">
           Sign In
@@ -93,20 +90,7 @@ export default function LoginForm() {
       </form>
 
       <div className="mt-8">
-        <SocialAuthButtons
-          label="Or continue with"
-          onSelect={(provider) => {
-            setError('');
-            setNotice('');
-
-            if (provider === 'Google') {
-              window.location.href = '/api/auth/google/start';
-              return;
-            }
-
-            setNotice(`${provider} sign-in isn't available yet. Please use your username and password.`);
-          }}
-        />
+        <SocialAuthButtons label="Or continue with" />
       </div>
 
       <p className="mt-8 text-center text-sm font-medium text-slate-500">
