@@ -21,9 +21,6 @@ export default function RouteOptionCard({ route, view, mode, selected, onClick }
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
-          <span className="inline-block px-2 py-1 text-xs font-bold rounded-full mb-1 bg-slate-100 text-slate-900">
-            {mode === 'loop' ? 'Loop' : 'One way'}
-          </span>
           <h3 className="font-bold text-slate-900 text-sm">
             <span
               className="mr-1.5 inline-block rounded px-2 py-0.5 text-xs font-bold text-white"
