@@ -5,7 +5,7 @@ import Avatar from '@/components/ui/Avatar';
 import Badge from '@/components/ui/Badge';
 import Alert from '@/components/ui/Alert';
 import { PencilIcon, XIcon } from '@/components/icons';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 import ProfileDetailsForm from './ProfileDetailsForm';
 import ProfilePhotoPicker from './ProfilePhotoPicker';
 

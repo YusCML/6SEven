@@ -2,10 +2,10 @@ import { useState } from "react";
 import { jsPDF } from "jspdf";
 import Image from "next/image";
 
-import commuterHero from "@/assets/commuterPage/modern_bus.jpg";
-import commuterPlanningRoute from "@/assets/commuterPage/commuter_planning_route.jpg";
-import busRouteMap from "@/assets/commuterPage/busRouteMap.jpg";
-import railwayMap from "@/assets/commuterPage/railway.jpg";
+import commuterHero from "@/assets/commuter-guide/modern-bus.jpg";
+import commuterPlanningRoute from "@/assets/commuter-guide/commuters-planning.png";
+import busRouteMap from "@/assets/commuter-guide/city-proper-map.jpg";
+import railwayMap from "@/assets/commuter-guide/route-network-map.jpg";
 
 const transportOptions = [
   {

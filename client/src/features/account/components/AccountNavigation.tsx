@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { LogInIcon, LogOutIcon, MapPinIcon, SlidersIcon, UserIcon } from '@/components/icons';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 
 type AccountNavigationProps = {
   active: 'profile' | 'settings';

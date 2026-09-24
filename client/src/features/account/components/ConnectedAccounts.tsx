@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import googleMark from '@/assets/brand/google.svg';
 import Alert from '@/components/ui/Alert';
 import Badge from '@/components/ui/Badge';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 import { errorMessage } from '@/lib/http';
 import * as accountApi from '@/services/account.service';
 

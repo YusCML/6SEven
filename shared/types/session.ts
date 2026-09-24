@@ -8,13 +8,6 @@ export type SessionUser = {
   createdAt: string;
 };
 
-export type SessionGuest = {
-  name: string;
-};
-
-export type SessionPayload = {
-  status: 'authenticated' | 'guest';
-  user: SessionUser | null;
-  guest: SessionGuest | null;
-  expiresAt: string;
-};
+export type SessionPayload =
+  | { status: 'authenticated'; user: SessionUser }
+  | { status: 'guest'; user: null };

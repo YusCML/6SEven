@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PageMeta from '@/components/PageMeta';
 import Alert from '@/components/ui/Alert';
-import useTheme from '@/hooks/useTheme';
+import { useTheme } from '@/providers/ThemeProvider';
 import type { ThemePreference } from '@/providers/ThemeProvider';
 import AccountBreadcrumb from '@/features/account/components/AccountBreadcrumb';
 import AccountNavigation from '@/features/account/components/AccountNavigation';

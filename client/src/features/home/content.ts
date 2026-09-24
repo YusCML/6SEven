@@ -1,9 +1,9 @@
 import type { ComponentType, SVGProps } from 'react';
 import type { StaticImageData } from 'next/image';
 import { ClockIcon, CloudSunIcon, RouteIcon, TicketIcon } from '@/components/icons';
-import cpuPhoto from '@/assets/landing/ride-cpu.jpg';
-import jaroPhoto from '@/assets/landing/ride-jaro.jpg';
-import smIloiloPhoto from '@/assets/landing/ride-sm-iloilo.jpg';
+import cpuPhoto from '@/assets/home/ride-cpu.jpg';
+import jaroPhoto from '@/assets/home/ride-jaro.jpg';
+import smIloiloPhoto from '@/assets/home/ride-sm-iloilo.jpg';
 
 export type StatTone = 'brand' | 'success' | 'warning' | 'accent';
 

@@ -1,8 +1,7 @@
 import type { SessionPayload } from '@shared/types/session';
 
-export function sessionDisplayName(payload: SessionPayload): string {
-  const user = payload.user;
-  if (user) return user.nickname?.trim() || user.username;
+export function sessionDisplayName(payload: SessionPayload | null | undefined): string {
+  if (!payload?.user) return 'Guest';
 
-  return payload.guest?.name ?? 'Guest';
+  return payload.user.nickname?.trim() || payload.user.username;
 }

@@ -1,5 +1,5 @@
 import { MoonIcon, SunIcon } from '@/components/icons';
-import useTheme from '@/hooks/useTheme';
+import { useTheme } from '@/providers/ThemeProvider';
 import type { ResolvedTheme } from '@/providers/ThemeProvider';
 
 const options = [

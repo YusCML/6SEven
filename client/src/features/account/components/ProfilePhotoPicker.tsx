@@ -2,7 +2,7 @@ import { useRef, useState, type ChangeEvent, type ReactNode } from 'react';
 import { CameraIcon } from '@/components/icons';
 import { errorMessage } from '@/lib/http';
 import * as accountApi from '@/services/account.service';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 
 const MAX_INPUT_BYTES = 8 * 1024 * 1024;
 const OUTPUT_SIZE = 256;

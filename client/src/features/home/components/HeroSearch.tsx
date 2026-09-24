@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import heroPhoto from '@/assets/landing/hero-emperador.jpg';
-import useSession from '@/hooks/useSession';
+import heroPhoto from '@/assets/home/hero-emperador.jpg';
+import { useSession } from '@/providers/SessionProvider';
 import RoutePlannerCard from './RoutePlannerCard';
 
 export default function HeroSearch() {

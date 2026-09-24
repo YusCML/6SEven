@@ -40,29 +40,19 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return data;
 }
 
-function jsonBody(method: string, body?: unknown): RequestInit {
-  return {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body ?? {}),
-  };
+function sendJson(method: 'POST' | 'PATCH' | 'PUT') {
+  return <T>(path: string, body?: unknown): Promise<T> =>
+    request<T>(path, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body ?? {}),
+    });
 }
 
-export function getJson<T>(path: string): Promise<T> {
-  return request<T>(path);
-}
-
-export function postJson<T>(path: string, body?: unknown): Promise<T> {
-  return request<T>(path, jsonBody('POST', body));
-}
-
-export function patchJson<T>(path: string, body?: unknown): Promise<T> {
-  return request<T>(path, jsonBody('PATCH', body));
-}
-
-export function putJson<T>(path: string, body?: unknown): Promise<T> {
-  return request<T>(path, jsonBody('PUT', body));
-}
+export const getJson: <T>(path: string) => Promise<T> = request;
+export const postJson = sendJson('POST');
+export const patchJson = sendJson('PATCH');
+export const putJson = sendJson('PUT');
 
 export function errorMessage(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;

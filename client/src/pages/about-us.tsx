@@ -1,5 +1,5 @@
 import PageMeta from '@/components/PageMeta';
-import AboutUs from '@/features/aboutUs/components/AboutUs';
+import AboutUs from '@/features/about-us/components/AboutUs';
 
 export default function AboutUsPage() {
   return (

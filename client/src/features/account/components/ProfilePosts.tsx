@@ -3,7 +3,7 @@ import Alert from '@/components/ui/Alert';
 import { PlusIcon } from '@/components/icons';
 import HotspotCard from '@/features/hotspot/components/HotspotCard';
 import { hotspotsBy } from '@/features/hotspot/data';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 
 export default function ProfilePosts() {
   const { displayName, isAuthenticated, isLoading } = useSession();
