@@ -6,7 +6,7 @@ import RouteOptionCard from '@/features/routes/components/RouteOptionCard';
 import TripOptionCard from '@/features/routes/components/TripOptionCard';
 import TripPlanner, { type PinTarget } from '@/features/routes/components/TripPlanner';
 import type { LatLng } from '@/features/routes/lib/geo';
-import { isPinnable } from '@/features/routes/lib/iloiloArea';
+import { pinProblem } from '@/features/routes/lib/iloiloArea';
 import { nearestLandmark, type Pin } from '@/features/routes/lib/landmarks';
 import { routeView, type RouteMode } from '@/features/routes/lib/routeView';
 import { buildNetwork, planTrips, type TripOption } from '@/features/routes/lib/tripPlanner';
@@ -70,8 +70,9 @@ export default function RouteExplorer() {
   const setPin = (target: PinTarget) => (target === 'origin' ? setOrigin : setDestination);
 
   function placePin(target: PinTarget, point: LatLng): boolean {
-    if (!isPinnable(point)) {
-      setNotice('Pick a spot on land inside Iloilo City.');
+    const problem = pinProblem(routes, point);
+    if (problem) {
+      setNotice(problem);
       return false;
     }
     setNotice(null);
@@ -140,7 +141,7 @@ export default function RouteExplorer() {
               </h3>
               {options.length === 0 && (
                 <p className="mb-4 text-sm text-slate-500">
-                  No jeep passes within walking distance of both points. Try a spot closer to a main road.
+                  No jeep route connects these two points. Try moving a pin closer to a main road.
                 </p>
               )}
               <div className="space-y-3 pb-4">

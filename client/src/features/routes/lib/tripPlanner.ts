@@ -1,9 +1,10 @@
 import type { RouteData } from '@/types/route';
 import { jeepneyFare, JEEPNEY_KMH } from './fare';
 import { cumulativeMeters, distanceMeters, pointAlong, slicePath, type LatLng } from './geo';
+import { MAX_WALK_TO_JEEP_M } from './iloiloArea';
 
 const STEP_M = 60; // spacing of the places you can get on or off along a route
-const MAX_WALK_M = 800; // to the first jeep and from the last one
+const MAX_WALK_M = MAX_WALK_TO_JEEP_M; // to the first jeep and from the last one
 const MAX_TRANSFER_M = 300; // between two jeeps
 const DIRECT_WALK_M = 1200; // offer a walk-only trip when the two places are this close
 const WALK_MPS = 1.2; // about 4.3 km/h

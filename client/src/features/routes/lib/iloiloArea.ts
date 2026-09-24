@@ -1,27 +1,21 @@
 import area from '@/features/routes/data/iloiloArea.json';
-import type { LatLng } from './geo';
+import type { RouteData } from '@/types/route';
+import { distanceMeters, type LatLng } from './geo';
 
-// Iloilo City's boundary (OpenStreetMap, via Nominatim) and a ~55 m grid of cells that sit on
-// land within about 200 m of a road. Together they keep pins off the sea and outside the city.
-const BOUNDARY = area.boundary as LatLng[];
+// A ~55 m grid over metro Iloilo marking land within ~600 m of an OpenStreetMap road or a jeep route
+// (Guimaras left out), so pins can't be dropped on the sea.
 const { south, west, cell, rows, cols, bits } = area.grid;
 
 const LAND = Uint8Array.from(atob(bits), (char) => char.charCodeAt(0));
+
+export const MAX_WALK_TO_JEEP_M = 20 * 1609; // 20 miles: past this, no jeep route is any use
 
 export const ILOILO_BOUNDS: [LatLng, LatLng] = [
   [south, west],
   [south + rows * cell, west + cols * cell],
 ];
 
-export function insideBoundary([lat, lng]: LatLng): boolean {
-  return BOUNDARY.reduce((inside, [lat1, lng1], i) => {
-    const [lat2, lng2] = BOUNDARY[(i + 1) % BOUNDARY.length];
-    const crosses = lat1 > lat !== lat2 > lat && lng < ((lng2 - lng1) * (lat - lat1)) / (lat2 - lat1) + lng1;
-    return crosses ? !inside : inside;
-  }, false);
-}
-
-export function onLandNearRoad([lat, lng]: LatLng): boolean {
+export function onLand([lat, lng]: LatLng): boolean {
   const row = Math.floor((lat - south) / cell);
   const col = Math.floor((lng - west) / cell);
   if (row < 0 || col < 0 || row >= rows || col >= cols) return false;
@@ -29,6 +23,18 @@ export function onLandNearRoad([lat, lng]: LatLng): boolean {
   return ((LAND[index >> 3] >> (index & 7)) & 1) === 1;
 }
 
-export function isPinnable(point: LatLng): boolean {
-  return insideBoundary(point) && onLandNearRoad(point);
+export function distanceToNearestRoute(routes: RouteData[], point: LatLng): number {
+  return routes.reduce(
+    (best, route) => route.path.reduce((min, vertex) => Math.min(min, distanceMeters(vertex, point)), best),
+    Infinity,
+  );
+}
+
+/** Why a spot can't be a trip pin, or null if it can. */
+export function pinProblem(routes: RouteData[], point: LatLng): string | null {
+  if (!onLand(point)) return 'Pick a spot on land, not on the water.';
+  if (distanceToNearestRoute(routes, point) > MAX_WALK_TO_JEEP_M) {
+    return 'That spot is more than 20 miles from any jeepney route.';
+  }
+  return null;
 }

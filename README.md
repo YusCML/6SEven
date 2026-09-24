@@ -54,13 +54,44 @@ Local Public Transport Route Plan (ELPTRP). The data lives in
   confirms.
 - **Times.** Travel times are estimates at an average of 16 km/h, stops
   included.
+- **Stops.** The numbered markers on the map are the landmarks in each official
+  list, placed on the route in riding order. They use
+  [OpenStreetMap](https://www.openstreetmap.org/copyright) places and the
+  guide's Google My Maps placemarks.
+- **Jeep names.** Each card also shows the older names commuters still use for
+  the jeep, from the guide's
+  [old and new route names](https://shemaegomez.com/iloilo-city-jeepneys-names/).
+  Routes 18 to 24 are new in the 2024 plan and have no older name.
 
-Each route is a loop. The card's fare, distance and time cover the end-to-end
-ride, and the two legs show the trip out to the far end and back.
+Every route is a loop. **Loop** shows the whole trip out and back. **One way**
+shows the terminal to the far end, with that ride's distance, time and fare.
 
 Two routes can't follow the official path exactly because OpenStreetMap is
 missing a road. So-oc Road is cut at C. Aquino Avenue (route 20), and there is
 no Sto. Domingo Street link near Tatoy's (route 17).
+
+### Trip planner
+
+Pin a starting point and a destination on the map. You can drag pins, and Swap
+flips them. The planner then lists the ways to get there. Each option says
+which jeeps to take, where to board, where to get off and change, and the fare
+for each ride and in total. Rides are drawn in the route's color, and walking is
+a dashed trail.
+
+- It rides only in each loop's direction of travel. It walks as far as needed
+  to the first jeep and from the last one, up to 20 miles, and up to 300 m
+  between jeeps. It assumes about 4 minutes of waiting per jeep, and counts
+  each change of jeep as about 5 minutes more so that fewer rides rank higher.
+- A pin must be on land, meaning within about 600 m of an
+  [OpenStreetMap](https://www.openstreetmap.org/copyright) road or a jeep route,
+  which keeps pins off the sea and Guimaras. It must also be within 20 miles of
+  a jeep route.
+- Place names come from
+  [Nominatim reverse geocoding](https://nominatim.org/release-docs/latest/api/Reverse/).
+  Walking trails come from the
+  [OpenStreetMap foot router](https://routing.openstreetmap.de/). If either
+  service is down, the app falls back to the nearest official stop and a
+  straight dashed line.
 
 ---
 
@@ -207,7 +238,7 @@ same-origin and means the Google redirect URI never has to change.
 | Page | Path | What's there |
 | --- | --- | --- |
 | Home | `/home` | Route search, frequent rides, live traffic, service stats |
-| Routes | `/routes` | Interactive map, route comparison, fare and segment breakdown |
+| Routes | `/routes` | Trip planner (pin origin and destination), the 25 official jeep routes, stops and fares |
 | Dashboard | `/dashboard` | Incident reporting overview and commuter live feed |
 | Commuter Guide | `/commuter-guide` | Tips for planning, fares and travel etiquette |
 | About | `/about-us` | The project and the team behind it |

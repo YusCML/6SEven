@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { RouteData } from '@/types/route';
 import { jeepneyFare } from './fare';
 import type { LatLng } from './geo';
-import { isPinnable } from './iloiloArea';
+import { pinProblem } from './iloiloArea';
 import { buildNetwork, planTrips, type RideLeg } from './tripPlanner';
 
 function route(number: number, path: LatLng[]): RouteData {
@@ -68,8 +68,10 @@ describe('planTrips', () => {
     expect(options.some((option) => option.rides === 0)).toBe(true);
   });
 
-  it('finds nothing when no jeep passes within walking distance', () => {
-    expect(planTrips(network, [10.7003, 122.501], [10.78, 122.6])).toEqual([]);
+  it('walks as far as needed to reach a jeep', () => {
+    const [best] = planTrips(network, [10.7003, 122.501], [10.745, 122.53]);
+    expect(rides(best.legs).map((leg) => leg.routeNumber)).toContain(2);
+    expect(best.legs.at(-1)?.kind).toBe('walk');
   });
 });
 
@@ -85,15 +87,26 @@ describe('jeepneyFare', () => {
   });
 });
 
-describe('isPinnable', () => {
-  it('accepts streets in Iloilo City', () => {
-    expect(isPinnable([10.6926, 122.5737])).toBe(true);
-    expect(isPinnable([10.7245, 122.557])).toBe(true);
+describe('pinProblem', () => {
+  const routes = [east, north];
+
+  it('accepts land near the jeep routes, inside or just outside the city', () => {
+    expect(pinProblem(routes, [10.7003, 122.51])).toBeNull();
+    expect(pinProblem(routes, [10.7535, 122.5403])).toBeNull(); // Robinsons Pavia
   });
 
-  it('rejects the sea and places outside the city', () => {
-    expect(isPinnable([10.688, 122.595])).toBe(false);
-    expect(isPinnable([10.672, 122.52])).toBe(false);
-    expect(isPinnable([10.77, 122.54])).toBe(false);
+  it('rejects the sea and Guimaras', () => {
+    expect(pinProblem(routes, [10.688, 122.6])).toMatch(/water/);
+    expect(pinProblem(routes, [10.672, 122.52])).toMatch(/water/);
+    expect(pinProblem(routes, [10.69, 122.63])).toMatch(/water/);
+  });
+
+  it('rejects spots more than 20 miles from every route', () => {
+    const farRoute = route(3, [
+      [11.2, 122.9],
+      [11.21, 122.9],
+      [11.2, 122.9],
+    ]);
+    expect(pinProblem([farRoute], [10.7003, 122.51])).toMatch(/20 miles/);
   });
 });
