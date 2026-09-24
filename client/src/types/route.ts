@@ -22,6 +22,7 @@ export interface RouteData {
   color: string;
   path: [number, number][];
   turnIndex: number;
+  localNames: string[];
   stops: RouteStop[];
   fare: string;
   distance: string;

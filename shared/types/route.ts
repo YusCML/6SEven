@@ -27,6 +27,7 @@ export type Route = {
   category: RouteCategory;
   path: LatLng[];
   turnIndex: number;
+  localNames: string[];
   stops: RouteStop[];
   segments: JourneySegment[];
 };

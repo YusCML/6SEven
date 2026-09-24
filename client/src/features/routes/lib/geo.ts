@@ -30,16 +30,19 @@ export function nearestIndex(path: LatLng[], point: LatLng): number {
   );
 }
 
+/** The point a given distance along the path. */
+export function pointAlong(path: LatLng[], cumulative: number[], meters: number): LatLng {
+  const i = cumulative.findIndex((c) => c >= meters);
+  if (i < 0) return path[path.length - 1];
+  if (i === 0) return path[0];
+  const span = cumulative[i] - cumulative[i - 1] || 1;
+  const t = (meters - cumulative[i - 1]) / span;
+  const [a, b] = [path[i - 1], path[i]];
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+}
+
 /** The part of the path between two distances along it, keeping its road vertices. */
 export function slicePath(path: LatLng[], cumulative: number[], fromM: number, toM: number): LatLng[] {
-  const at = (meters: number): LatLng => {
-    const i = cumulative.findIndex((c) => c >= meters);
-    if (i <= 0) return path[Math.max(i, 0)];
-    const span = cumulative[i] - cumulative[i - 1] || 1;
-    const t = (meters - cumulative[i - 1]) / span;
-    const [a, b] = [path[i - 1], path[i]];
-    return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
-  };
   const inside = path.filter((_, i) => cumulative[i] > fromM && cumulative[i] < toM);
-  return [at(fromM), ...inside, at(toM)];
+  return [pointAlong(path, cumulative, fromM), ...inside, pointAlong(path, cumulative, toM)];
 }

@@ -27,6 +27,11 @@ export default function RouteOptionCard({ route, view, mode, selected, onClick }
           <h3 className="font-bold text-slate-900 text-sm">
             <span className="text-slate-400">#{route.routeNumber}</span> {route.title}
           </h3>
+          <p className="mt-1 text-xs font-semibold text-slate-600">
+            {route.localNames.length > 0
+              ? `Also known as ${route.localNames.join(' · ')}`
+              : 'New route under the 2024 route plan'}
+          </p>
           <p className="mt-1 text-xs text-slate-500">{route.description}</p>
         </div>
         <div className="ml-2 text-right">

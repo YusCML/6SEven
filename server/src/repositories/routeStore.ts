@@ -30,18 +30,20 @@ export type RouteRecord = {
   category: RouteCategory;
   path: [number, number][];
   turnIndex: number;
+  localNames: string[];
   stops: RouteStop[];
   segments: JourneySegment[];
 };
 
 type RouteWithSegments = RouteModel & { segments: SegmentModel[] };
 
-// Landmark stops and the one-way turning point are static reference data kept next to the seed.
+// Landmark stops, the one-way turning point and the names commuters use are static reference data kept next to the seed.
 const STATIC_BY_NUMBER = new Map(
   routeData.map((route) => [
     route.routeNumber,
     {
       turnIndex: route.turnIndex,
+      localNames: route.localNames,
       stops: route.stops.map((stop): RouteStop => ({
         name: stop.name,
         position: [stop.position[0], stop.position[1]],
@@ -93,6 +95,7 @@ export function toRecord(route: RouteWithSegments): RouteRecord {
     category: toCategory(route.category),
     path: toCoordinates(route.path),
     turnIndex: STATIC_BY_NUMBER.get(route.routeNumber)?.turnIndex ?? 0,
+    localNames: STATIC_BY_NUMBER.get(route.routeNumber)?.localNames ?? [],
     stops: STATIC_BY_NUMBER.get(route.routeNumber)?.stops ?? [],
     segments: [...route.segments].sort((a, b) => a.order - b.order).map(toSegment),
   };
