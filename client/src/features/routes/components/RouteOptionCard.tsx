@@ -25,7 +25,13 @@ export default function RouteOptionCard({ route, view, mode, selected, onClick }
             {mode === 'loop' ? 'Loop' : 'One way'}
           </span>
           <h3 className="font-bold text-slate-900 text-sm">
-            <span className="text-slate-400">#{route.routeNumber}</span> {route.title}
+            <span
+              className="mr-1.5 inline-block rounded px-2 py-0.5 text-xs font-bold text-white"
+              style={{ backgroundColor: route.color }}
+            >
+              Route {route.routeNumber}
+            </span>
+            {route.title}
           </h3>
           <p className="mt-1 text-xs font-semibold text-slate-600">
             {route.localNames.length > 0
