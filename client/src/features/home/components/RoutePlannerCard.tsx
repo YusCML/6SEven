@@ -37,7 +37,7 @@ function Field({ label, icon, value, placeholder, onChange }: FieldProps) {
 
 export default function RoutePlannerCard() {
   const router = useRouter();
-  const [origin, setOrigin] = useState('Manila City Hall');
+  const [origin, setOrigin] = useState('Central Philippine University');
   const [destination, setDestination] = useState('');
 
   const swap = () => {

@@ -16,8 +16,8 @@ type FilterTab = 'all' | RouteCategory;
 
 const FILTER_TABS: { id: FilterTab; label: string }[] = [
   { id: 'all', label: 'All Routes' },
-  { id: 'recommended', label: '⚡ Recommended' },
-  { id: 'loop', label: '🔁 Loop' },
+  { id: 'recommended', label: 'Recommended' },
+  { id: 'loop', label: 'Loop' },
 ];
 
 export default function RouteExplorer() {

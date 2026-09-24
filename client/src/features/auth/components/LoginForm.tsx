@@ -47,7 +47,7 @@ export default function LoginForm() {
     <AuthCard
       title="Welcome Back!"
       description="Sign in to manage your routes and commute alerts."
-      footer={<AuthStatusStrip status="System Status: Online" />}
+      footer={<AuthStatusStrip />}
     >
       {justRegistered ? (
         <Alert tone="success" className="mb-5">
@@ -62,7 +62,7 @@ export default function LoginForm() {
           type="text"
           name="username"
           autoComplete="username"
-          placeholder="juandelacruz"
+          placeholder="Username"
           icon={<UserIcon className="h-4 w-4" />}
           value={username}
           onChange={(event) => setUsername(event.target.value)}
@@ -74,7 +74,7 @@ export default function LoginForm() {
           type="password"
           name="password"
           autoComplete="current-password"
-          placeholder="••••••••"
+          placeholder="Password"
           icon={<LockIcon className="h-4 w-4" />}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
