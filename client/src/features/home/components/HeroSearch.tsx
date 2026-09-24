@@ -24,7 +24,7 @@ export default function HeroSearch() {
           className="absolute inset-0 -z-10 bg-linear-to-r from-ink/90 via-ink/55 to-ink/10"
         />
 
-        <div className="w-full max-w-2xl p-8 lg:p-10">
+        <div className="w-full max-w-3xl p-8 lg:p-10">
           <span className="inline-flex items-center gap-2 rounded-full bg-paper/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-paper/85 ring-1 ring-paper/20 backdrop-blur">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
             Iloilo City · Live

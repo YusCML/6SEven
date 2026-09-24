@@ -84,7 +84,7 @@ export default function LoginForm() {
 
         {visibleError ? <Alert tone="error">{visibleError}</Alert> : null}
 
-        <PrimaryButton withChevron type="submit" loading={loading} loadingLabel="Signing In…">
+        <PrimaryButton type="submit" loading={loading} loadingLabel="Signing In…">
           Sign In
         </PrimaryButton>
       </form>

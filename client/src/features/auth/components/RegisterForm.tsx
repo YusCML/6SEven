@@ -95,7 +95,7 @@ export default function RegisterForm() {
 
         {error ? <Alert tone="error">{error}</Alert> : null}
 
-        <PrimaryButton withChevron type="submit" loading={loading} loadingLabel="Creating Account…">
+        <PrimaryButton type="submit" loading={loading} loadingLabel="Creating Account…">
           Create Account
         </PrimaryButton>
       </form>
