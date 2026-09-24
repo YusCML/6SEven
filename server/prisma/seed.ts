@@ -6,7 +6,7 @@ import routes from './data/routes.json';
 async function main() {
   console.log(`Seeding ${routes.length} routes...`);
 
-  for (const { segments, ...routeData } of routes) {
+  for (const { segments, stops: _stops, turnIndex: _turnIndex, ...routeData } of routes) {
     await prisma.route.upsert({
       where: { routeNumber: routeData.routeNumber },
       update: {

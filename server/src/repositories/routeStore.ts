@@ -1,6 +1,7 @@
 import type { RouteModel, SegmentModel } from '@/generated/prisma/models';
 import { prisma } from '@/db/prisma';
 import { NotFoundError } from '@/errors';
+import routeData from '../../prisma/data/routes.json';
 
 export type RouteCategory = 'recommended' | 'loop';
 
@@ -10,6 +11,11 @@ export type JourneySegment = {
   to: string;
   duration: string;
   distance?: string;
+};
+
+export type RouteStop = {
+  name: string;
+  position: [number, number];
 };
 
 export type RouteRecord = {
@@ -23,10 +29,26 @@ export type RouteRecord = {
   distance: string;
   category: RouteCategory;
   path: [number, number][];
+  turnIndex: number;
+  stops: RouteStop[];
   segments: JourneySegment[];
 };
 
 type RouteWithSegments = RouteModel & { segments: SegmentModel[] };
+
+// Landmark stops and the one-way turning point are static reference data kept next to the seed.
+const STATIC_BY_NUMBER = new Map(
+  routeData.map((route) => [
+    route.routeNumber,
+    {
+      turnIndex: route.turnIndex,
+      stops: route.stops.map((stop): RouteStop => ({
+        name: stop.name,
+        position: [stop.position[0], stop.position[1]],
+      })),
+    },
+  ]),
+);
 
 function isCoordinate(value: unknown): value is [number, number] {
   return (
@@ -70,6 +92,8 @@ export function toRecord(route: RouteWithSegments): RouteRecord {
     distance: route.distance,
     category: toCategory(route.category),
     path: toCoordinates(route.path),
+    turnIndex: STATIC_BY_NUMBER.get(route.routeNumber)?.turnIndex ?? 0,
+    stops: STATIC_BY_NUMBER.get(route.routeNumber)?.stops ?? [],
     segments: [...route.segments].sort((a, b) => a.order - b.order).map(toSegment),
   };
 }

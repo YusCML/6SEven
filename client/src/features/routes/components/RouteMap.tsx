@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import type { RouteData } from '@/types/route';
+import type { RouteView } from '@/features/routes/lib/routeView';
 
 const defaultIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -12,11 +12,21 @@ const defaultIcon = L.icon({
   iconAnchor: [12, 41],
 });
 
+function stopIcon(number: number, color: string) {
+  return L.divIcon({
+    className: '',
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+    html: `<span class="grid h-[22px] w-[22px] place-items-center rounded-full border-2 bg-white text-[10px] font-black text-slate-900 shadow" style="border-color:${color}">${number}</span>`,
+  });
+}
+
 const ILOILO_CENTER: [number, number] = [10.7202, 122.5621];
 
 interface RouteMapProps {
-  routes: RouteData[];
-  selectedRouteId: string;
+  view: RouteView | null;
+  color: string;
+  title: string;
 }
 
 function FitToPath({ path }: { path: [number, number][] }) {
@@ -29,10 +39,7 @@ function FitToPath({ path }: { path: [number, number][] }) {
   return null;
 }
 
-export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
-  const selectedRoute = routes.find((route) => route.id === selectedRouteId);
-  const path = selectedRoute?.path ?? [];
-
+export default function RouteMap({ view, color, title }: RouteMapProps) {
   return (
     <MapContainer center={ILOILO_CENTER} zoom={13} scrollWheelZoom className="isolate h-full w-full">
       <TileLayer
@@ -40,23 +47,22 @@ export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {selectedRoute && path.length > 0 && (
+      {view && view.path.length > 0 && (
         <>
-          <Polyline
-            key={selectedRoute.id}
-            positions={path}
-            pathOptions={{
-              color: selectedRoute.color,
-              weight: 6,
-              opacity: 1,
-            }}
-          />
-          <Marker position={path[0]} icon={defaultIcon}>
+          <Polyline key={title} positions={view.path} pathOptions={{ color, weight: 6, opacity: 1 }} />
+          <Marker position={view.path[0]} icon={defaultIcon}>
             <Popup>
-              {selectedRoute.title} — {selectedRoute.segments[0]?.from ?? 'Terminal'}
+              {title} — {view.terminal}
             </Popup>
           </Marker>
-          <FitToPath path={path} />
+          {view.stops.map((stop) => (
+            <Marker key={`${stop.number}-${stop.name}`} position={stop.position} icon={stopIcon(stop.number, color)}>
+              <Tooltip direction="top" offset={[0, -10]}>
+                {stop.number}. {stop.name}
+              </Tooltip>
+            </Marker>
+          ))}
+          <FitToPath path={view.path} />
         </>
       )}
     </MapContainer>

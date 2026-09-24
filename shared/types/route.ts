@@ -10,6 +10,11 @@ export type JourneySegment = {
   distance?: string;
 };
 
+export type RouteStop = {
+  name: string;
+  position: LatLng;
+};
+
 export type Route = {
   id: string;
   routeNumber: number;
@@ -21,5 +26,7 @@ export type Route = {
   distance: string;
   category: RouteCategory;
   path: LatLng[];
+  turnIndex: number;
+  stops: RouteStop[];
   segments: JourneySegment[];
 };
