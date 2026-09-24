@@ -47,7 +47,7 @@ export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
   const selectedPath = (selectedRoute && resolvedPaths[selectedRoute.id]) ?? selectedRoute?.path ?? [];
 
   return (
-    <MapContainer center={ILOILO_CENTER} zoom={13} scrollWheelZoom className="h-full w-full">
+    <MapContainer center={ILOILO_CENTER} zoom={13} scrollWheelZoom className="isolate h-full w-full">
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
