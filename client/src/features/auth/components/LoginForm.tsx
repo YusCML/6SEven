@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { LockIcon, UserIcon } from '@/components/icons';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 import { errorMessage } from '@/lib/http';
 import * as authApi from '@/services/auth.service';
 import Alert from '@/components/ui/Alert';

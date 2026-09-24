@@ -12,7 +12,7 @@ import {
   SettingsIcon,
   UserIcon,
 } from '@/components/icons';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 
 const SIGNED_IN_LINKS = [
   { href: '/dashboard/profile', label: 'View Profile', Icon: UserIcon },

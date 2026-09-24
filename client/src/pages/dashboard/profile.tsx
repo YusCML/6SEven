@@ -7,7 +7,7 @@ import InformationCard from '@/features/account/components/InformationCard';
 import AccountBreadcrumb from '@/features/account/components/AccountBreadcrumb';
 import ProfilePosts from '@/features/account/components/ProfilePosts';
 import StatList from '@/features/account/components/StatList';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 
 const WEEK: DayTrips[] = [
   { day: 'Mon', minutes: 0 },

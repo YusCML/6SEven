@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { SettingsIcon } from '@/components/icons';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 import AccountDropdown from './AccountDropdown';
 
 export default function AccountMenu() {

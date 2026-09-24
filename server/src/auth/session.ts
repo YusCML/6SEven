@@ -92,20 +92,6 @@ export function endUserSession(req: Request, res: Response): Promise<SessionReco
   return replaceSession(req, res, null);
 }
 
-export function toSessionPayload({ session, user }: ResolvedSession): SessionPayload {
-  if (user) {
-    return {
-      status: 'authenticated',
-      user: toPublicUser(user),
-      guest: null,
-      expiresAt: session.expiresAt,
-    };
-  }
-
-  return {
-    status: 'guest',
-    user: null,
-    guest: { name: 'Guest' },
-    expiresAt: session.expiresAt,
-  };
+export function toSessionPayload({ user }: ResolvedSession): SessionPayload {
+  return user ? { status: 'authenticated', user: toPublicUser(user) } : { status: 'guest', user: null };
 }

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Alert from '@/components/ui/Alert';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 import TextField from '@/components/ui/TextField';
-import useSession from '@/hooks/useSession';
+import { useSession } from '@/providers/SessionProvider';
 import { errorMessage } from '@/lib/http';
 import * as accountApi from '@/services/account.service';
 

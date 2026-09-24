@@ -1,12 +1,9 @@
-import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import * as authApi from '@/services/auth.service';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { SessionPayload, SessionUser } from '@shared/types/session';
 import { sessionDisplayName } from '@/lib/session';
-
-export type SessionStatus = 'loading' | 'authenticated' | 'guest';
+import * as authApi from '@/services/auth.service';
 
 export type SessionContextValue = {
-  status: SessionStatus;
   user: SessionUser | null;
   displayName: string;
   isAuthenticated: boolean;
@@ -16,73 +13,55 @@ export type SessionContextValue = {
   signOut: () => Promise<void>;
 };
 
-export const SessionContext = createContext<SessionContextValue | null>(null);
+const SessionContext = createContext<SessionContextValue | null>(null);
 
-function displayNameOf(payload: SessionPayload | null): string {
-  if (!payload) return 'Guest';
-  return sessionDisplayName(payload);
-}
-
-async function loadSession(): Promise<SessionPayload | null> {
-  try {
-    return await authApi.fetchSession();
-  } catch {
-    return null;
-  }
+function fetchSessionOrNull(): Promise<SessionPayload | null> {
+  return authApi.fetchSession().catch(() => null);
 }
 
 export default function SessionProvider({ children }: { children: ReactNode }) {
-  const [payload, setPayload] = useState<SessionPayload | null>(null);
-  const [status, setStatus] = useState<SessionStatus>('loading');
-
-  const applySession = useCallback((next: SessionPayload) => {
-    setPayload(next);
-    setStatus(next.status);
-  }, []);
-
-  const adopt = useCallback((next: SessionPayload | null) => {
-    setPayload(next);
-    setStatus(next?.status ?? 'guest');
-  }, []);
-
-  const refresh = useCallback(async () => {
-    adopt(await loadSession());
-  }, [adopt]);
+  const [payload, setPayload] = useState<SessionPayload | null | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
 
-    void (async () => {
-      const next = await loadSession();
-      if (!cancelled) adopt(next);
-    })();
+    fetchSessionOrNull().then((next) => {
+      if (!cancelled) setPayload(next);
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [adopt]);
+  }, []);
+
+  const refresh = useCallback(async () => {
+    setPayload(await fetchSessionOrNull());
+  }, []);
 
   const signOut = useCallback(async () => {
-    try {
-      applySession(await authApi.logout());
-    } catch {
-      await refresh();
-    }
-  }, [applySession, refresh]);
+    setPayload(await authApi.logout().catch(fetchSessionOrNull));
+  }, []);
 
   const value = useMemo<SessionContextValue>(
     () => ({
-      status,
       user: payload?.user ?? null,
-      displayName: displayNameOf(payload),
-      isAuthenticated: status === 'authenticated',
-      isLoading: status === 'loading',
+      displayName: sessionDisplayName(payload),
+      isAuthenticated: payload?.status === 'authenticated',
+      isLoading: payload === undefined,
       refresh,
-      applySession,
+      applySession: setPayload,
       signOut,
     }),
-    [status, payload, refresh, applySession, signOut],
+    [payload, refresh, signOut],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
+}
+
+export function useSession(): SessionContextValue {
+  const context = useContext(SessionContext);
+
+  if (!context) throw new Error('useSession must be used inside a SessionProvider.');
+
+  return context;
 }

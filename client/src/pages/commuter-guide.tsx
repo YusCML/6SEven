@@ -1,5 +1,5 @@
 import PageMeta from '@/components/PageMeta';
-import CommuterGuide from '@/features/commuterGuide/components/CommuterGuide';
+import CommuterGuide from '@/features/commuter-guide/components/CommuterGuide';
 
 export default function CommuterGuidePage() {
   return (

@@ -1,8 +1,8 @@
 import type { StaticImageData } from 'next/image';
-import emperador from '@/assets/landing/hero-emperador.jpg';
-import cpu from '@/assets/landing/ride-cpu.jpg';
-import jaro from '@/assets/landing/ride-jaro.jpg';
-import smIloilo from '@/assets/landing/ride-sm-iloilo.jpg';
+import emperador from '@/assets/home/hero-emperador.jpg';
+import cpu from '@/assets/home/ride-cpu.jpg';
+import jaro from '@/assets/home/ride-jaro.jpg';
+import smIloilo from '@/assets/home/ride-sm-iloilo.jpg';
 import esplanadePhoto from '@/assets/hotspot/esplanade.jpg';
 import laPazPhoto from '@/assets/hotspot/la-paz.jpg';
 import moloPhoto from '@/assets/hotspot/molo.jpg';
