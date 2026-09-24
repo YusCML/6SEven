@@ -33,6 +33,37 @@ actually move around Iloilo City — jeepney codes, tricycle hops, transfer poin
 
 ---
 
+## Route data and sources
+
+The Routes page lists the 25 official jeepney loops of Iloilo City's Enhanced
+Local Public Transport Route Plan (ELPTRP). The data lives in
+`server/prisma/data/routes.json` and is loaded by the seed script.
+
+- **Street sequence.** Each route follows the official street-by-street list
+  published by the city's traffic office (ICTMU) and transcribed in the
+  [Iloilo City jeepney route guide](https://shemaegomez.com/iloilo-city-jeepney-routes/).
+- **Map geometry.** Each path is drawn on real roads from
+  [OpenStreetMap](https://www.openstreetmap.org/copyright), snapped with
+  [OSRM](https://project-osrm.org/), and respects one-way streets. The Drilon
+  Bridge crossing follows [SunStar's report on the bridge](https://www.sunstar.com.ph/more-articles/new-p140-m-bridge-up-at-iloilo-river-).
+- **Fares.** Fares use the traditional jeepney rate: ₱13 for the first 4 km, then
+  ₱1.80 per km, rounded to 25 centavos. Students, seniors and PWDs get 20% off.
+  The ₱14 increase approved in March 2026
+  [was suspended](https://newsinfo.inquirer.net/2197784/marcos-orders-suspension-of-fare-hike),
+  which the [Iloilo 2026 transport guide](https://iloilodirectory.com/complete-transportation-guide-to-iloilo-city-for-commuters-and-tourists-2026/)
+  confirms.
+- **Times.** Travel times are estimates at an average of 16 km/h, stops
+  included.
+
+Each route is a loop. The card's fare, distance and time cover the end-to-end
+ride, and the two legs show the trip out to the far end and back.
+
+Two routes can't follow the official path exactly because OpenStreetMap is
+missing a road. So-oc Road is cut at C. Aquino Avenue (route 20), and there is
+no Sto. Domingo Street link near Tatoy's (route 17).
+
+---
+
 ## The team
 
 **Group 5** · Software Development III
@@ -141,6 +172,12 @@ in.
 cd server && npx prisma db push
 ```
 
+Then load the 25 official jeepney routes:
+
+```bash
+cd server && npm run prisma:seed
+```
+
 ### 4. Run it
 
 You need **two terminals** — the API and the frontend are separate processes.
@@ -237,6 +274,7 @@ Backend code never lives in `client/`. Anything genuinely needed by both goes in
 | `server` | `npm test` | Vitest suite (131 tests) |
 | `server` | `npm run typecheck` | tsc, no emit |
 | `server` | `npm run prisma:push` | Sync schema to the database |
+| `server` | `npm run prisma:seed` | Load the 25 official jeepney routes |
 | `client` | `npm run dev` | Next dev server |
 | `client` | `npm run build` | Production build |
 | `client` | `npm start` | Serve the production build |

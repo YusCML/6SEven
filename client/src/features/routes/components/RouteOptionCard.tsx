@@ -29,6 +29,7 @@ export default function RouteOptionCard({ route, selected, onClick }: RouteOptio
           <h3 className="font-bold text-slate-900 text-sm">
             <span className="text-slate-400">#{route.routeNumber}</span> {route.title}
           </h3>
+          <p className="mt-1 text-xs text-slate-500">{route.description}</p>
         </div>
         <div className="ml-2 text-right">
           <div className="text-lg font-black text-slate-900">{route.duration}</div>

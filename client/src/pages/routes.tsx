@@ -30,6 +30,10 @@ export default function RouteExplorer() {
     [routes, filterTab],
   );
 
+  const visibleTabs = FILTER_TABS.filter(
+    (tab) => tab.id === 'all' || routes.some((route) => route.category === tab.id),
+  );
+
   const activeId =
     filteredRoutes.find((route) => route.id === selectedRouteId)?.id ?? filteredRoutes[0]?.id ?? null;
 
@@ -49,7 +53,7 @@ export default function RouteExplorer() {
             {loading ? 'Loading routes…' : `${filteredRoutes.length} Routes`}
           </h3>
           <div className="flex flex-wrap gap-2 mb-4">
-            {FILTER_TABS.map((tab) => (
+            {visibleTabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setFilterTab(tab.id)}

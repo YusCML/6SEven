@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Polyline, Marker, Popup } from 'react-leaflet';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { RouteData } from '@/types/route';
-import { getRoadPath } from '@/features/routes/lib/getRoadPath';
 
 const defaultIcon = L.icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -20,31 +19,19 @@ interface RouteMapProps {
   selectedRouteId: string;
 }
 
-export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
-  const [resolvedPaths, setResolvedPaths] = useState<Record<string, [number, number][]>>({});
-
-  const selectedRoute = routes.find((route) => route.id === selectedRouteId);
+function FitToPath({ path }: { path: [number, number][] }) {
+  const map = useMap();
 
   useEffect(() => {
-    if (!selectedRoute || resolvedPaths[selectedRoute.id]) return;
+    if (path.length > 1) map.fitBounds(path, { padding: [32, 32] });
+  }, [map, path]);
 
-    let cancelled = false;
+  return null;
+}
 
-    async function resolveSelected(route: RouteData) {
-      const path = await getRoadPath(route.path);
-      if (!cancelled) {
-        setResolvedPaths((current) => ({ ...current, [route.id]: path }));
-      }
-    }
-
-    resolveSelected(selectedRoute);
-
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedRoute, resolvedPaths]);
-
-  const selectedPath = (selectedRoute && resolvedPaths[selectedRoute.id]) ?? selectedRoute?.path ?? [];
+export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
+  const selectedRoute = routes.find((route) => route.id === selectedRouteId);
+  const path = selectedRoute?.path ?? [];
 
   return (
     <MapContainer center={ILOILO_CENTER} zoom={13} scrollWheelZoom className="isolate h-full w-full">
@@ -53,26 +40,23 @@ export default function RouteMap({ routes, selectedRouteId }: RouteMapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {selectedRoute && selectedPath.length > 0 && (
-        <Polyline
-          key={selectedRoute.id}
-          positions={selectedPath}
-          pathOptions={{
-            color: selectedRoute.color,
-            weight: 6,
-            opacity: 1,
-          }}
-        />
-      )}
-
-      {selectedRoute && selectedPath.length > 0 && (
+      {selectedRoute && path.length > 0 && (
         <>
-          <Marker position={selectedPath[0]} icon={defaultIcon}>
-            <Popup>{selectedRoute.title} — Start</Popup>
+          <Polyline
+            key={selectedRoute.id}
+            positions={path}
+            pathOptions={{
+              color: selectedRoute.color,
+              weight: 6,
+              opacity: 1,
+            }}
+          />
+          <Marker position={path[0]} icon={defaultIcon}>
+            <Popup>
+              {selectedRoute.title} — {selectedRoute.segments[0]?.from ?? 'Terminal'}
+            </Popup>
           </Marker>
-          <Marker position={selectedPath[selectedPath.length - 1]} icon={defaultIcon}>
-            <Popup>{selectedRoute.title} — End</Popup>
-          </Marker>
+          <FitToPath path={path} />
         </>
       )}
     </MapContainer>
