@@ -16,7 +16,7 @@ export type LandingStat = {
 
 export const landingStats: LandingStat[] = [
   { label: 'Routes Mapped', value: '25', Icon: RouteIcon, tone: 'brand' },
-  { label: 'Jeepney Fare', value: '₱13 base', Icon: TicketIcon, tone: 'success' },
+  { label: 'Jeepney Fare', value: '₱14 base', Icon: TicketIcon, tone: 'success' },
   { label: 'Peak Hours', value: '7–9 AM', Icon: ClockIcon, tone: 'warning' },
   { label: 'Weather', value: '28°C Clear', Icon: CloudSunIcon, tone: 'accent' },
 ];
@@ -97,7 +97,7 @@ export type FareRow = {
 };
 
 export const fareGuide: FareRow[] = [
-  { mode: 'Jeepney', amount: 13, note: 'First 4 km, +₱1.80 per km' },
+  { mode: 'Jeepney', amount: 14, note: 'First 4 km, +₱1.80 per km' },
   { mode: 'Tricycle', amount: 25, note: 'Short hops within a district' },
   { mode: 'Taxi', amount: 45, note: 'Flagdown, then metered' },
 ];
