@@ -4,22 +4,22 @@ import Topbar from '@/components/navigation/Topbar';
 import ScrollToTop from '@/components/ui/ScrollToTop';
 
 type AppShellProps = {
-  children: ReactNode;
+	children: ReactNode;
 };
 
 export default function AppShell({ children }: AppShellProps) {
-  const [navOpen, setNavOpen] = useState(false);
+	const [navOpen, setNavOpen] = useState(false);
 
-  return (
-    <div className="flex min-h-screen bg-white font-sans text-slate-900 dark:bg-[oklch(0.205_0_0)]">
-      <Sidebar open={navOpen} onToggle={() => setNavOpen(!navOpen)} />
+	return (
+		<div className="flex min-h-screen bg-white font-sans text-slate-900 dark:bg-[oklch(0.205_0_0)]">
+			<Sidebar open={navOpen} onToggle={() => setNavOpen(!navOpen)} />
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar />
-        <main className="flex-1">{children}</main>
-      </div>
+			<div className="flex min-w-0 flex-1 flex-col">
+				<Topbar />
+				<main className="flex-1">{children}</main>
+			</div>
 
-      <ScrollToTop />
-    </div>
-  );
+			<ScrollToTop />
+		</div>
+	);
 }

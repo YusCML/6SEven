@@ -1,18 +1,18 @@
 import { Router } from 'express';
 import {
-  changePasswordController,
-  getSessionController,
-  loginController,
-  logoutController,
-  patchProfileController,
-  putProfilePhotoController,
-  registerController,
+	changePasswordController,
+	getSessionController,
+	loginController,
+	logoutController,
+	patchProfileController,
+	putProfilePhotoController,
+	registerController,
 } from '@/controllers/auth.controller';
 import {
-  googleCallbackController,
-  googleLinkStartController,
-  googleStartController,
-  googleUnlinkController,
+	googleCallbackController,
+	googleLinkStartController,
+	googleStartController,
+	googleUnlinkController,
 } from '@/controllers/google.controller';
 
 const router = Router();

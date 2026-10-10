@@ -142,6 +142,59 @@ OAuth code is all written by hand.
 
 ---
 
+## Database schema
+
+This ERD follows the [Prisma schema](server/prisma/schema.prisma). A route can
+have zero or more segments, and each segment belongs to one route. User accounts
+are stored independently. Optional fields are marked `nullable`.
+
+```mermaid
+erDiagram
+	users {
+		uuid id PK
+		string email UK "nullable"
+		string username UK
+		string nickname "nullable"
+		string passwordHash "nullable"
+		string plaintextPassword "nullable"
+		string googleId UK "nullable"
+		string avatarUrl "nullable"
+		boolean emailVerified
+		datetime createdAt
+		datetime updatedAt
+	}
+
+	routes {
+		uuid id PK
+		int routeNumber UK
+		string title
+		string duration
+		string description
+		string color
+		string fare
+		string distance
+		string category
+		json path
+		datetime createdAt
+		datetime updatedAt
+	}
+
+	route_segments {
+		uuid id PK
+		string mode
+		string from
+		string to
+		string duration
+		string distance "nullable"
+		int order
+		uuid routeId FK
+	}
+
+	routes ||--o{ route_segments : contains
+```
+
+---
+
 ## Getting started
 
 ### Requirements

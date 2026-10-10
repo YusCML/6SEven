@@ -4,10 +4,10 @@ import AuthLayout from '@/layouts/AuthLayout';
 import type { NextPageWithLayout } from '@/types/page';
 
 const LoginPage: NextPageWithLayout = () => (
-  <>
-    <PageMeta title="Log In" description="Sign in to manage your routes and commute alerts." />
-    <LoginForm />
-  </>
+	<>
+		<PageMeta title="Log In" description="Sign in to manage your routes and commute alerts." />
+		<LoginForm />
+	</>
 );
 
 LoginPage.getLayout = (page) => <AuthLayout>{page}</AuthLayout>;

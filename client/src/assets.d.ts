@@ -1,1 +1,1 @@
-/// <reference types="next/image-types/global" />
+import 'next/image-types/global';

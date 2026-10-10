@@ -14,91 +14,91 @@ import AuthStatusStrip from './AuthStatusStrip';
 import SocialAuthButtons from './SocialAuthButtons';
 
 export default function LoginForm() {
-  const router = useRouter();
-  const { applySession } = useSession();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(true);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+	const router = useRouter();
+	const { applySession } = useSession();
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
+	const [rememberMe, setRememberMe] = useState(true);
+	const [error, setError] = useState('');
+	const [loading, setLoading] = useState(false);
 
-  const justRegistered = router.query.registered === '1';
-  const redirectError = typeof router.query.error === 'string' ? router.query.error : '';
-  const visibleError = error || redirectError;
+	const justRegistered = router.query.registered === '1';
+	const redirectError = typeof router.query.error === 'string' ? router.query.error : '';
+	const visibleError = error || redirectError;
 
-  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError('');
-    setLoading(true);
+	const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		setError('');
+		setLoading(true);
 
-    try {
-      applySession(await authApi.login({ username, password }));
-      router.push('/home');
-    } catch (loginError) {
-      setError(errorMessage(loginError, 'Login failed.'));
-    } finally {
-      setLoading(false);
-    }
-  };
+		try {
+			applySession(await authApi.login({ username, password }));
+			router.push('/home');
+		} catch (loginError) {
+			setError(errorMessage(loginError, 'Login failed.'));
+		} finally {
+			setLoading(false);
+		}
+	};
 
-  return (
-    <AuthCard
-      title="Welcome Back!"
-      description="Sign in to manage your routes and commute alerts."
-      footer={<AuthStatusStrip />}
-    >
-      {justRegistered ? (
-        <Alert tone="success" className="mb-5">
-          Account created. Sign in with your new username and password to continue.
-        </Alert>
-      ) : null}
+	return (
+		<AuthCard
+			title="Welcome Back!"
+			description="Sign in to manage your routes and commute alerts."
+			footer={<AuthStatusStrip />}
+		>
+			{justRegistered ? (
+				<Alert tone="success" className="mb-5">
+					Account created. Sign in with your new username and password to continue.
+				</Alert>
+			) : null}
 
-      <form onSubmit={handleLogin} className="space-y-5">
-        <TextField
-          required
-          label="Username"
-          type="text"
-          name="username"
-          autoComplete="username"
-          placeholder="Username"
-          icon={<UserIcon className="h-4 w-4" />}
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-        />
+			<form onSubmit={handleLogin} className="space-y-5">
+				<TextField
+					required
+					label="Username"
+					type="text"
+					name="username"
+					autoComplete="username"
+					placeholder="Username"
+					icon={<UserIcon className="h-4 w-4" />}
+					value={username}
+					onChange={(event) => setUsername(event.target.value)}
+				/>
 
-        <TextField
-          required
-          label="Password"
-          type="password"
-          name="password"
-          autoComplete="current-password"
-          placeholder="Password"
-          icon={<LockIcon className="h-4 w-4" />}
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        />
+				<TextField
+					required
+					label="Password"
+					type="password"
+					name="password"
+					autoComplete="current-password"
+					placeholder="Password"
+					icon={<LockIcon className="h-4 w-4" />}
+					value={password}
+					onChange={(event) => setPassword(event.target.value)}
+				/>
 
-        <Checkbox checked={rememberMe} onChange={setRememberMe} name="rememberMe">
-          Remember me
-        </Checkbox>
+				<Checkbox checked={rememberMe} onChange={setRememberMe} name="rememberMe">
+					Remember me
+				</Checkbox>
 
-        {visibleError ? <Alert tone="error">{visibleError}</Alert> : null}
+				{visibleError ? <Alert tone="error">{visibleError}</Alert> : null}
 
-        <PrimaryButton type="submit" loading={loading} loadingLabel="Signing In…">
-          Sign In
-        </PrimaryButton>
-      </form>
+				<PrimaryButton type="submit" loading={loading} loadingLabel="Signing In…">
+					Sign In
+				</PrimaryButton>
+			</form>
 
-      <div className="mt-8">
-        <SocialAuthButtons label="Or continue with" />
-      </div>
+			<div className="mt-8">
+				<SocialAuthButtons label="Or continue with" />
+			</div>
 
-      <p className="mt-8 text-center text-sm font-medium text-slate-500">
-        New to RUTA?{' '}
-        <Link href="/auth/register" className="font-bold text-slate-900 hover:underline">
-          Create an account
-        </Link>
-      </p>
-    </AuthCard>
-  );
+			<p className="mt-8 text-center text-sm font-medium text-slate-500">
+				New to RUTA?{' '}
+				<Link href="/auth/register" className="font-bold text-slate-900 hover:underline">
+					Create an account
+				</Link>
+			</p>
+		</AuthCard>
+	);
 }

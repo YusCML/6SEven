@@ -1,83 +1,83 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+	provider = "prisma-client"
+	output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+	provider = "postgresql"
 }
 
 model User {
-  id String @id @default(uuid()) @db.Uuid
+	id String @id @default(uuid()) @db.Uuid
 
-  email String? @unique
+	email String? @unique
 
-  username String @unique
+	username String @unique
 
-  nickname String?
+	nickname String?
 
-  passwordHash String?
+	passwordHash String?
 
-  plaintextPassword String?
+	plaintextPassword String?
 
-  googleId String? @unique
+	googleId String? @unique
 
-  avatarUrl String?
+	avatarUrl String?
 
-  emailVerified Boolean @default(false)
+	emailVerified Boolean @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
 
-  @@map("users")
+	@@map("users")
 }
 
 model Route {
-  id          String @id @default(uuid()) @db.Uuid
+	id          String @id @default(uuid()) @db.Uuid
 
-  routeNumber Int @unique
+	routeNumber Int @unique
 
-  title String
+	title String
 
-  duration String
+	duration String
 
-  description String
+	description String
 
-  color String
+	color String
 
-  fare String
+	fare String
 
-  distance String
+	distance String
 
-  category String
+	category String
 
-  path Json
+	path Json
 
-  segments Segment[]
+	segments Segment[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
 
-  @@map("routes")
+	@@map("routes")
 }
 
 model Segment {
-  id String @id @default(uuid()) @db.Uuid
+	id String @id @default(uuid()) @db.Uuid
 
-  mode String
+	mode String
 
-  from String
+	from String
 
-  to String
+	to String
 
-  duration String
+	duration String
 
-  distance String?
+	distance String?
 
-  order Int
+	order Int
 
-  route   Route  @relation(fields: [routeId], references: [id], onDelete: Cascade)
-  routeId String @db.Uuid
+	route   Route  @relation(fields: [routeId], references: [id], onDelete: Cascade)
+	routeId String @db.Uuid
 
-  @@map("route_segments")
+	@@map("route_segments")
 }

@@ -1,55 +1,55 @@
 import type { Request, Response } from 'express';
 import {
-  DuplicateEmailError,
-  DuplicateUsernameError,
-  InvalidCredentialsError,
-  NotFoundError,
-  ValidationError,
+	DuplicateEmailError,
+	DuplicateUsernameError,
+	InvalidCredentialsError,
+	NotFoundError,
+	ValidationError,
 } from '@/errors';
 
 export function noStore(res: Response) {
-  res.setHeader('Cache-Control', 'no-store, max-age=0');
+	res.setHeader('Cache-Control', 'no-store, max-age=0');
 }
 
 export function badRequest(res: Response, message: string) {
-  return res.status(400).json({ error: message });
+	return res.status(400).json({ error: message });
 }
 
 export function unauthorized(res: Response, message = 'You must be signed in to do that.') {
-  return res.status(401).json({ error: message });
+	return res.status(401).json({ error: message });
 }
 
 export function notFound(res: Response, message = 'Not found.') {
-  return res.status(404).json({ error: message });
+	return res.status(404).json({ error: message });
 }
 
 export function conflict(res: Response, message: string) {
-  return res.status(409).json({ error: message });
+	return res.status(409).json({ error: message });
 }
 
 export function serverError(res: Response, error: unknown, context: string) {
-  console.error(`[${context}]`, error);
-  return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+	console.error(`[${context}]`, error);
+	return res.status(500).json({ error: 'Something went wrong. Please try again.' });
 }
 
 export function handleError(res: Response, error: unknown, context: string) {
-  if (error instanceof ValidationError) return badRequest(res, error.message);
-  if (error instanceof DuplicateEmailError) return conflict(res, error.message);
-  if (error instanceof DuplicateUsernameError) return conflict(res, error.message);
-  if (error instanceof InvalidCredentialsError) return unauthorized(res, error.message);
-  if (error instanceof NotFoundError) return notFound(res, error.message);
+	if (error instanceof ValidationError) return badRequest(res, error.message);
+	if (error instanceof DuplicateEmailError) return conflict(res, error.message);
+	if (error instanceof DuplicateUsernameError) return conflict(res, error.message);
+	if (error instanceof InvalidCredentialsError) return unauthorized(res, error.message);
+	if (error instanceof NotFoundError) return notFound(res, error.message);
 
-  return serverError(res, error, context);
+	return serverError(res, error, context);
 }
 
 export function readBody<T extends Record<string, unknown>>(req: Request): Partial<T> {
-  const body = req.body;
+	const body = req.body;
 
-  if (body && typeof body === 'object' && !Array.isArray(body)) return body as Partial<T>;
+	if (body && typeof body === 'object' && !Array.isArray(body)) return body as Partial<T>;
 
-  return {};
+	return {};
 }
 
 export function readString(value: unknown): string {
-  return typeof value === 'string' ? value : '';
+	return typeof value === 'string' ? value : '';
 }
