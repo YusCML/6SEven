@@ -75,8 +75,8 @@ describe('planTrips', () => {
 
 describe('jeepneyFare', () => {
 	it('charges the base fare for the first 4 km', () => {
-		expect(jeepneyFare(0.5)).toBe(13);
-		expect(jeepneyFare(4)).toBe(13);
+		expect(jeepneyFare(0.5)).toBe(14);
+		expect(jeepneyFare(4)).toBe(14);
 	});
 
 	it('adds ₱1.80 per succeeding km, rounded to 25 centavos', () => {

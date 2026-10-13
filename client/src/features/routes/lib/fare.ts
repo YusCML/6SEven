@@ -1,4 +1,4 @@
-const BASE_FARE = 13;
+const BASE_FARE = 14;
 const BASE_KM = 4;
 const PER_KM = 1.8;
 

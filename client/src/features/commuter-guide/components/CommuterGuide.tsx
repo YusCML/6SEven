@@ -46,14 +46,14 @@ const fares = [
 	{
 		Icon: TapPhoneIcon,
 		title: "Jeepney",
-		fare: "₱13",
+		fare: "₱14",
 		label: "first 4 km",
 		text: "The backbone of the city. Add roughly ₱1.80 per kilometre after the first four. Cash only — bring small bills.",
 	},
 	{
 		Icon: EBusIcon,
 		title: "Modern PUV",
-		fare: "₱15",
+		fare: "₱17.50",
 		label: "first 4 km",
 		text: "Air-conditioned e-jeepneys on the modernised routes. Slightly higher base fare, fixed stops, and you board at the rear.",
 	},
